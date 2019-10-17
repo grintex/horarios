@@ -79,7 +79,18 @@ function createGrid(containerId, group, weekDays, periods) {
 
             stop: function (e, ui) {
                 var data = ui.$helper.context.dataset;
-                console.log('STOP', data.row, data.col, data.course);
+                var course = getCourseById(data.course);
+
+                if(course == null) {
+                    console.error('Unable to load course info: ' + data.course);
+                    return;
+                }
+
+                course.period = data.row;
+                course.weekDay = data.col;
+
+                // TODO: commit changes
+                console.log('Course updated: ', course);
             }
         }
     }).data('gridster');
@@ -95,14 +106,16 @@ function createGrid(containerId, group, weekDays, periods) {
     return g;
 }
 
-function findCourseById(id) {
+function getCourseById(id) {
+    var item = null;
+
     courses.forEach(function(course) {
         if(course.id == id) {
-            return course;
+            item = course;
         }
     });
 
-    return null;
+    return item;
 }
 
 function findCoursesByGroupId(groupId) {
