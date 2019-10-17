@@ -32,6 +32,7 @@ var periods = [
 
 var groups = [
     {id: 1, name: 'Vespertino - 2ª Fase', grid: null},
+/*
     {id: 2, name: 'Vespertino - 4ª Fase', grid: null},
     {id: 3, name: 'Vespertino - 6ª Fase', grid: null},
     {id: 4, name: 'Vespertino - 8ª Fase', grid: null},
@@ -39,7 +40,7 @@ var groups = [
     {id: 6, name: 'Noturno - 3ª Fase', grid: null},
     {id: 7, name: 'Noturno - 5ª Fase', grid: null},
     {id: 8, name: 'Noturno - 7ª Fase', grid: null},
-    {id: 9, name: 'Noturno - 9ª Fase', grid: null}
+    {id: 9, name: 'Noturno - 9ª Fase', grid: null}*/
 ];
 
 function createGrid(containerId, group, weekDays, periods) {
@@ -49,6 +50,7 @@ function createGrid(containerId, group, weekDays, periods) {
     $('#' + containerId).append(
         '<div id="' + key + '">' +
             '<h2>' + group.name + '</h2>' +
+            '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-member">member</button>' +
             '<div class="gridster"><ul></ul></div>' +
         '</div>'
     );

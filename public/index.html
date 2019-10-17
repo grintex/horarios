@@ -3,22 +3,180 @@
     <meta charset="utf-8">
     <title>Gridster Responsive Demo</title>
 
-    <link rel="stylesheet" type="text/css" href="./css/app.css">
-    <link rel="stylesheet" type="text/css" href="./js/3rdparty/jquery.dsmorse-gridster.min.css">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="./js/3rdparty/jquery.dsmorse-gridster.with-extras.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="./js/app.js" type="text/javascript" charset="utf-8"></script>
+    <!-- Estilos lindos da aplicação -->
+    <link rel="stylesheet" href="./css/bootstrap.min.css" media="screen">
+    <link rel="stylesheet" href="./css/ionicons.min.css" media="screen">
+    <link rel="stylesheet" href="./css/froala_blocks.min.css" media="screen">
+    <link rel="stylesheet" href="./js/3rdparty/jquery.dsmorse-gridster.min.css" type="text/css">
+    <link rel="stylesheet" href="./css/app.css" media="screen">
 </head>
 <body>
-<div class="content">
-    <h1>Responsive Layout</h1>
-    <p>This demo represents using the branch in responsive mode. This makes the grid as wide as the screen and responds to changes in browser
-        width.</p>
+
+<header class="bg-dark">
+    <div class="container">
+        <nav class="navbar navbar-expand-md">
+        <a class="navbar-brand" href="https://www.froala.com">
+            <i class="icon ion-md-checkbox-outline text-success" style="font-size: 1.5em;"></i> UFFS Status
+        </a>
+    
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav11" aria-controls="navbarNav11" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="collapse navbar-collapse" id="navbarNav11">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="https://www.froala.com">About</a>
+                </li>
+            </ul>
+            <a class="btn btn-outline-light ml-md-3" href="https://www.froala.com">Button</a>
+        </div>
+        </nav>
+    </div>
+</header>
+
+<div class="container">
+    <div class="row justify-content-center section">
+        <div class="col-lg-12">
+            <div class="card text-white bg-dark border-secondary status-meta">
+                <div class="card-header">Localização</div>
+                <div class="card-body">
+                    <div id="container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-group">group</button>
+    </div>
 </div>
 
-<div id="container">
-</div>
+
+      
+    <!-- Modals -->
+    <div class="modal fade" id="add-member" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Add member</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="add-group" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Add group</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                            <label for="inputEmail4">Email</label>
+                            <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
+                            </div>
+                            <div class="form-group col-md-6">
+                            <label for="inputPassword4">Password</label>
+                            <input type="password" class="form-control" id="inputPassword4" placeholder="Password">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputAddress">Address</label>
+                            <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputAddress2">Address 2</label>
+                            <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                            <label for="inputCity">City</label>
+                            <input type="text" class="form-control" id="inputCity">
+                            </div>
+                            <div class="form-group col-md-4">
+                            <label for="inputState">State</label>
+                            <select id="inputState" class="form-control">
+                                <option selected>Choose...</option>
+                                <option>...</option>
+                            </select>
+                            </div>
+                            <div class="form-group col-md-2">
+                            <label for="inputZip">Zip</label>
+                            <input type="text" class="form-control" id="inputZip">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="gridCheck">
+                            <label class="form-check-label" for="gridCheck">
+                                Check me out
+                            </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Sign in</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+<footer class="fdb-block footer-large bg-dark">
+    <div class="container">
+    <div class="row align-items-top text-center text-md-left">
+        <div class="col-3 text-md-left">
+        <h3><strong>About Us</strong></h3>
+        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+        </div>
+
+        <div class="col-3"></div>
+
+        <div class="col-3">
+        <h3><strong>Country B</strong></h3>
+        <p>Street Address 100<br>Contact Name</p>
+        <p>+13 827 312 5002</p>
+        <p><a href="https://www.froala.com">countryb@amazing.com</a></p>
+        </div>
+
+        <div class="col-3">
+        <h3><strong>Country B</strong></h3>
+        <p>Street Address 100<br>Contact Name</p>
+        <p>+13 827 312 5002</p>
+        <p><a href="https://www.froala.com">countryb@amazing.com</a></p>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col text-center text-muted">
+        © 2018 Froala. All Rights Reserved
+        </div>
+    </div>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="./js/3rdparty/jquery.dsmorse-gridster.with-extras.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="./js/3rdparty/bootstrap.bundle.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="./js/app.js" type="text/javascript" charset="utf-8"></script>
 
 </body>
 </html>
