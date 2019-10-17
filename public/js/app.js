@@ -9,13 +9,14 @@ var courses = [
 ];
 
 var weekDays = [
-    {id: 0, name: "N/A"},
+    {id: 0, name: ""},
     {id: 1, name: "Segunda-feira"},
     {id: 2, name: "Terça-feira"},
     {id: 3, name: "Quarta-feira"},
     {id: 4, name: "Quinta-feira"},
     {id: 5, name: "Sexta-feira"},
-    {id: 6, name: "Sábado-feira"}
+    {id: 6, name: "Sábado"},
+    {id: 7, name: "N/A"}
 ];
 
 var periods = [
@@ -39,16 +40,14 @@ var groups = [
     {id: 9, name: 'Noturno - 9ª Fase', grid: null}
 ];
 
-function createGroupGrid(containerId, num) {
+function createGrid(containerId, group, weekDays, periods) {
+    var num = group.id;
     var key = 'group-' + num;
 
     $('#' + containerId).append(
         '<div id="' + key + '">' +
-            '<h2>' + key + '</h2>' +
-            '<div class="gridster">' +
-                '<ul>' +
-                '</ul>' +
-            '</div>' +
+            '<h2>' + group.name + '</h2>' +
+            '<div class="gridster"><ul></ul></div>' +
         '</div>'
     );
 
@@ -57,8 +56,8 @@ function createGroupGrid(containerId, num) {
         autogenerate_stylesheet: true,
         shift_widgets_up: false,
         shift_larger_widgets_down: false,
-        min_cols: 7,
-        max_cols: 7,
+        min_cols: 8,
+        max_cols: 8,
         widget_margins: [5, 5],
         resize: {
             enabled: false
@@ -69,7 +68,6 @@ function createGroupGrid(containerId, num) {
         draggable: {
             handle: 'header',
             start: function (e, ui, $widget) {
-                e.preventDefault();
                 console.log('START position: ' + ui.position.top + ' ' + ui.position.left);
             },
 
@@ -82,59 +80,21 @@ function createGroupGrid(containerId, num) {
             }
         }
     }).data('gridster');
-    
-    g.add_widget('<li class="new"><header style="pointer-events: none;">|||</header>dddd</li>', 1, 1, 1, 1);
-    g.add_widget('<li class="new"><header style="pointer-events: none;">|||</header>dddd</li>', 1, 1, 1, 2);
-    g.add_widget('<li class="new"><header>|||</header>22</li>', 1, 1, 1, 3);
-    g.add_widget('<li class="new"><header>|||</header>33</li>', 1, 1, 1, 4);
-    g.add_widget('<li class="new"><header>|||</header>44</li>', 1, 1, 1, 5);
-    g.add_widget('<li class="new"><header>|||</header>55</li>', 1, 1, 1, 6);
+
+    for(var i = 0; i < periods.length; i++) {
+        g.add_widget('<li class="new"><header style="pointer-events: none;">|||</header>' + periods[i].name + '</li>', 1, 1, 1, i + 2);
+    }
+
+    for(var j = 0; j < weekDays.length; j++) {
+        g.add_widget('<li class="new"><header style="pointer-events: none;">|||</header>' + weekDays[j].name + '</li>', 1, 1, j + 1, 1);
+    }
 
     return g;
 }
 
 
 $(function () {
-    for(var i = 0; i < 2; i++) {
-        groups[i].grid = createGroupGrid('container', i);
-        
-        var day = weekDays[d];
-
-        items = '';
-        for(var d = 0; d < weekDays.length; d++) {
-            items += '<';
-        }
-/*
-            var day = weekDays[d];
-            for(var p = 0; p < periods.length; p++) {
-                var period = periods[p];
-                items += '<li data-row="1" data-col="1" data-sizex="1" data-sizey="1">' + + '</li>';
-            }
-        }*/
-/*
-        
-
-        $('#container').append(
-            '<div id="group-' + group.id + '" class="gridster">' +
-                '<h2>Demo ' + group.id + '</h2>' +
-                '<div class="gridster">' +
-                    '<ul>' +
-                        '<li data-row="1" data-col="1" data-sizex="1" data-sizey="1">0</li>' +
-                        '<li data-row="1" data-col="3" data-sizex="1" data-sizey="1">1</li>' +
-                    '</ul>' +
-                '</div>' +
-            '</div>'
-        );
-    }
-
-
-
-    gridster[1] = $("#demo-2 ul").gridster({
-        namespace: '#demo-2',
-        widget_base_dimensions: [200, 110],
-        widget_margins: [10, 10]
-    }).data('gridster');
-*/
-
+    for(var i = 0; i < groups.length; i++) {
+        groups[i].grid = createGrid('container', groups[i], weekDays, periods);
     }    
 });
