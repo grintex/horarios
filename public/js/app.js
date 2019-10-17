@@ -6,6 +6,8 @@ var members = {
 var courses = [
     {id: 1, code: 'GCS011', name: 'Meio ambiente, economia e sociedade', group: 1, weekDay: 7, period: 1, members: ['marco.spohn']},
     {id: 2, code: 'AAS011', name: 'Algoritmos e Programação', group: 1, weekDay: 7, period: 1, members: ['fernando.bevilacqua']},
+    {id: 3, code: 'BAS011', name: 'Programação I', group: 2, weekDay: 7, period: 1, members: ['fernando.bevilacqua']},
+    {id: 4, code: 'CAS011', name: 'Programação II', group: 2, weekDay: 7, period: 1, members: ['fernando.bevilacqua']},
 ];
 
 var weekDays = [
@@ -69,6 +71,7 @@ function createGrid(containerId, group, weekDays, periods) {
         },
         draggable: {
             handle: 'header',
+
             start: function (e, ui) {
                 console.log('START position: ' + ui.position.top + ' ' + ui.position.left);
             },
@@ -89,8 +92,8 @@ function createGrid(containerId, group, weekDays, periods) {
                 course.period = data.row;
                 course.weekDay = data.col;
 
-                // TODO: commit changes
-                console.log('Course updated: ', course);
+                checkConstraintsByCourse(course);
+                console.debug('Course updated: ', course); // TODO: commit changes
             }
         }
     }).data('gridster');
@@ -104,6 +107,28 @@ function createGrid(containerId, group, weekDays, periods) {
     }
 
     return g;
+}
+
+function checkConstraintsByCourse(course) {
+    var clashes = findCoursesByWeekDayAndPeriod(course.weekDay, course.period);
+
+    if(clashes.length == 1 && clashes[0].id == course.id) {
+        // No clash, the only course in that week day and period
+        // is the one we already have.
+        return;
+    }
+}
+
+function findCoursesByWeekDayAndPeriod(weekDay, period) {
+    var items = [];
+
+    courses.forEach(function(course) {
+        if(course.weekDay == weekDay && course.period == period)  {
+            items.push(course);
+        }
+    });
+
+    return items;
 }
 
 function getCourseById(id) {
@@ -137,7 +162,17 @@ $(function () {
         var courses = findCoursesByGroupId(group.id);
 
         courses.forEach(function(course) {
-            group.grid.add_widget('<li class="new" data-course="' + course.id + '"><header>|||</header>' + course.name + '</li>', 1, 1, course.weekDay, course.period + 1);
+            group.grid.add_widget(
+                '<li class="new" data-course="' + course.id + '">' +
+                    '<header>|||</header>' +
+                    course.name +
+                    '<br />' +
+                    course.members.join(', ') +
+                '</li>',
+                1,
+                1,
+                course.weekDay,
+                course.period + 1);
         });
     });
 });
