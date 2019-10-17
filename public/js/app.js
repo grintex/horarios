@@ -4,8 +4,8 @@ var members = {
 }
 
 var courses = [
-    {id: 'GCS011', name: 'Meio ambiente, economia e sociedade', group: 4, members: ['marco.spohn']},
-    {id: 'AAS011', name: 'Algoritmos e Programação', group: 4, members: ['fernando.bevilacqua']},
+    {id: 1, code: 'GCS011', name: 'Meio ambiente, economia e sociedade', group: 1, weekDay: 7, period: 1, members: ['marco.spohn']},
+    {id: 2, code: 'AAS011', name: 'Algoritmos e Programação', group: 1, weekDay: 7, period: 1, members: ['fernando.bevilacqua']},
 ];
 
 var weekDays = [
@@ -58,6 +58,8 @@ function createGrid(containerId, group, weekDays, periods) {
         shift_larger_widgets_down: false,
         min_cols: 8,
         max_cols: 8,
+        max_rows: 7,
+        min_rows: 7,
         widget_margins: [5, 5],
         resize: {
             enabled: false
@@ -67,16 +69,17 @@ function createGrid(containerId, group, weekDays, periods) {
         },
         draggable: {
             handle: 'header',
-            start: function (e, ui, $widget) {
+            start: function (e, ui) {
                 console.log('START position: ' + ui.position.top + ' ' + ui.position.left);
             },
 
-            drag: function (e, ui, $widget) {
+            drag: function (e, ui) {
                 console.log('DRAG offset: ' + ui.pointer.diff_top + ' ' + ui.pointer.diff_left);
             },
 
-            stop: function (e, ui, $widget) {
-                console.log('STOP position: ' + ui.position.top + ' ' + ui.position.left);
+            stop: function (e, ui) {
+                var data = ui.$helper.context.dataset;
+                console.log('STOP', data.row, data.col, data.course);
             }
         }
     }).data('gridster');
@@ -92,9 +95,36 @@ function createGrid(containerId, group, weekDays, periods) {
     return g;
 }
 
+function findCourseById(id) {
+    courses.forEach(function(course) {
+        if(course.id == id) {
+            return course;
+        }
+    });
+
+    return null;
+}
+
+function findCoursesByGroupId(groupId) {
+    var items = [];
+    
+    courses.forEach(function(course) {
+        if(course.group == groupId) {
+            items.push(course);
+        }
+    });
+
+    return items;
+}
 
 $(function () {
-    for(var i = 0; i < groups.length; i++) {
-        groups[i].grid = createGrid('container', groups[i], weekDays, periods);
-    }    
+    groups.forEach(function(group) {
+        group.grid = createGrid('container', group, weekDays, periods);
+
+        var courses = findCoursesByGroupId(group.id);
+
+        courses.forEach(function(course) {
+            group.grid.add_widget('<li class="new" data-course="' + course.id + '"><header>|||</header>' + course.name + '</li>', 1, 1, course.weekDay, course.period + 1);
+        });
+    });
 });
