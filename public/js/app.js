@@ -50,7 +50,7 @@ function createGrid(containerId, group, weekDays, periods) {
     $('#' + containerId).append(
         '<div id="' + key + '">' +
             '<h2>' + group.name + '</h2>' +
-            '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-member">member</button>' +
+            '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-add-member">member</button>' +
             '<div class="gridster"><ul></ul></div>' +
         '</div>'
     );
@@ -157,6 +157,23 @@ function findCoursesByGroupId(groupId) {
     return items;
 }
 
+function handleAddMember() {
+    var name = $('#modal-member-name').val();
+    var email = $('#modal-member-email').val();
+    var emailParts = email.split('@');
+    var emailUser = emailParts[0];
+
+    members[emailUser] = {id: emailUser, name: name, email: email};
+    console.log('Member added:', emailUser, members[emailUser]);
+
+    $('#modal-add-member').modal('hide');
+}
+
+function handleAddGroup() {
+    var name = $('#modal-group-name').val();
+    console.log(name);
+}
+
 $(function () {
     groups.forEach(function(group) {
         group.grid = createGrid('container', group, weekDays, periods);
@@ -177,4 +194,7 @@ $(function () {
                 course.period + 1);
         });
     });
+
+    $('#modal-add-member button.submit').click(handleAddMember);
+    $('#modal-add-group button.submit').click(handleAddGroup);
 });
