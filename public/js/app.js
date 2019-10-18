@@ -18,8 +18,10 @@ Horarios.App = function() {
     };
 
     this.buildModals = function() {
-        $('#modal-add-course button.submit').click(handleAddCourse);
-        $('#modal-add-group button.submit').click(handleAddGroup);
+        var self = this;
+
+        $('#modal-add-course button.submit').click(function(e) { self.handleAddCourse(e) });
+        $('#modal-add-group button.submit').click(function(e) { self.handleAddGroup(e); });
     
         $('#modal-add-course').on('show.bs.modal', function (event) {
             var groupId = $(event.relatedTarget).data('group');
@@ -74,6 +76,8 @@ Horarios.App = function() {
     };
 
     this.selectProgram = function(programId) {
+        var self = this;
+
         console.debug('Program selected: ', programId);
 
         if(!programs[programId]) {
@@ -91,8 +95,8 @@ Horarios.App = function() {
         $('#container').empty();
     
         groups.forEach(function(group) {
-            var courses = findCoursesByGroupId(group.id);
-            group.grid = createGrid('container', group, weekDays, periods);
+            var courses = self.findCoursesByGroupId(group.id);
+            group.grid = self.createGrid('container', group);
     
             courses.forEach(function(course) {
                 group.grid.add_widget(
@@ -142,6 +146,262 @@ Horarios.App = function() {
             console.error('Ajax fail');
         });
     };
+
+    this.createGrid = function(containerId, group) {
+        var num = group.id;
+        var key = 'group-' + num;
+    
+        $('#' + containerId).append(
+            '<div id="' + key + '">' +
+                '<h2>' + group.name + '</h2>' +
+                '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-add-course" data-group="' + group.id + '">member</button>' +
+                '<div class="gridster"><ul></ul></div>' +
+            '</div>'
+        );
+    
+        var g = $('#' + key +' div.gridster ul').gridster({
+            widget_base_dimensions: ['auto', 50],
+            autogenerate_stylesheet: true,
+            shift_widgets_up: false,
+            shift_larger_widgets_down: false,
+            min_cols: 8,
+            max_cols: 8,
+            max_rows: 7,
+            min_rows: 7,
+            widget_margins: [5, 5],
+            resize: {
+                enabled: false
+            },
+            collision: {
+                wait_for_mouseup: true
+            },
+            draggable: {
+                handle: 'header',
+    
+                start: function (e, ui) {
+                    console.log('START position: ' + ui.position.top + ' ' + ui.position.left);
+                },
+    
+                drag: function (e, ui) {
+                    console.log('DRAG offset: ' + ui.pointer.diff_top + ' ' + ui.pointer.diff_left);
+                },
+    
+                stop: function (e, ui) {
+                    var data = ui.$helper.context.dataset;
+                    var course = getCourseById(data.course);
+    
+                    if(course == null) {
+                        console.error('Unable to load course info: ' + data.course);
+                        return;
+                    }
+    
+                    course.period = data.row | 0;
+                    course.weekDay = data.col | 0;
+    
+                    this.checkConstraintsByCourse(course);
+                    console.debug('Course updated: ', course); // TODO: commit changes
+                }
+            }
+        }).data('gridster');
+    
+        for(var i = 0; i < periods.length; i++) {
+            g.add_widget('<li class="new"><header style="pointer-events: none;">|||</header>' + periods[i].name + '</li>', 1, 1, 1, i + 2);
+        }
+    
+        for(var j = 0; j < weekDays.length; j++) {
+            g.add_widget('<li class="new"><header style="pointer-events: none;">|||</header>' + weekDays[j].name + '</li>', 1, 1, j + 1, 1);
+        }
+    
+        return g;
+    }
+    
+    this.findScheduleClashesByCourse = function(course) {
+        var clashes = [];
+        var candidates = this.findCoursesByWeekDayAndPeriod(course.weekDay, course.period);
+    
+        candidates.forEach(function(c) {
+            if(c.id == course.id) {
+                // We found the course that started the search
+                return;
+            }
+    
+            var hasMemberOverlap = false;
+    
+            course.members.forEach(function(member) {
+                if(c.members.includes(member)) {
+                    hasMemberOverlap = true;
+                }
+            });
+    
+            if(hasMemberOverlap) {
+                clashes.push(c);
+            }
+        });
+    
+        return clashes;
+    }
+    
+    this.findWorkingImpedimentsByCourse = function(course) {
+        // TODO: implement this
+        return [];
+    }
+    
+    this.checkConstraintsByCourse = function(course) {
+        var clashes = this.findScheduleClashesByCourse(course);
+        var impediments = this.findWorkingImpedimentsByCourse(course);
+    
+        if(clashes.length > 0) {
+            // TODO: alert about clashes
+            console.log('CLASHES FOUND:', clashes);
+        }
+    
+        if(impediments.length > 0) {
+            // TODO: alert about impediments
+            console.log('WORKING IMPEDIMENTS FOUND:', impediments);
+        }
+    }
+    
+    this.findCoursesByWeekDayAndPeriod = function(weekDay, period) {
+        var items = [];
+    
+        courses.forEach(function(course) {
+            if(course.weekDay == weekDay && course.period == period)  {
+                items.push(course);
+            }
+        });
+    
+        return items;
+    }
+    
+    this.getCourseById = function(id) {
+        var item = null;
+    
+        courses.forEach(function(course) {
+            if(course.id == id) {
+                item = course;
+            }
+        });
+    
+        return item;
+    }
+    
+    this.getGroupById = function(id) {
+        var item = null;
+    
+        groups.forEach(function(group) {
+            if(group.id == id) {
+                item = group;
+            }
+        });
+    
+        return item;
+    }
+    
+    this.findCoursesByGroupId = function(groupId) {
+        var items = [];
+        
+        courses.forEach(function(course) {
+            if(course.group == groupId) {
+                items.push(course);
+            }
+        });
+    
+        return items;
+    }
+    
+    this.handleAddMember = function() {
+        var name = $('#modal-member-name').val();
+        var email = $('#modal-member-email').val();
+        var emailParts = email.split('@');
+        var emailUser = emailParts[0];
+    
+        members[emailUser] = {id: emailUser, name: name, email: email};
+        console.log('Member added:', emailUser, members[emailUser]);
+    
+        $('#modal-add-member').modal('hide');
+    }
+    
+    this.getNextCourseId = function() {
+        var highest = 0;
+    
+        courses.forEach(function(course) {
+            if(course.id > highest) {
+                highest = course.id;
+            }
+        });
+    
+        return highest + 1;
+    }
+    
+    this.getNextGroupId = function() {
+        var highest = 0;
+    
+        groups.forEach(function(group) {
+            if(group.id > highest) {
+                highest = group.id;
+            }
+        });
+    
+        return highest + 1;
+    }
+    
+    this.addCourse = function(courseObj) {
+        var group = this.getGroupById(courseObj.group);
+    
+        if(!group) {
+            console.error('Provided course has invalid group. Course: ', courseObj);
+        }
+    
+        if(!group.grid) {
+            console.warn('Empty grid for group: ' + courseObj.group);
+        }
+    
+        courses.push(courseObj);
+        group.grid.add_widget('<li class="new" data-course="' + courseObj.id + '"><header>|||</header>' + courseObj.name + '</li>', 1, 1, 8, 2);
+    
+        console.log('Course added: ', courses[courses.length - 1]);
+    }
+    
+    this.addGroup = function(groupObj) {
+        groupObj.grid = this.createGrid('container', groupObj);
+        groups.push(groupObj);
+        console.log('Group added: ', groups[groups.length - 1]);
+    }
+    
+    this.handleAddCourse = function() {
+        var selectedMembers = [];
+    
+        $('#modal-course-members input:checked').each(function(i, el) {
+            selectedMembers.push($(el).val());
+        });
+    
+        var newId = this.getNextCourseId();
+        var name = $('#modal-course-name').val();
+    
+        this.addCourse({
+            id: newId,
+            code: 'GCS011',
+            name: name,
+            group: globals.active.group,
+            weekDay: 7,
+            period: 1,
+            members: selectedMembers
+        });
+    
+        $('#modal-add-course').modal('hide');
+        globals.active.group = undefined;
+    }
+    
+    this.handleAddGroup = function() {
+        var name = $('#modal-group-name').val();
+        
+        this.addGroup({
+            id: this.getNextGroupId(),
+            name: name
+        });
+    
+        $('#modal-add-group').modal('hide');
+    }
 };
 
 var globals = {
@@ -201,263 +461,6 @@ var groups = [
     {id: 8, name: 'Noturno - 7ª Fase', grid: null},
     {id: 9, name: 'Noturno - 9ª Fase', grid: null}
 ];
-
-function createGrid(containerId, group, weekDays, periods) {
-    var num = group.id;
-    var key = 'group-' + num;
-
-    $('#' + containerId).append(
-        '<div id="' + key + '">' +
-            '<h2>' + group.name + '</h2>' +
-            '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-add-course" data-group="' + group.id + '">member</button>' +
-            '<div class="gridster"><ul></ul></div>' +
-        '</div>'
-    );
-
-    var g = $('#' + key +' div.gridster ul').gridster({
-        widget_base_dimensions: ['auto', 50],
-        autogenerate_stylesheet: true,
-        shift_widgets_up: false,
-        shift_larger_widgets_down: false,
-        min_cols: 8,
-        max_cols: 8,
-        max_rows: 7,
-        min_rows: 7,
-        widget_margins: [5, 5],
-        resize: {
-            enabled: false
-        },
-        collision: {
-            wait_for_mouseup: true
-        },
-        draggable: {
-            handle: 'header',
-
-            start: function (e, ui) {
-                console.log('START position: ' + ui.position.top + ' ' + ui.position.left);
-            },
-
-            drag: function (e, ui) {
-                console.log('DRAG offset: ' + ui.pointer.diff_top + ' ' + ui.pointer.diff_left);
-            },
-
-            stop: function (e, ui) {
-                var data = ui.$helper.context.dataset;
-                var course = getCourseById(data.course);
-
-                if(course == null) {
-                    console.error('Unable to load course info: ' + data.course);
-                    return;
-                }
-
-                course.period = data.row | 0;
-                course.weekDay = data.col | 0;
-
-                checkConstraintsByCourse(course);
-                console.debug('Course updated: ', course); // TODO: commit changes
-            }
-        }
-    }).data('gridster');
-
-    for(var i = 0; i < periods.length; i++) {
-        g.add_widget('<li class="new"><header style="pointer-events: none;">|||</header>' + periods[i].name + '</li>', 1, 1, 1, i + 2);
-    }
-
-    for(var j = 0; j < weekDays.length; j++) {
-        g.add_widget('<li class="new"><header style="pointer-events: none;">|||</header>' + weekDays[j].name + '</li>', 1, 1, j + 1, 1);
-    }
-
-    return g;
-}
-
-function findScheduleClashesByCourse(course) {
-    var clashes = [];
-    var candidates = findCoursesByWeekDayAndPeriod(course.weekDay, course.period);
-
-    candidates.forEach(function(c) {
-        if(c.id == course.id) {
-            // We found the course that started the search
-            return;
-        }
-
-        var hasMemberOverlap = false;
-
-        course.members.forEach(function(member) {
-            console.log(c.members);
-            if(c.members.includes(member)) {
-                hasMemberOverlap = true;
-            }
-        });
-
-        if(hasMemberOverlap) {
-            clashes.push(c);
-        }
-    });
-
-    return clashes;
-}
-
-function findWorkingImpedimentsByCourse(course) {
-    return [];
-}
-
-function checkConstraintsByCourse(course) {
-    var clashes = findScheduleClashesByCourse(course);
-    var impediments = findWorkingImpedimentsByCourse(course);
-
-    if(clashes.length > 0) {
-        // TODO: alert about clashes
-        console.log('CLASHES FOUND:', clashes);
-    }
-
-    if(impediments.length > 0) {
-        // TODO: alert about impediments
-        console.log('WORKING IMPEDIMENTS FOUND:', impediments);
-    }
-}
-
-function findCoursesByWeekDayAndPeriod(weekDay, period) {
-    var items = [];
-
-    courses.forEach(function(course) {
-        if(course.weekDay == weekDay && course.period == period)  {
-            items.push(course);
-        }
-    });
-
-    return items;
-}
-
-function getCourseById(id) {
-    var item = null;
-
-    courses.forEach(function(course) {
-        if(course.id == id) {
-            item = course;
-        }
-    });
-
-    return item;
-}
-
-function getGroupById(id) {
-    var item = null;
-
-    groups.forEach(function(group) {
-        if(group.id == id) {
-            item = group;
-        }
-    });
-
-    return item;
-}
-
-function findCoursesByGroupId(groupId) {
-    var items = [];
-    
-    courses.forEach(function(course) {
-        if(course.group == groupId) {
-            items.push(course);
-        }
-    });
-
-    return items;
-}
-
-function handleAddMember() {
-    var name = $('#modal-member-name').val();
-    var email = $('#modal-member-email').val();
-    var emailParts = email.split('@');
-    var emailUser = emailParts[0];
-
-    members[emailUser] = {id: emailUser, name: name, email: email};
-    console.log('Member added:', emailUser, members[emailUser]);
-
-    $('#modal-add-member').modal('hide');
-}
-
-function getNextCourseId() {
-    var highest = 0;
-
-    courses.forEach(function(course) {
-        if(course.id > highest) {
-            highest = course.id;
-        }
-    });
-
-    return highest + 1;
-}
-
-function getNextGroupId() {
-    var highest = 0;
-
-    groups.forEach(function(group) {
-        if(group.id > highest) {
-            highest = group.id;
-        }
-    });
-
-    return highest + 1;
-}
-
-function addCourse(courseObj) {
-    var group = getGroupById(courseObj.group);
-
-    if(!group) {
-        console.error('Provided course has invalid group. Course: ', courseObj);
-    }
-
-    if(!group.grid) {
-        console.warn('Empty grid for group: ' + courseObj.group);
-    }
-
-    courses.push(courseObj);
-    group.grid.add_widget('<li class="new" data-course="' + courseObj.id + '"><header>|||</header>' + courseObj.name + '</li>', 1, 1, 8, 2);
-
-    console.log('Course added: ', courses[courses.length - 1]);
-}
-
-function addGroup(groupObj) {
-    groupObj.grid = createGrid('container', groupObj, weekDays, periods);
-    groups.push(groupObj);
-    console.log('Group added: ', groups[groups.length - 1]);
-}
-
-function handleAddCourse() {
-    var selectedMembers = [];
-
-    $('#modal-course-members input:checked').each(function(i, el) {
-        selectedMembers.push($(el).val());
-    });
-
-    var newId = getNextCourseId();
-    var name = $('#modal-course-name').val();
-
-    addCourse({
-        id: newId,
-        code: 'GCS011',
-        name: name,
-        group: globals.active.group,
-        weekDay: 7,
-        period: 1,
-        members: selectedMembers
-    });
-
-    $('#modal-add-course').modal('hide');
-    globals.active.group = undefined;
-}
-
-
-function handleAddGroup() {
-    var name = $('#modal-group-name').val();
-    
-    addGroup({
-        id: getNextGroupId(),
-        name: name
-    });
-
-    $('#modal-add-group').modal('hide');
-}
 
 $(function () {
     var app = new Horarios.App();
