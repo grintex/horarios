@@ -196,8 +196,24 @@ function getNextCourseId() {
     return highest + 1;
 }
 
+function getNextGroupId() {
+    var highest = 0;
+
+    groups.forEach(function(group) {
+        if(group.id > highest) {
+            highest = group.id;
+        }
+    });
+
+    return highest + 1;
+}
+
 function addCourse(courseObj) {
     var group = getGroupById(courseObj.group);
+
+    if(!group) {
+        console.error('Provided course has invalid group. Course: ', courseObj);
+    }
 
     if(!group.grid) {
         console.warn('Empty grid for group: ' + courseObj.group);
@@ -207,6 +223,12 @@ function addCourse(courseObj) {
     group.grid.add_widget('<li class="new"><header>|||</header>' + courseObj.name + '</li>', 1, 1, 8, 2);
 
     console.log('Course added: ', courses[courses.length - 1]);
+}
+
+function addGroup(groupObj) {
+    groupObj.grid = createGrid('container', groupObj, weekDays, periods);
+    groups.push(groupObj);
+    console.log('Group added: ', groups[groups.length - 1]);
 }
 
 function handleAddCourse() {
@@ -236,7 +258,13 @@ function handleAddCourse() {
 
 function handleAddGroup() {
     var name = $('#modal-group-name').val();
-    console.log(name);
+    
+    addGroup({
+        id: getNextGroupId(),
+        name: name
+    });
+
+    $('#modal-add-group').modal('hide');
 }
 
 $(function () {
