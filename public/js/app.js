@@ -1,5 +1,9 @@
 var globals = {
-    active: {group: undefined}
+    active: {
+        group: undefined,
+        program: 1
+    },
+    user: {id: 'fernando.bevilacqua'}
 };
 
 var members = {
@@ -7,22 +11,28 @@ var members = {
     'marco.spohn': {id: 'marco.spohn', name: 'Marco Aurelio Spohn', email: 'marco.spohn@uffs.edu.br'}
 };
 
+var programs = {
+    1: {id: 1, name: 'Ciência da Computação', responsible: ['fernando.bevilacqua']},
+    2: {id: 2, name: 'Matemática', responsible: ['fernando.bevilacqua']},
+};
+
 var courses = [
-    {id: 1, code: 'GCS011', name: 'Meio ambiente, economia e sociedade', group: 1, weekDay: 7, period: 1, members: ['marco.spohn']},
-    {id: 2, code: 'AAS011', name: 'Algoritmos e Programação', group: 1, weekDay: 7, period: 1, members: ['fernando.bevilacqua']},
-    {id: 3, code: 'BAS011', name: 'Programação I', group: 2, weekDay: 7, period: 1, members: ['fernando.bevilacqua']},
-    {id: 4, code: 'CAS011', name: 'Programação II', group: 2, weekDay: 7, period: 1, members: ['fernando.bevilacqua']},
+    {id: 1, code: 'GCS011', name: 'Meio ambiente, economia e sociedade', program: 1, group: 1, weekDay: 8, period: 2, members: ['marco.spohn']},
+    {id: 2, code: 'AAS011', name: 'Algoritmos e Programação', program: 1,  group: 1, weekDay: 8, period: 2, members: ['fernando.bevilacqua']},
+    {id: 3, code: 'BAS011', name: 'Programação I', program: 1, group: 2, weekDay: 8, period: 2, members: ['fernando.bevilacqua']},
+    {id: 4, code: 'CAS011', name: 'Programação II', program: 1, group: 2, weekDay: 8, period: 2, members: ['fernando.bevilacqua']},
+    {id: 5, code: 'MAS011', name: 'Matemática C', program: 2, group: 2, weekDay: 8, period: 2, members: ['fernando.bevilacqua']},
 ];
 
 var weekDays = [
-    {id: 0, name: ""},
-    {id: 1, name: "Segunda-feira"},
-    {id: 2, name: "Terça-feira"},
-    {id: 3, name: "Quarta-feira"},
-    {id: 4, name: "Quinta-feira"},
-    {id: 5, name: "Sexta-feira"},
-    {id: 6, name: "Sábado"},
-    {id: 7, name: "N/A"}
+    {id: 1, name: ""},
+    {id: 2, name: "Segunda-feira"},
+    {id: 3, name: "Terça-feira"},
+    {id: 4, name: "Quarta-feira"},
+    {id: 5, name: "Quinta-feira"},
+    {id: 6, name: "Sexta-feira"},
+    {id: 7, name: "Sábado"},
+    {id: 8, name: "N/A"}
 ];
 
 var periods = [
@@ -303,18 +313,26 @@ function handleAddGroup() {
     $('#modal-add-group').modal('hide');
 }
 
-$(function () {
-    var c = store.get('courses');
+function loadProgram(programId) {
+    console.log('LOAD program: ', programId);
 
-    if(c) {
-        console.log('Restoring data from database', c);
-        courses = c;
+    if(!programs[programId]) {
+        console.error('Unable to load program with id=' + programId);
+        return;
     }
 
-    groups.forEach(function(group) {
-        group.grid = createGrid('container', group, weekDays, periods);
+    globals.active.program = programId;
 
+    var c = store.get('something');
+    if(c) {
+        console.log('Restoring data from database', c);
+    }
+
+    $('#container').empty();
+
+    groups.forEach(function(group) {
         var courses = findCoursesByGroupId(group.id);
+        group.grid = createGrid('container', group, weekDays, periods);
 
         courses.forEach(function(course) {
             group.grid.add_widget(
@@ -326,10 +344,45 @@ $(function () {
                 '</li>',
                 1,
                 1,
-                course.weekDay + 1,
-                course.period + 1);
+                course.weekDay,
+                course.period);
         });
     });
+
+    buildDropdownProgramSelection();
+}
+
+function handleSelectProgram(e) {
+    var anchor = $(e.currentTarget);
+    var programId = anchor.data('program');
+
+    if(programId == globals.active.program) {
+        return;
+    }
+
+    loadProgram(programId);
+}
+
+function buildDropdownProgramSelection() {
+    $('#dropdownMenuProgramSelector').empty();
+
+    for(p in programs) {
+        var program = programs[p];
+
+        if(program.id == globals.active.program) {
+            $('#buttonProgramSelector').html(program.name);
+            continue;
+        }
+
+        $('#dropdownMenuProgramSelector').append('<a class="dropdown-item" href="javascript:void(0);" data-program="' + program.id + '">' + program.name + '</a>');
+    }
+    
+    $('#dropdownMenuProgramSelector a').click(handleSelectProgram);
+}
+
+$(function () {
+    var programId = 1; // TODO: get this from a proper place
+    loadProgram(programId);
 
     $('#modal-add-course button.submit').click(handleAddCourse);
     $('#modal-add-group button.submit').click(handleAddGroup);
@@ -353,10 +406,12 @@ $(function () {
         $('#modal-course-members').html(text);
     });
 
+    buildDropdownProgramSelection();
+
     setInterval(function() {
         // Store current user
-        store.set('courses', courses);
-        console.log('Salvando....');
+        store.set('something', courses);
+        console.debug('Saving data...');
     }, 2000);
 
 });
