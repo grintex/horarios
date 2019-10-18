@@ -1,0 +1,11 @@
+[
+    {"id": 1, "name": "Vespertino - 2ª Fase", "grid": null},
+    {"id": 2, "name": "Vespertino - 4ª Fase", "grid": null},
+    {"id": 3, "name": "Vespertino - 6ª Fase", "grid": null},
+    {"id": 4, "name": "Vespertino - 8ª Fase", "grid": null},
+    {"id": 5, "name": "Noturno - 1ª Fase", "grid": null},
+    {"id": 6, "name": "Noturno - 3ª Fase", "grid": null},
+    {"id": 7, "name": "Noturno - 5ª Fase", "grid": null},
+    {"id": 8, "name": "Noturno - 7ª Fase", "grid": null},
+    {"id": 9, "name": "Noturno - 9ª Fase", "grid": null}
+]

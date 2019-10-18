@@ -1,0 +1,7 @@
+[
+    {"id": 1, "code": "GCS011", "name": "Meio ambiente, economia e sociedade", "program": 1, "group": 1, "weekDay": 8, "period": 2, "members": ["marco.spohn"]},
+    {"id": 2, "code": "AAS011", "name": "Algoritmos e Programação", "program": 1,  "group": 1, "weekDay": 8, "period": 2, "members": ["fernando.bevilacqua"]},
+    {"id": 3, "code": "BAS011", "name": "Programação I", "program": 1, "group": 2, "weekDay": 8, "period": 2, "members": ["fernando.bevilacqua"]},
+    {"id": 4, "code": "CAS011", "name": "Programação II", "program": 1, "group": 2, "weekDay": 8, "period": 2, "members": ["fernando.bevilacqua"]},
+    {"id": 5, "code": "MAS011", "name": "Matemática C", "program": 2, "group": 2, "weekDay": 8, "period": 2, "members": ["fernando.bevilacqua"]}
+]
