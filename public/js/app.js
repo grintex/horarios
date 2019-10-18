@@ -41,7 +41,21 @@ Horarios.App = function() {
         });
     };
 
+    this.handleSelectProgram = function(e) {
+        var anchor = $(e.currentTarget);
+        var programId = anchor.data('program');
+    
+        if(programId == globals.active.program) {
+            return;
+        }
+    
+        loadProgram(programId);
+        this.buildDropdownProgramSelection();
+    }
+
     this.buildDropdownProgramSelection = function() {
+        var self = this;
+
         $('#dropdownMenuProgramSelector').empty();
     
         for(p in programs) {
@@ -55,7 +69,9 @@ Horarios.App = function() {
             $('#dropdownMenuProgramSelector').append('<a class="dropdown-item" href="javascript:void(0);" data-program="' + program.id + '">' + program.name + '</a>');
         }
         
-        $('#dropdownMenuProgramSelector a').click(handleSelectProgram);
+        $('#dropdownMenuProgramSelector a').click(function(e) {
+            self.handleSelectProgram(e);
+        });
     }
 
     this.load = function() {
@@ -434,19 +450,6 @@ function loadProgram(programId) {
         });
     });
 }
-
-function handleSelectProgram(e) {
-    var anchor = $(e.currentTarget);
-    var programId = anchor.data('program');
-
-    if(programId == globals.active.program) {
-        return;
-    }
-
-    loadProgram(programId);
-}
-
-
 
 $(function () {
     var app = new Horarios.App();
