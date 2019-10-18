@@ -94,8 +94,8 @@ function createGrid(containerId, group, weekDays, periods) {
                     return;
                 }
 
-                course.period = data.row;
-                course.weekDay = data.col;
+                course.period = data.row | 0;
+                course.weekDay = data.col | 0;
 
                 checkConstraintsByCourse(course);
                 console.debug('Course updated: ', course); // TODO: commit changes
@@ -114,13 +114,49 @@ function createGrid(containerId, group, weekDays, periods) {
     return g;
 }
 
-function checkConstraintsByCourse(course) {
-    var clashes = findCoursesByWeekDayAndPeriod(course.weekDay, course.period);
+function findScheduleClashesByCourse(course) {
+    var clashes = [];
+    var candidates = findCoursesByWeekDayAndPeriod(course.weekDay, course.period);
 
-    if(clashes.length == 1 && clashes[0].id == course.id) {
-        // No clash, the only course in that week day and period
-        // is the one we already have.
-        return;
+    candidates.forEach(function(c) {
+        if(c.id == course.id) {
+            // We found the course that started the search
+            return;
+        }
+
+        var hasMemberOverlap = false;
+
+        course.members.forEach(function(member) {
+            console.log(c.members);
+            if(c.members.includes(member)) {
+                hasMemberOverlap = true;
+            }
+        });
+
+        if(hasMemberOverlap) {
+            clashes.push(c);
+        }
+    });
+
+    return clashes;
+}
+
+function findWorkingImpedimentsByCourse(course) {
+    return [];
+}
+
+function checkConstraintsByCourse(course) {
+    var clashes = findScheduleClashesByCourse(course);
+    var impediments = findWorkingImpedimentsByCourse(course);
+
+    if(clashes.length > 0) {
+        // TODO: alert about clashes
+        console.log('CLASHES FOUND:', clashes);
+    }
+
+    if(impediments.length > 0) {
+        // TODO: alert about impediments
+        console.log('WORKING IMPEDIMENTS FOUND:', impediments);
     }
 }
 
@@ -283,7 +319,7 @@ $(function () {
                 '</li>',
                 1,
                 1,
-                course.weekDay,
+                course.weekDay + 1,
                 course.period + 1);
         });
     });
