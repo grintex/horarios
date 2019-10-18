@@ -52,11 +52,11 @@
 </div>
 
     <!-- Modals -->
-    <div class="modal fade" id="modal-add-member" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="modal-add-course" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Add member</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Add course</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -64,13 +64,18 @@
             <div class="modal-body">
                 <form>
                     <div class="form-group">
-                        <label for="modal-member-name">CCR</label>
-                        <input type="text" class="form-control" id="modal-member-name" placeholder="1234 Main St">
+                        <label for="modal-course-name">CCR</label>
+                        <input type="text" class="form-control" id="modal-course-name" placeholder="1234 Main St">
                     </div>
 
                     <div class="form-group">
-                        <label for="modal-member-email">Email</label>
-                        <input type="text" class="form-control" id="modal-member-email" placeholder="1234 Main St">
+                        <label>Docentes responsáveis</label>
+                    </div>
+
+                    <div class="form-group" style="height: 200px; overflow: scroll;">
+                        <div class="form-check" id="modal-course-members">
+                            Loading...
+                        </div>
                     </div>
                 </form>
             </div>

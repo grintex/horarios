@@ -1,7 +1,11 @@
+var globals = {
+    active: {group: undefined}
+};
+
 var members = {
     'fernando.bevilacqua': {id: 'fernando.bevilacqua', name: 'Fernando Bevilacqua', email: 'fernando.bevilacqua@uffs.edu.br'},
     'marco.spohn': {id: 'marco.spohn', name: 'Marco Aurelio Spohn', email: 'marco.spohn@uffs.edu.br'}
-}
+};
 
 var courses = [
     {id: 1, code: 'GCS011', name: 'Meio ambiente, economia e sociedade', group: 1, weekDay: 7, period: 1, members: ['marco.spohn']},
@@ -32,7 +36,6 @@ var periods = [
 
 var groups = [
     {id: 1, name: 'Vespertino - 2ª Fase', grid: null},
-/*
     {id: 2, name: 'Vespertino - 4ª Fase', grid: null},
     {id: 3, name: 'Vespertino - 6ª Fase', grid: null},
     {id: 4, name: 'Vespertino - 8ª Fase', grid: null},
@@ -40,7 +43,7 @@ var groups = [
     {id: 6, name: 'Noturno - 3ª Fase', grid: null},
     {id: 7, name: 'Noturno - 5ª Fase', grid: null},
     {id: 8, name: 'Noturno - 7ª Fase', grid: null},
-    {id: 9, name: 'Noturno - 9ª Fase', grid: null}*/
+    {id: 9, name: 'Noturno - 9ª Fase', grid: null}
 ];
 
 function createGrid(containerId, group, weekDays, periods) {
@@ -50,7 +53,7 @@ function createGrid(containerId, group, weekDays, periods) {
     $('#' + containerId).append(
         '<div id="' + key + '">' +
             '<h2>' + group.name + '</h2>' +
-            '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-add-member">member</button>' +
+            '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-add-course" data-group="' + group.id + '">member</button>' +
             '<div class="gridster"><ul></ul></div>' +
         '</div>'
     );
@@ -145,6 +148,18 @@ function getCourseById(id) {
     return item;
 }
 
+function getGroupById(id) {
+    var item = null;
+
+    groups.forEach(function(group) {
+        if(group.id == id) {
+            item = group;
+        }
+    });
+
+    return item;
+}
+
 function findCoursesByGroupId(groupId) {
     var items = [];
     
@@ -168,6 +183,56 @@ function handleAddMember() {
 
     $('#modal-add-member').modal('hide');
 }
+
+function getNextCourseId() {
+    var highest = 0;
+
+    courses.forEach(function(course) {
+        if(course.id > highest) {
+            highest = course.id;
+        }
+    });
+
+    return highest + 1;
+}
+
+function addCourse(courseObj) {
+    var group = getGroupById(courseObj.group);
+
+    if(!group.grid) {
+        console.warn('Empty grid for group: ' + courseObj.group);
+    }
+
+    courses.push(courseObj);
+    group.grid.add_widget('<li class="new"><header>|||</header>' + courseObj.name + '</li>', 1, 1, 8, 2);
+
+    console.log('Course added: ', courses[courses.length - 1]);
+}
+
+function handleAddCourse() {
+    var selectedMembers = [];
+
+    $('#modal-course-members input:checked').each(function(i, el) {
+        selectedMembers.push($(el).val());
+    });
+
+    var newId = getNextCourseId();
+    var name = $('#modal-course-name').val();
+
+    addCourse({
+        id: newId,
+        code: 'GCS011',
+        name: name,
+        group: globals.active.group,
+        weekDay: 7,
+        period: 1,
+        members: selectedMembers
+    });
+
+    $('#modal-add-course').modal('hide');
+    globals.active.group = undefined;
+}
+
 
 function handleAddGroup() {
     var name = $('#modal-group-name').val();
@@ -195,6 +260,25 @@ $(function () {
         });
     });
 
-    $('#modal-add-member button.submit').click(handleAddMember);
+    $('#modal-add-course button.submit').click(handleAddCourse);
     $('#modal-add-group button.submit').click(handleAddGroup);
+
+    $('#modal-add-course').on('show.bs.modal', function (event) {
+        var groupId = $(event.relatedTarget).data('group');
+        var text = '';
+
+        globals.active.group = groupId;
+        console.log(globals.active.group);        
+
+        for(memberId in members) {
+            var member = members[memberId];
+            var key = 'member-'+ memberId;
+
+            text += 
+                '<input class="form-check-input" type="checkbox" value="' + member.id + '" id="' + key + '">' +
+                '<label class="form-check-label" for="' + key + '">'+ member.name + ' (' + member.email + ')</label>';
+        }
+
+        $('#modal-course-members').html(text);
+    });
 });
