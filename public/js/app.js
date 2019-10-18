@@ -142,12 +142,36 @@ Horarios.App = function() {
             }
         });
         
-        jqxhr.fail(function() {
-            console.error('Ajax fail');
+        jqxhr.fail(function(e) {
+            console.error('Ajax fail', e);
         });
     };
 
+    this.onCourseMoved = function(data) {
+        var course = this.getCourseById(data.course);
+
+        if(course == null) {
+            console.error('Unable to load course info: ' + data.course);
+            return;
+        }
+
+        course.period = data.row | 0;
+        course.weekDay = data.col | 0;
+
+        this.checkConstraintsByCourse(course);
+        this.updateCourse(course);
+    };
+
+    this.updateCourse = function(course) {
+        console.log('Updating course', course);
+
+        this.api({method: 'updatecourse', course: course}, function(data) {
+            console.log('Course updated successfuly!', data);
+        }, this);
+    };
+
     this.createGrid = function(containerId, group) {
+        var self = this;
         var num = group.id;
         var key = 'group-' + num;
     
@@ -179,27 +203,16 @@ Horarios.App = function() {
                 handle: 'header',
     
                 start: function (e, ui) {
-                    console.log('START position: ' + ui.position.top + ' ' + ui.position.left);
+                    console.debug('START position: ' + ui.position.top + ' ' + ui.position.left);
                 },
     
                 drag: function (e, ui) {
-                    console.log('DRAG offset: ' + ui.pointer.diff_top + ' ' + ui.pointer.diff_left);
+                    console.debug('DRAG offset: ' + ui.pointer.diff_top + ' ' + ui.pointer.diff_left);
                 },
     
                 stop: function (e, ui) {
                     var data = ui.$helper.context.dataset;
-                    var course = getCourseById(data.course);
-    
-                    if(course == null) {
-                        console.error('Unable to load course info: ' + data.course);
-                        return;
-                    }
-    
-                    course.period = data.row | 0;
-                    course.weekDay = data.col | 0;
-    
-                    this.checkConstraintsByCourse(course);
-                    console.debug('Course updated: ', course); // TODO: commit changes
+                    self.onCourseMoved(data);
                 }
             }
         }).data('gridster');

@@ -48,6 +48,16 @@ try {
 		case 'updategroups':
 			break;
 
+		case 'updatecourse':
+			$course = isset($_REQUEST['course']) ? $_REQUEST['course'] : false;
+
+			if($course === false) {
+				throw Error('Invalid course info');
+			}
+
+			$aReturn['data'] = $course;
+			break;
+
         case 'ping':
             $aReturn['data'] = 'pong';
 			break;
