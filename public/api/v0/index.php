@@ -41,6 +41,10 @@ try {
 		case 'programs':
 			$aReturn['data'] = loadData('programs');
 			break;
+
+		case 'courses':
+			$aReturn['data'] = loadDataFromProgram($aProgramId, 'courses');
+			break;
 			
 		case 'readgroups':
 			break;

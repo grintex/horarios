@@ -2,7 +2,16 @@ var Horarios = {};
 
 Horarios.App = function() {
     this.ENDPOINT_URL = './api/v0/?';
-    this.data = {};
+    
+    this.data = {
+        courses: []
+    };
+    
+    this.active = {
+        group: undefined,
+        program: 1,
+        user: {id: 'fernando.bevilacqua'}
+    };
 
     this.boot = function() {
         this.buildInitialUI();
@@ -167,6 +176,14 @@ Horarios.App = function() {
 
         this.api({method: 'updatecourse', course: course}, function(data) {
             console.log('Course updated successfuly!', data);
+        }, this);
+    };
+
+    this.loadCourses = function() {
+        console.log('Loading courses', this.active.program);
+
+        this.api({method: 'courses', program: this.active.program}, function(data) {
+            console.log('Returned', data);
         }, this);
     };
 
