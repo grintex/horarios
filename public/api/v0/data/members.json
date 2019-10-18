@@ -1,12 +1,127 @@
 {
+  "guilherme.dalbianco": {
+    "id": "guilherme.dalbianco",
+    "name": "Guilherme Dal Bianco",
+    "email": "guilherme.dalbianco@uffs.edu.br"
+  },
   "fernando.bevilacqua": {
     "id": "fernando.bevilacqua",
     "name": "Fernando Bevilacqua",
     "email": "fernando.bevilacqua@uffs.edu.br"
   },
+  "emilio.wuerges": {
+    "id": "emilio.wuerges",
+    "name": "Emilio Wuerges",
+    "email": "emilio.wuerges@uffs.edu.br"
+  },
+  "duarte": {
+    "id": "duarte@uffs",
+    "name": "Denio Duarte",
+    "email": "duarte@uffs.edu.br"
+  },
+  "jose.binsfilho": {
+    "id": "jose.binsfilho",
+    "name": "Jose Carlos Bins Filho",
+    "email": "jose.binsfilho@uffs.edu.br"
+  },
   "marco.spohn": {
     "id": "marco.spohn",
     "name": "Marco Aurelio Spohn",
     "email": "marco.spohn@uffs.edu.br"
+  },
+  "claunir.pavan": {
+    "id": "claunir.pavan",
+    "name": "Claunir Pavan",
+    "email": "claunir.pavan@uffs.edu.br"
+  },
+  "raquel.pegoraro": {
+    "id": "raquel.pegoraro",
+    "name": "Raquel Aparecida Pegoraro",
+    "email": "raquel.pegoraro@uffs.edu.br"
+  },
+  "padilha": {
+    "id": "padilha@uffs",
+    "name": "Adriano Sanick Padilha",
+    "email": "padilha@uffs.edu.br"
+  },
+  "braulio": {
+    "id": "braulio@uffs",
+    "name": "Braulio Adriano de Mello",
+    "email": "braulio@uffs.edu.br"
+  },
+  "graziela.tonin": {
+    "id": "graziela.tonin",
+    "name": "Graziela Simone Tonin",
+    "email": "graziela.tonin@uffs.edu.br"
+  },
+  "lcaimi": {
+    "id": "lcaimi@uffs",
+    "name": "Luciano Lores Caimi",
+    "email": "lcaimi@uffs.edu.br"
+  },
+  "asebben": {
+    "id": "asebben@uffs",
+    "name": "Andressa Sebben",
+    "email": "asebben@uffs.edu.br"
+  },
+  "edson.santos": {
+    "id": "edson.santos",
+    "name": "Edson Ribeiro dos Santos",
+    "email": "edson.santos@uffs.edu.br"
+  },
+  "cf-k": {
+    "id": "cf-k",
+    "name": "Claudia F. Kratochvil",
+    "email": "cf-k@uffs.edu.br"
+  },
+  "lbordin": {
+    "id": "lbordin@uffs",
+    "name": "Leandro Bordin",
+    "email": "lbordin@uffs.edu.br"
+  },
+  "divane.marcon": {
+    "id": "divane.marcon",
+    "name": "Divane Marcon",
+    "email": "divane.marcon@uffs.edu.br"
+  },
+  "radin": {
+    "id": "radin@uffs",
+    "name": "Jose Carlos Radin",
+    "email": "radin@uffs.edu.br"
+  },
+  "tatiane.mattei": {
+    "id": "tatiane.mattei",
+    "name": "Tatiane Salete Mattei",
+    "email": "tatiane.mattei@uffs.edu.br"
+  },
+  "cora": {
+    "id": "cora@uffs",
+    "name": "Elsio Jose Cora",
+    "email": "cora@uffs.edu.br"
+  },
+  "josiane.hoffmann": {
+    "id": "josiane.hoffmann",
+    "name": "Josiane Marina Hoffmann",
+    "email": "josiane.hoffmann@uffs.edu.br"
+  },
+  "acneri": {
+    "id": "acneri@uffs",
+    "name": "Antonio Marcos Correa Neri",
+    "email": "acneri@uffs.edu.br"
+  },
+  "milton.kist": {
+    "id": "milton.kist",
+    "name": "Milton Kist",
+    "email": "milton.kist@uffs.edu.br"
+  },
+  "nedilso.brugnera": {
+    "id": "nedilso.brugnera",
+    "name": "Nedilso Lauro Brugnera",
+    "email": "nedilso.brugnera@uffs.edu.br"
+  },
+"douglas.balduino": {
+    "id": "douglas.balduino",
+    "name": "Douglas Balduino Pereira",
+    "email": "douglas.balduino@uffs.edu.br"
   }
 }
