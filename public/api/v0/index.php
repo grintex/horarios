@@ -66,15 +66,15 @@ try {
             $aReturn['data'] = 'pong';
 			break;
 
-		case 'load':
+		case 'program':
 			$programs = loadData('programs', true);
 
 			if(!isset($programs[$aProgramId])) {
-				throw Error('Unknown program with id=' . $aProgramId);
+				throw new Error('Unknown program with id=' . $aProgramId);
 			}
 
 			$aReturn['data'] = array(
-				'program'      => $aProgramId,
+				'id'           => $aProgramId,
 				'name'         => $programs[$aProgramId]['name'],
 				'responsible'  => $programs[$aProgramId]['responsible'],
 				'courses'      => loadDataFromProgram($aProgramId, 'courses'),

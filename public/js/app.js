@@ -8,8 +8,8 @@ Horarios.App = function() {
     };
     
     this.active = {
-        group: undefined,
-        program: 1,
+        groupId: undefined,
+        programId: 1,
         user: {id: 'fernando.bevilacqua'}
     };
 
@@ -84,17 +84,20 @@ Horarios.App = function() {
         });
     };
 
+    this.loadProgram = function(programId) {
+        this.api({method: 'program', program: this.active.programId}, function(data) {
+            this.data.program = data;
+            this.selectProgram(programId);
+        }, this);
+    };
+
     this.selectProgram = function(programId) {
         var self = this;
 
         console.debug('Program selected: ', programId);
-
-        if(!programs[programId]) {
-            console.error('Unable to load program with id=' + programId);
-            return;
-        }
-    
+   
         globals.active.program = programId;
+        this.active.programId = programId;
     
         var c = store.get('something');
         if(c) {
@@ -103,7 +106,7 @@ Horarios.App = function() {
     
         $('#container').empty();
     
-        groups.forEach(function(group) {
+        this.data.program.groups.forEach(function(group) {
             var courses = self.findCoursesByGroupId(group.id);
             group.grid = self.createGrid('container', group);
     
@@ -129,7 +132,7 @@ Horarios.App = function() {
         var programId = 1;
 
         this.buildFinalUI();
-        this.selectProgram(programId);
+        this.loadProgram(programId);
     };
 
     this.load = function() {
@@ -330,7 +333,7 @@ Horarios.App = function() {
     this.findCoursesByGroupId = function(groupId) {
         var items = [];
         
-        courses.forEach(function(course) {
+        this.data.program.courses.forEach(function(course) {
             if(course.group == groupId) {
                 items.push(course);
             }
