@@ -304,6 +304,13 @@ function handleAddGroup() {
 }
 
 $(function () {
+    var c = store.get('courses');
+
+    if(c) {
+        console.log('Restoring data from database', c);
+        courses = c;
+    }
+
     groups.forEach(function(group) {
         group.grid = createGrid('container', group, weekDays, periods);
 
@@ -345,4 +352,11 @@ $(function () {
 
         $('#modal-course-members').html(text);
     });
+
+    setInterval(function() {
+        // Store current user
+        store.set('courses', courses);
+        console.log('Salvando....');
+    }, 2000);
+
 });
