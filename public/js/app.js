@@ -1,3 +1,88 @@
+var Horarios = {};
+
+Horarios.App = function() {
+    this.ENDPOINT_URL = './api/v0/?';
+    this.data = {};
+
+    this.init = function() {
+        this.buildInitialUI();
+        this.load();
+    };
+
+    this.buildInitialUI = function() {
+        this.buildModals();
+    };
+
+    this.buildFinalUI = function() {
+        this.buildDropdownProgramSelection();
+    };
+
+    this.buildModals = function() {
+        $('#modal-add-course button.submit').click(handleAddCourse);
+        $('#modal-add-group button.submit').click(handleAddGroup);
+    
+        $('#modal-add-course').on('show.bs.modal', function (event) {
+            var groupId = $(event.relatedTarget).data('group');
+            var text = '';
+    
+            globals.active.group = groupId;
+            console.log(globals.active.group);        
+    
+            for(memberId in members) {
+                var member = members[memberId];
+                var key = 'member-'+ memberId;
+    
+                text += 
+                    '<input class="form-check-input" type="checkbox" value="' + member.id + '" id="' + key + '">' +
+                    '<label class="form-check-label" for="' + key + '">'+ member.name + ' (' + member.email + ')</label>';
+            }
+    
+            $('#modal-course-members').html(text);
+        });
+    };
+
+    this.buildDropdownProgramSelection = function() {
+        $('#dropdownMenuProgramSelector').empty();
+    
+        for(p in programs) {
+            var program = programs[p];
+    
+            if(program.id == globals.active.program) {
+                $('#buttonProgramSelector').html(program.name);
+                continue;
+            }
+    
+            $('#dropdownMenuProgramSelector').append('<a class="dropdown-item" href="javascript:void(0);" data-program="' + program.id + '">' + program.name + '</a>');
+        }
+        
+        $('#dropdownMenuProgramSelector a').click(handleSelectProgram);
+    }
+
+    this.load = function() {
+        this.api({method: 'programs'}, function(data) {
+            this.buildFinalUI();
+        }, this);
+    };
+
+    this.api = function(params, callback, context) {
+        var jqxhr = $.getJSON(this.ENDPOINT_URL, params);
+
+        jqxhr.done(function(response) {
+            console.debug('Response received:', response);
+
+            if(response.success) {
+                callback.call(context, response.data);
+            } else {
+                console.error('Endpoint error:', response.message);
+            }
+        });
+        
+        jqxhr.fail(function() {
+            console.error('Ajax fail');
+        });
+    };
+};
+
 var globals = {
     active: {
         group: undefined,
@@ -348,8 +433,6 @@ function loadProgram(programId) {
                 course.period);
         });
     });
-
-    buildDropdownProgramSelection();
 }
 
 function handleSelectProgram(e) {
@@ -363,55 +446,19 @@ function handleSelectProgram(e) {
     loadProgram(programId);
 }
 
-function buildDropdownProgramSelection() {
-    $('#dropdownMenuProgramSelector').empty();
 
-    for(p in programs) {
-        var program = programs[p];
-
-        if(program.id == globals.active.program) {
-            $('#buttonProgramSelector').html(program.name);
-            continue;
-        }
-
-        $('#dropdownMenuProgramSelector').append('<a class="dropdown-item" href="javascript:void(0);" data-program="' + program.id + '">' + program.name + '</a>');
-    }
-    
-    $('#dropdownMenuProgramSelector a').click(handleSelectProgram);
-}
 
 $(function () {
+    var app = new Horarios.App();
+    app.init();
+
     var programId = 1; // TODO: get this from a proper place
     loadProgram(programId);
-
-    $('#modal-add-course button.submit').click(handleAddCourse);
-    $('#modal-add-group button.submit').click(handleAddGroup);
-
-    $('#modal-add-course').on('show.bs.modal', function (event) {
-        var groupId = $(event.relatedTarget).data('group');
-        var text = '';
-
-        globals.active.group = groupId;
-        console.log(globals.active.group);        
-
-        for(memberId in members) {
-            var member = members[memberId];
-            var key = 'member-'+ memberId;
-
-            text += 
-                '<input class="form-check-input" type="checkbox" value="' + member.id + '" id="' + key + '">' +
-                '<label class="form-check-label" for="' + key + '">'+ member.name + ' (' + member.email + ')</label>';
-        }
-
-        $('#modal-course-members').html(text);
-    });
-
-    buildDropdownProgramSelection();
 
     setInterval(function() {
         // Store current user
         store.set('something', courses);
         console.debug('Saving data...');
     }, 2000);
-
 });
+

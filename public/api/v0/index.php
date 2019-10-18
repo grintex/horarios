@@ -38,7 +38,7 @@ $aReturn = array('success' => true, 'method' => $aMethod, 'time' => time());
 
 try {
 	switch ($aMethod) {
-		case 'readprograms':
+		case 'programs':
 			$aReturn['data'] = loadData('programs');
 			break;
 			
@@ -73,7 +73,7 @@ try {
 			break;
 	}
 } catch(Exception $e) {
-	$aReturn = array('failure' => true, 'message' => $e->getMessage());
+	$aReturn = array('success' => false, 'failure' => true, 'message' => $e->getMessage());
 }
 
 header("Content-Type: application/json; charset=utf-8");
