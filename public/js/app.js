@@ -4,7 +4,7 @@ Horarios.App = function() {
     this.ENDPOINT_URL = './api/v0/?';
     this.data = {};
 
-    this.init = function() {
+    this.boot = function() {
         this.buildInitialUI();
         this.load();
     };
@@ -49,8 +49,7 @@ Horarios.App = function() {
             return;
         }
     
-        loadProgram(programId);
-        this.buildDropdownProgramSelection();
+        this.selectProgram(programId);
     }
 
     this.buildDropdownProgramSelection = function() {
@@ -72,11 +71,57 @@ Horarios.App = function() {
         $('#dropdownMenuProgramSelector a').click(function(e) {
             self.handleSelectProgram(e);
         });
-    }
+    };
+
+    this.selectProgram = function(programId) {
+        console.debug('Program selected: ', programId);
+
+        if(!programs[programId]) {
+            console.error('Unable to load program with id=' + programId);
+            return;
+        }
+    
+        globals.active.program = programId;
+    
+        var c = store.get('something');
+        if(c) {
+            console.log('Restoring data from database', c);
+        }
+    
+        $('#container').empty();
+    
+        groups.forEach(function(group) {
+            var courses = findCoursesByGroupId(group.id);
+            group.grid = createGrid('container', group, weekDays, periods);
+    
+            courses.forEach(function(course) {
+                group.grid.add_widget(
+                    '<li class="new" data-course="' + course.id + '">' +
+                        '<header>|||</header>' +
+                        course.name +
+                        '<br />' +
+                        course.members.join(', ') +
+                    '</li>',
+                    1,
+                    1,
+                    course.weekDay,
+                    course.period);
+            });
+        });
+
+        this.buildDropdownProgramSelection();
+    };
+
+    this.init = function() {
+        var programId = 1;
+
+        this.buildFinalUI();
+        this.selectProgram(programId);
+    };
 
     this.load = function() {
         this.api({method: 'programs'}, function(data) {
-            this.buildFinalUI();
+            this.init();
         }, this);
     };
 
@@ -414,49 +459,9 @@ function handleAddGroup() {
     $('#modal-add-group').modal('hide');
 }
 
-function loadProgram(programId) {
-    console.log('LOAD program: ', programId);
-
-    if(!programs[programId]) {
-        console.error('Unable to load program with id=' + programId);
-        return;
-    }
-
-    globals.active.program = programId;
-
-    var c = store.get('something');
-    if(c) {
-        console.log('Restoring data from database', c);
-    }
-
-    $('#container').empty();
-
-    groups.forEach(function(group) {
-        var courses = findCoursesByGroupId(group.id);
-        group.grid = createGrid('container', group, weekDays, periods);
-
-        courses.forEach(function(course) {
-            group.grid.add_widget(
-                '<li class="new" data-course="' + course.id + '">' +
-                    '<header>|||</header>' +
-                    course.name +
-                    '<br />' +
-                    course.members.join(', ') +
-                '</li>',
-                1,
-                1,
-                course.weekDay,
-                course.period);
-        });
-    });
-}
-
 $(function () {
     var app = new Horarios.App();
-    app.init();
-
-    var programId = 1; // TODO: get this from a proper place
-    loadProgram(programId);
+    app.boot();
 
     setInterval(function() {
         // Store current user
