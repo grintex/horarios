@@ -220,7 +220,7 @@ function addCourse(courseObj) {
     }
 
     courses.push(courseObj);
-    group.grid.add_widget('<li class="new"><header>|||</header>' + courseObj.name + '</li>', 1, 1, 8, 2);
+    group.grid.add_widget('<li class="new" data-course="' + courseObj.id + '"><header>|||</header>' + courseObj.name + '</li>', 1, 1, 8, 2);
 
     console.log('Course added: ', courses[courses.length - 1]);
 }
