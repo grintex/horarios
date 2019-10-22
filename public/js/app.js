@@ -136,8 +136,8 @@ Horarios.App = function() {
             courses.forEach(function(course) {
                 group.grid.add_widget(
                     '<li class="new" data-course="' + course.id + '">' +
-                        '<header>|||</header>' +
-                        '<a href="javascript:void(0);" class="btn btn-primary" data-toggle="modal" data-target="#modal-course" data-course="' + course.id + '">[c]</a>' +
+                        '<header><i class="icon ion-md-move"></i></header>' +
+                        '<a href="javascript:void(0);" class="btn btn-outline-light" data-toggle="modal" data-target="#modal-course" data-course="' + course.id + '"><i class="icon ion-md-create edit"></i></a>' +
                         course.name +
                         '<br />' +
                         course.members.join(', ') +
@@ -246,9 +246,9 @@ Horarios.App = function() {
         var key = 'group-' + num;
     
         $('#' + containerId).append(
-            '<div id="' + key + '">' +
-                '<h2>' + group.name + ' <a href="javascript:void(0);" data-group="'+ group.id +'" data-toggle="modal" data-target="#modal-group">[e]</a></h2>' +
-                '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-course" data-group="' + group.id + '">member</button>' +
+            '<div id="' + key + '" class="schedule-block">' +
+                '<h2><i class="icon ion-md-today"></i> ' + group.name + ' <a href="javascript:void(0);" data-group="'+ group.id +'" data-toggle="modal" data-target="#modal-group"><i class="icon ion-md-create edit"></i></a></h2>' +
+                '<button type="button" class="btn btn-outline-light ml-md-3" data-toggle="modal" data-target="#modal-course" data-group="' + group.id + '"><i class="icon ion-md-add-circle"></i> Adicionar CCR</button>' +
                 '<div class="gridster"><ul></ul></div>' +
             '</div>'
         );
@@ -288,11 +288,11 @@ Horarios.App = function() {
         }).data('gridster');
     
         for(var i = 0; i < periods.length; i++) {
-            g.add_widget('<li class="new"><header style="pointer-events: none;">|||</header>' + periods[i].name + '</li>', 1, 1, 1, i + 2);
+            g.add_widget('<li class="new fixed"><header style="pointer-events: none;"></header>' + periods[i].name + '</li>', 1, 1, 1, i + 2);
         }
     
         for(var j = 0; j < weekDays.length; j++) {
-            g.add_widget('<li class="new"><header style="pointer-events: none;">|||</header>' + weekDays[j].name + '</li>', 1, 1, j + 1, 1);
+            g.add_widget('<li class="new fixed"><header style="pointer-events: none;"></header>' + weekDays[j].name + '</li>', 1, 1, j + 1, 1);
         }
     
         return g;
