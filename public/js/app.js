@@ -36,15 +36,18 @@ Horarios.App = function() {
     
         $('#modal-course').on('show.bs.modal', function (event) {
             var groupId = $(event.relatedTarget).data('group');
-            var courseId = $(this).data('course') || 0;
+            var courseId = $(event.relatedTarget).data('course');
             var course = self.getCourseById(courseId);
             var text = '';
-    
+
             self.active.groupId = groupId;
             console.log('group:', self.active.groupId, 'course: ', courseId);
-    
+
+            $('#modal-course-name').val(course ? course.name : '');
+            $('#modal-course-id').val(course ? course.id : '');
+
             for(memberId in self.data.members) {
-                var member = members[memberId];
+                var member = self.data.members[memberId];
                 var key = 'member-'+ memberId;
                 var checked = course && course.members.includes(memberId) ? 'checked="checked"' : '';
 
@@ -137,18 +140,26 @@ Horarios.App = function() {
         this.buildDropdownProgramSelection();
     };
 
-    this.init = function(programs) {
+    this.init = function(context) {
         var programId = 1; // TODO: select this from URL
 
-        this.data.programs = programs;
+        if(!context) {
+            console.error('Invalid context data. Unable to init.');
+            return;
+        }
+
+        this.data.programs = context.programs;
+        this.data.members = context.members;
+
         console.log('List of programs updated:', this.data.programs);
+        console.log('List of members updated:', this.data.members);
 
         this.buildFinalUI();
         this.loadProgram(programId);
     };
 
     this.load = function() {
-        this.api({method: 'programs'}, function(data) {
+        this.api({method: 'context'}, function(data) {
             this.init(data);
         }, this);
     };
@@ -390,7 +401,8 @@ Horarios.App = function() {
         return highest + 1;
     }
     
-    this.addCourse = function(courseObj) {
+    this.addOrUpdateCourse = function(courseObj) {
+        var isUpdate = courseObj.id;
         var group = this.getGroupById(courseObj.group);
     
         if(!group) {
@@ -401,17 +413,32 @@ Horarios.App = function() {
             console.warn('Empty grid for group: ' + courseObj.group);
         }
     
-        this.data.program.courses.push(courseObj);
-        group.grid.add_widget('<li class="new" data-course="' + courseObj.id + '"><header>|||</header>' + courseObj.name + '</li>', 1, 1, 8, 2);
-    
-        console.log('Course added: ', this.data.program.courses[courses.length - 1]);
+        if(isUpdate) {
+            // Update
+            var course = this.getCourseById(courseObj.id);
+
+            // TODO: improve this pile of crap
+            for(var p in courseObj) {
+                course[p] = courseObj[p];
+            }
+
+            this.updateCourse(course);
+            
+        } else {
+            // Creating a new course
+            courseObj.id = this.getNextCourseId();
+            this.data.program.courses.push(courseObj);
+            group.grid.add_widget('<li class="new" data-course="' + courseObj.id + '"><header>|||</header>' + courseObj.name + '</li>', 1, 1, 8, 2);
+        
+            console.log('Course added: ', courseObj);
+        }
     }
     
     this.addGroup = function(groupObj) {
         groupObj.grid = this.createGrid('container', groupObj);
         this.data.program.groups.push(groupObj);
         
-        console.log('Group added: ', this.data.program.groups[groups.length - 1]);
+        console.log('Group added: ', groupObj);
     }
     
     this.handleModalCourseSubmit = function() {
@@ -421,11 +448,11 @@ Horarios.App = function() {
             selectedMembers.push($(el).val());
         });
     
-        var newId = this.getNextCourseId();
+        var id = $('#modal-course-id').val();
         var name = $('#modal-course-name').val();
     
-        this.addCourse({
-            id: newId,
+        this.addOrUpdateCourse({
+            id: id,
             code: 'GCS011',
             name: name,
             group: this.active.groupId,

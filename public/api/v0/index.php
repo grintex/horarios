@@ -38,6 +38,13 @@ $aReturn = array('success' => true, 'method' => $aMethod, 'time' => time());
 
 try {
 	switch ($aMethod) {
+		case 'context':
+			$aReturn['data'] = array(
+				'programs' => loadData('programs'),
+				'members'  => loadData('members')
+			);
+			break;
+
 		case 'programs':
 			$aReturn['data'] = loadData('programs');
 			break;
