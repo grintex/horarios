@@ -2,8 +2,9 @@
 
 function loadFile($path) {
 	if(!file_exists($path)) {
-		throw new Error('Unable to open file');
+		throw new Error('Unable to open file: ' + $path);
 	}
+
 	$data = file_get_contents($path);
 	return $data;
 }
@@ -11,24 +12,34 @@ function loadFile($path) {
 function loadDataFromProgram($programId, $name) {
 	$programId = $programId + 0;
 	$path = dirname(__FILE__) . '/data/programs/'.$programId.'/' . $name . '.json';
-	
-	if(!file_exists($path)) {
-		throw new Error('Unable to load data from program with id=' . $programId);
-	}
-	
 	$data = loadFile($path);
 	return json_decode($data);
 }
 
 function loadData($name, $assoc = false) {
 	$path = dirname(__FILE__) . '/data/' . $name . '.json';
-	
-	if(!file_exists($path)) {
-		throw new Error('Unable to load data with name=' . $name);
-	}
-
 	$data = loadFile($path);
 	return json_decode($data, $assoc);
+}
+
+function updateCourse($programId, $courseAssoc) {
+	$courses = loadDataFromProgram($programId, 'courses');
+	$course = json_decode(json_encode($courseAssoc));
+
+	$programId = $programId + 0;
+	$path = dirname(__FILE__) . '/data/programs/'.$programId.'/courses.json';
+
+	foreach($courses as $key => $existingCourse) {
+		if($existingCourse->id == $course->id) {
+			$courses[$key] = $course;
+		}
+	}
+
+	$ok = file_put_contents($path, json_encode($courses, JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT));
+
+	if($ok === false) {
+		throw new Error('Error saving course data for program with id=' + $programId);
+	}
 }
 
 // Get request params
@@ -66,7 +77,7 @@ try {
 				throw Error('Invalid course info');
 			}
 
-			$aReturn['data'] = $course;
+			updateCourse($aProgramId, $course);
 			break;
 
         case 'ping':

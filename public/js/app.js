@@ -93,7 +93,9 @@ Horarios.App = function() {
     };
 
     this.loadProgram = function(programId) {
+        console.log('Loading program with id=', programId);
         this.api({method: 'program', program: this.active.programId}, function(data) {
+            console.log('Program loaded:', data);
             this.data.program = data;
             this.selectProgram(programId);
         }, this);
@@ -120,7 +122,7 @@ Horarios.App = function() {
         this.data.program.groups.forEach(function(group) {
             var courses = self.findCoursesByGroupId(group.id);
             group.grid = self.createGrid('container', group);
-    
+
             courses.forEach(function(course) {
                 group.grid.add_widget(
                     '<li class="new" data-course="' + course.id + '">' +
@@ -200,7 +202,7 @@ Horarios.App = function() {
     this.updateCourse = function(course) {
         console.log('Updating course', course);
 
-        this.api({method: 'updatecourse', course: course}, function(data) {
+        this.api({method: 'updatecourse', program: this.active.programId, course: course}, function(data) {
             console.log('Course updated successfuly!', data);
         }, this);
     };
