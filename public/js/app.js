@@ -29,22 +29,25 @@ Horarios.App = function() {
     this.buildModals = function() {
         var self = this;
 
-        $('#modal-add-course button.submit').click(function(e) { self.handleAddCourse(e) });
-        $('#modal-add-group button.submit').click(function(e) { self.handleAddGroup(e); });
+        $('#modal-course button.submit').click(function(e) { self.handleModalCourseSubmit(e) });
+        $('#modal-group button.submit').click(function(e) { self.handleModalGroupSubmit(e); });
     
-        $('#modal-add-course').on('show.bs.modal', function (event) {
+        $('#modal-course').on('show.bs.modal', function (event) {
             var groupId = $(event.relatedTarget).data('group');
+            var courseId = $(this).data('course') || 0;
+            var course = self.getCourseById(courseId);
             var text = '';
     
             globals.active.group = groupId;
-            console.log(globals.active.group);        
+            console.log('group:', globals.active.group, 'course: ', courseId);
     
             for(memberId in members) {
                 var member = members[memberId];
                 var key = 'member-'+ memberId;
-    
+                var checked = course && course.members.includes(memberId) ? 'checked="checked"' : '';
+
                 text += 
-                    '<input class="form-check-input" type="checkbox" value="' + member.id + '" id="' + key + '">' +
+                    '<input class="form-check-input" type="checkbox" value="' + member.id + '" id="' + key + '" ' + checked + '>' +
                     '<label class="form-check-label" for="' + key + '">'+ member.name + ' (' + member.email + ')</label>';
             }
     
@@ -114,6 +117,7 @@ Horarios.App = function() {
                 group.grid.add_widget(
                     '<li class="new" data-course="' + course.id + '">' +
                         '<header>|||</header>' +
+                        '<a href="javascript:void(0);" class="btn btn-primary" data-toggle="modal" data-target="#modal-course" data-course="' + course.id + '">[c]</a>' +
                         course.name +
                         '<br />' +
                         course.members.join(', ') +
@@ -198,7 +202,7 @@ Horarios.App = function() {
         $('#' + containerId).append(
             '<div id="' + key + '">' +
                 '<h2>' + group.name + '</h2>' +
-                '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-add-course" data-group="' + group.id + '">member</button>' +
+                '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-course" data-group="' + group.id + '">member</button>' +
                 '<div class="gridster"><ul></ul></div>' +
             '</div>'
         );
@@ -401,7 +405,7 @@ Horarios.App = function() {
         console.log('Group added: ', groups[groups.length - 1]);
     }
     
-    this.handleAddCourse = function() {
+    this.handleModalCourseSubmit = function() {
         var selectedMembers = [];
     
         $('#modal-course-members input:checked').each(function(i, el) {
@@ -421,11 +425,11 @@ Horarios.App = function() {
             members: selectedMembers
         });
     
-        $('#modal-add-course').modal('hide');
+        $('#modal-course').modal('hide');
         globals.active.group = undefined;
     }
     
-    this.handleAddGroup = function() {
+    this.handleModalGroupSubmit = function() {
         var name = $('#modal-group-name').val();
         
         this.addGroup({
@@ -433,7 +437,7 @@ Horarios.App = function() {
             name: name
         });
     
-        $('#modal-add-group').modal('hide');
+        $('#modal-group').modal('hide');
     }
 };
 
