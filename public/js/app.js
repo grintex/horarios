@@ -4,7 +4,9 @@ Horarios.App = function() {
     this.ENDPOINT_URL = './api/v0/?';
     
     this.data = {
-        courses: []
+        program: null,
+        members: {},
+        programs: {}
     };
     
     this.active = {
@@ -38,10 +40,10 @@ Horarios.App = function() {
             var course = self.getCourseById(courseId);
             var text = '';
     
-            globals.active.group = groupId;
-            console.log('group:', globals.active.group, 'course: ', courseId);
+            self.active.groupId = groupId;
+            console.log('group:', self.active.groupId, 'course: ', courseId);
     
-            for(memberId in members) {
+            for(memberId in self.data.members) {
                 var member = members[memberId];
                 var key = 'member-'+ memberId;
                 var checked = course && course.members.includes(memberId) ? 'checked="checked"' : '';
@@ -59,7 +61,7 @@ Horarios.App = function() {
         var anchor = $(e.currentTarget);
         var programId = anchor.data('program');
     
-        if(programId == globals.active.program) {
+        if(programId == this.active.programId) {
             return;
         }
     
@@ -71,10 +73,10 @@ Horarios.App = function() {
 
         $('#dropdownMenuProgramSelector').empty();
     
-        for(p in programs) {
+        for(p in self.data.programs) {
             var program = programs[p];
     
-            if(program.id == globals.active.program) {
+            if(program.id == this.active.programId) {
                 $('#buttonProgramSelector').html(program.name);
                 continue;
             }
@@ -94,18 +96,21 @@ Horarios.App = function() {
         }, this);
     };
 
+    this.restoreDataFromLocalStorage = function(prgramId) {
+        var c = store.get('something');
+        
+        if(c) {
+            // TODO: restore data from database
+        }
+    };
+
     this.selectProgram = function(programId) {
         var self = this;
 
-        console.debug('Program selected: ', programId);
-   
-        globals.active.program = programId;
         this.active.programId = programId;
+        console.debug('Program selected: ', programId);
     
-        var c = store.get('something');
-        if(c) {
-            console.log('Restoring data from database', c);
-        }
+        this.restoreDataFromLocalStorage();
     
         $('#container').empty();
     
@@ -132,8 +137,11 @@ Horarios.App = function() {
         this.buildDropdownProgramSelection();
     };
 
-    this.init = function() {
-        var programId = 1;
+    this.init = function(programs) {
+        var programId = 1; // TODO: select this from URL
+
+        this.data.programs = programs;
+        console.log('List of programs updated:', this.data.programs);
 
         this.buildFinalUI();
         this.loadProgram(programId);
@@ -141,7 +149,7 @@ Horarios.App = function() {
 
     this.load = function() {
         this.api({method: 'programs'}, function(data) {
-            this.init();
+            this.init(data);
         }, this);
     };
 
@@ -301,7 +309,7 @@ Horarios.App = function() {
     this.findCoursesByWeekDayAndPeriod = function(weekDay, period) {
         var items = [];
     
-        courses.forEach(function(course) {
+        this.data.program.courses.forEach(function(course) {
             if(course.weekDay == weekDay && course.period == period)  {
                 items.push(course);
             }
@@ -313,7 +321,7 @@ Horarios.App = function() {
     this.getCourseById = function(id) {
         var item = null;
     
-        courses.forEach(function(course) {
+        this.data.program.courses.forEach(function(course) {
             if(course.id == id) {
                 item = course;
             }
@@ -325,7 +333,7 @@ Horarios.App = function() {
     this.getGroupById = function(id) {
         var item = null;
     
-        groups.forEach(function(group) {
+        this.data.program.groups.forEach(function(group) {
             if(group.id == id) {
                 item = group;
             }
@@ -352,7 +360,7 @@ Horarios.App = function() {
         var emailParts = email.split('@');
         var emailUser = emailParts[0];
     
-        members[emailUser] = {id: emailUser, name: name, email: email};
+        this.data.members[emailUser] = {id: emailUser, name: name, email: email};
         console.log('Member added:', emailUser, members[emailUser]);
     
         $('#modal-add-member').modal('hide');
@@ -361,7 +369,7 @@ Horarios.App = function() {
     this.getNextCourseId = function() {
         var highest = 0;
     
-        courses.forEach(function(course) {
+        this.data.program.courses.forEach(function(course) {
             if(course.id > highest) {
                 highest = course.id;
             }
@@ -373,7 +381,7 @@ Horarios.App = function() {
     this.getNextGroupId = function() {
         var highest = 0;
     
-        groups.forEach(function(group) {
+        this.data.program.groups.forEach(function(group) {
             if(group.id > highest) {
                 highest = group.id;
             }
@@ -393,16 +401,17 @@ Horarios.App = function() {
             console.warn('Empty grid for group: ' + courseObj.group);
         }
     
-        courses.push(courseObj);
+        this.data.program.courses.push(courseObj);
         group.grid.add_widget('<li class="new" data-course="' + courseObj.id + '"><header>|||</header>' + courseObj.name + '</li>', 1, 1, 8, 2);
     
-        console.log('Course added: ', courses[courses.length - 1]);
+        console.log('Course added: ', this.data.program.courses[courses.length - 1]);
     }
     
     this.addGroup = function(groupObj) {
         groupObj.grid = this.createGrid('container', groupObj);
-        groups.push(groupObj);
-        console.log('Group added: ', groups[groups.length - 1]);
+        this.data.program.groups.push(groupObj);
+        
+        console.log('Group added: ', this.data.program.groups[groups.length - 1]);
     }
     
     this.handleModalCourseSubmit = function() {
@@ -419,14 +428,14 @@ Horarios.App = function() {
             id: newId,
             code: 'GCS011',
             name: name,
-            group: globals.active.group,
+            group: this.active.groupId,
             weekDay: 7,
             period: 1,
             members: selectedMembers
         });
     
         $('#modal-course').modal('hide');
-        globals.active.group = undefined;
+        this.active.groupId = undefined;
     }
     
     this.handleModalGroupSubmit = function() {
@@ -439,19 +448,6 @@ Horarios.App = function() {
     
         $('#modal-group').modal('hide');
     }
-};
-
-var globals = {
-    active: {
-        group: undefined,
-        program: 1
-    },
-    user: {id: 'fernando.bevilacqua'}
-};
-
-var members = {
-    'fernando.bevilacqua': {id: 'fernando.bevilacqua', name: 'Fernando Bevilacqua', email: 'fernando.bevilacqua@uffs.edu.br'},
-    'marco.spohn': {id: 'marco.spohn', name: 'Marco Aurelio Spohn', email: 'marco.spohn@uffs.edu.br'}
 };
 
 var programs = {
