@@ -63,12 +63,13 @@ Horarios.App = function() {
     this.handleSelectProgram = function(e) {
         var anchor = $(e.currentTarget);
         var programId = anchor.data('program');
-    
+
         if(programId == this.active.programId) {
+            console.log('Skipping program selection because ids are not different.');
             return;
         }
     
-        this.selectProgram(programId);
+        this.loadProgram(programId);
     }
 
     this.buildDropdownProgramSelection = function() {
@@ -88,13 +89,14 @@ Horarios.App = function() {
         }
         
         $('#dropdownMenuProgramSelector a').click(function(e) {
+            console.log(e);
             self.handleSelectProgram(e);
         });
     };
 
     this.loadProgram = function(programId) {
         console.log('Loading program with id=', programId);
-        this.api({method: 'program', program: this.active.programId}, function(data) {
+        this.api({method: 'program', program: programId}, function(data) {
             console.log('Program loaded:', data);
             this.data.program = data;
             this.selectProgram(programId);
