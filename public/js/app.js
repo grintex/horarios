@@ -58,6 +58,14 @@ Horarios.App = function() {
     
             $('#modal-course-members').html(text);
         });
+
+        $('#modal-group').on('show.bs.modal', function (event) {
+            var groupId = $(event.relatedTarget).data('group');
+            var group = self.getGroupById(groupId);
+
+            $('#modal-group-id').val(group ? group.id : '');
+            $('#modal-group-name').val(group ? group.name : '');
+        });
     };
 
     this.handleSelectProgram = function(e) {
@@ -198,14 +206,29 @@ Horarios.App = function() {
         course.weekDay = data.col | 0;
 
         this.checkConstraintsByCourse(course);
-        this.updateCourse(course);
+        this.commitCourse(course);
     };
 
-    this.updateCourse = function(course) {
-        console.log('Updating course', course);
+    this.commitCourse = function(course) {
+        console.log('Commiting course', course);
 
         this.api({method: 'updatecourse', program: this.active.programId, course: course}, function(data) {
-            console.log('Course updated successfuly!', data);
+            console.log('Course commited successfuly!', data);
+        }, this);
+    };
+
+    this.commitGroup = function(group) {
+        console.log('Commiting group', group);
+
+        // TODO: improve this
+        var bareGroup = {
+            id: group.id,
+            name: group.name,
+            grid: null
+        };
+
+        this.api({method: 'updategroup', program: this.active.programId, group: bareGroup}, function(data) {
+            console.log('Group commited successfuly!', data);
         }, this);
     };
 
@@ -224,7 +247,7 @@ Horarios.App = function() {
     
         $('#' + containerId).append(
             '<div id="' + key + '">' +
-                '<h2>' + group.name + '</h2>' +
+                '<h2>' + group.name + ' <a href="javascript:void(0);" data-group="'+ group.id +'" data-toggle="modal" data-target="#modal-group">[e]</a></h2>' +
                 '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-course" data-group="' + group.id + '">member</button>' +
                 '<div class="gridster"><ul></ul></div>' +
             '</div>'
@@ -369,18 +392,6 @@ Horarios.App = function() {
         return items;
     }
     
-    this.handleAddMember = function() {
-        var name = $('#modal-member-name').val();
-        var email = $('#modal-member-email').val();
-        var emailParts = email.split('@');
-        var emailUser = emailParts[0];
-    
-        this.data.members[emailUser] = {id: emailUser, name: name, email: email};
-        console.log('Member added:', emailUser, members[emailUser]);
-    
-        $('#modal-add-member').modal('hide');
-    }
-    
     this.getNextCourseId = function() {
         var highest = 0;
     
@@ -426,8 +437,7 @@ Horarios.App = function() {
                 course[p] = courseObj[p];
             }
 
-            this.updateCourse(course);
-            
+            console.log('Course updated: ', courseObj);
         } else {
             // Creating a new course
             courseObj.id = this.getNextCourseId();
@@ -436,13 +446,35 @@ Horarios.App = function() {
         
             console.log('Course added: ', courseObj);
         }
+
+        this.commitCourse(course);
     }
     
-    this.addGroup = function(groupObj) {
-        groupObj.grid = this.createGrid('container', groupObj);
-        this.data.program.groups.push(groupObj);
+    this.addOrUpdateGroup = function(groupObj) {
+        var isUpdate = groupObj.id;
+
+        if(isUpdate) {
+            // Update
+            var group = this.getGroupById(groupObj.id);
+
+            // TODO: improve this pile of crap
+            for(var p in groupObj) {
+                group[p] = groupObj[p];
+            }
+
+            console.log('Group updated: ', groupObj);
+
+        } else {
+            // Creating a new group
+            groupObj.id = this.getNextGroupId();
+            groupObj.grid = this.createGrid('container', groupObj);
+
+            this.data.program.groups.push(groupObj);
         
-        console.log('Group added: ', groupObj);
+            console.log('Group added: ', groupObj);
+        }
+
+        this.commitGroup(group);
     }
     
     this.handleModalCourseSubmit = function() {
@@ -470,10 +502,11 @@ Horarios.App = function() {
     }
     
     this.handleModalGroupSubmit = function() {
+        var id = $('#modal-group-id').val();
         var name = $('#modal-group-name').val();
         
-        this.addGroup({
-            id: this.getNextGroupId(),
+        this.addOrUpdateGroup({
+            id: id,
             name: name
         });
     

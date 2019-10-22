@@ -2,7 +2,7 @@
 
 function loadFile($path) {
 	if(!file_exists($path)) {
-		throw new Error('Unable to open file: ' + $path);
+		throw new Error('Unable to open file: ' . $path);
 	}
 
 	$data = file_get_contents($path);
@@ -22,23 +22,29 @@ function loadData($name, $assoc = false) {
 	return json_decode($data, $assoc);
 }
 
-function updateCourse($programId, $courseAssoc) {
-	$courses = loadDataFromProgram($programId, 'courses');
-	$course = json_decode(json_encode($courseAssoc));
+function updateItem($programId, $name, $dataAssoc) {
+	$items = loadDataFromProgram($programId, $name);
+	$item = json_decode(json_encode($dataAssoc));
 
 	$programId = $programId + 0;
-	$path = dirname(__FILE__) . '/data/programs/'.$programId.'/courses.json';
+	$path = dirname(__FILE__) . '/data/programs/'.$programId.'/'. $name .'.json';
+	$found = false;
 
-	foreach($courses as $key => $existingCourse) {
-		if($existingCourse->id == $course->id) {
-			$courses[$key] = $course;
+	foreach($items as $key => $existingItem) {
+		if($existingItem->id == $item->id) {
+			$items[$key] = $item;
+			$found = true;
 		}
 	}
 
-	$ok = file_put_contents($path, json_encode($courses, JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT));
+	if(!$found) {
+		$items[] = $item;
+	}
+
+	$ok = file_put_contents($path, json_encode($items, JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT));
 
 	if($ok === false) {
-		throw new Error('Error saving course data for program with id=' + $programId);
+		throw new Error('Error saving ' . $name . ' data for program with id=' . $programId);
 	}
 }
 
@@ -67,7 +73,14 @@ try {
 		case 'readgroups':
 			break;
 
-		case 'updategroups':
+		case 'updategroup':
+			$group = isset($_REQUEST['group']) ? $_REQUEST['group'] : false;
+
+			if($group === false) {
+				throw Error('Invalid group info');
+			}
+
+			updateItem($aProgramId, 'groups', $group);
 			break;
 
 		case 'updatecourse':
@@ -77,7 +90,7 @@ try {
 				throw Error('Invalid course info');
 			}
 
-			updateCourse($aProgramId, $course);
+			updateItem($aProgramId, 'courses', $course);
 			break;
 
         case 'ping':
@@ -101,7 +114,7 @@ try {
             break;
 
 		default:
-			$aReturn = array('failure' => true, 'message' => 'Unknow method');
+			$aReturn = array('failure' => true, 'message' => 'Unknow method "' . $aMethod . '"');
 			break;
 	}
 } catch(Exception $e) {
