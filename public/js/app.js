@@ -74,7 +74,7 @@ Horarios.App = function() {
         $('#dropdownMenuProgramSelector').empty();
     
         for(p in self.data.programs) {
-            var program = programs[p];
+            var program = self.data.programs[p];
     
             if(program.id == this.active.programId) {
                 $('#buttonProgramSelector').html(program.name);
@@ -450,19 +450,7 @@ Horarios.App = function() {
     }
 };
 
-var programs = {
-    1: {id: 1, name: 'Ciência da Computação', responsible: ['fernando.bevilacqua']},
-    2: {id: 2, name: 'Matemática', responsible: ['fernando.bevilacqua']},
-};
-
-var courses = [
-    {id: 1, code: 'GCS011', name: 'Meio ambiente, economia e sociedade', program: 1, group: 1, weekDay: 8, period: 2, members: ['marco.spohn']},
-    {id: 2, code: 'AAS011', name: 'Algoritmos e Programação', program: 1,  group: 1, weekDay: 8, period: 2, members: ['fernando.bevilacqua']},
-    {id: 3, code: 'BAS011', name: 'Programação I', program: 1, group: 2, weekDay: 8, period: 2, members: ['fernando.bevilacqua']},
-    {id: 4, code: 'CAS011', name: 'Programação II', program: 1, group: 2, weekDay: 8, period: 2, members: ['fernando.bevilacqua']},
-    {id: 5, code: 'MAS011', name: 'Matemática C', program: 2, group: 2, weekDay: 8, period: 2, members: ['fernando.bevilacqua']},
-];
-
+// TODO: move this to API endpoint
 var weekDays = [
     {id: 1, name: ""},
     {id: 2, name: "Segunda-feira"},
@@ -474,6 +462,7 @@ var weekDays = [
     {id: 8, name: "N/A"}
 ];
 
+// TODO: move this to API endpoint
 var periods = [
     {id: 1, name: "Manha1"},
     {id: 2, name: "Manha2"},
@@ -483,26 +472,13 @@ var periods = [
     {id: 6, name: "Noite2"}
 ];
 
-var groups = [
-    {id: 1, name: 'Vespertino - 2ª Fase', grid: null},
-    {id: 2, name: 'Vespertino - 4ª Fase', grid: null},
-    {id: 3, name: 'Vespertino - 6ª Fase', grid: null},
-    {id: 4, name: 'Vespertino - 8ª Fase', grid: null},
-    {id: 5, name: 'Noturno - 1ª Fase', grid: null},
-    {id: 6, name: 'Noturno - 3ª Fase', grid: null},
-    {id: 7, name: 'Noturno - 5ª Fase', grid: null},
-    {id: 8, name: 'Noturno - 7ª Fase', grid: null},
-    {id: 9, name: 'Noturno - 9ª Fase', grid: null}
-];
-
 $(function () {
     var app = new Horarios.App();
     app.boot();
 
+    // TODO: move this into App class.
     setInterval(function() {
-        // Store current user
-        store.set('something', courses);
-        console.debug('Saving data...');
+        // TODO: call store.set('horarios.data', app.data);
     }, 2000);
 });
 
