@@ -307,11 +307,18 @@ Horarios.App = function() {
 
     this.generateCourseGridNodeHTML = function(course) {
         var content = 
-            '<div>' + 
-                '<a href="javascript:void(0);" class="btn btn-outline-light" style="position: absolute; z-index: 1000;" data-toggle="modal" data-target="#modal-course" data-course="' + course.id + '"><i class="icon ion-md-create edit"></i></a>' +
-                course.name +
-                '<br />' +
-                course.members.join(', ') +
+            '<div style="height: 100%;">' + 
+                '<div class="node-header" style="position: absolute; top: 0; right: 0; z-index: 1000; width: 50px; height: 20px; background: green;">' + 
+                    '<a href="javascript:void(0);" class="btn btn-outline-light" data-toggle="modal" data-target="#modal-course" data-course="' + course.id + '"><i class="icon ion-md-create edit"></i></a>' +
+                '</div>' + 
+                '<div class="node-side" style="width: 20px; height: 100%; background: red; position: absolute; left: 0; top: 0;">' + 
+                    '' +
+                '</div>' +
+                '<div class="node-content" style="position: absolute; left: 10px; top: 10px;">' + 
+                    course.name +
+                    '<br />' +
+                    course.members.join(', ') +
+                '</div>' +                 
             '</div>';
         
         return this.generateGridNodeHTML(content, {course: course.id}, true);
