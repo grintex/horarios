@@ -41,6 +41,14 @@ Horarios.App = function() {
             var text = '';
 
             self.active.groupId = groupId;
+
+            if(course) {
+                // We have existing course info for this modal. Let's update
+                // all global controls with the selected course (which takes
+                // precedence from everything else)
+                self.active.groupId = course.group;
+            }
+
             console.log('group:', self.active.groupId, 'course: ', courseId);
 
             $('#modal-course-name').val(course ? course.name : '');
@@ -280,15 +288,20 @@ Horarios.App = function() {
                 }
             }
         }).data('gridster');
-    
+
+       
         for(var i = 0; i < periods.length; i++) {
-            g.add_widget(this.generateGridNodeHTML(periods[i].name, {}, false), 1, 1, 1, i + 2);
+            g.add_widget(this.generateGridNodeHTML(periods[i].name, {}, false), 1, 1, 1, i + 1);
         }
-    
+
+        g.add_widget(this.generateGridNodeHTML('', {}, false), 1, 1, 1, 1);
+
         for(var j = 0; j < weekDays.length; j++) {
-            g.add_widget(this.generateGridNodeHTML(weekDays[j].name, {}, false), 1, 1, j + 1, 1);
+            g.add_widget(this.generateGridNodeHTML(weekDays[j].name, {}, false), 1, 1, 1, 1);
         }
-    
+
+
+
         return g;
     }
     
@@ -307,14 +320,14 @@ Horarios.App = function() {
 
     this.generateCourseGridNodeHTML = function(course) {
         var content = 
-            '<div style="height: 100%;">' + 
-                '<div class="node-header" style="position: absolute; top: 0; right: 0; z-index: 1000; width: 50px; height: 20px; background: green;">' + 
+            '<div class="course-node" id="course-node-' + course.id + '">' +
+                '<div class="header">' + 
                     '<a href="javascript:void(0);" class="btn btn-outline-light" data-toggle="modal" data-target="#modal-course" data-course="' + course.id + '"><i class="icon ion-md-create edit"></i></a>' +
                 '</div>' + 
-                '<div class="node-side" style="width: 20px; height: 100%; background: red; position: absolute; left: 0; top: 0;">' + 
+                '<div class="side">' + 
                     '' +
                 '</div>' +
-                '<div class="node-content" style="position: absolute; left: 10px; top: 10px;">' + 
+                '<div class="content">' + 
                     course.name +
                     '<br />' +
                     course.members.join(', ') +
@@ -329,11 +342,6 @@ Horarios.App = function() {
         var candidates = this.findCoursesByWeekDayAndPeriod(course.weekDay, course.period);
     
         candidates.forEach(function(c) {
-            if(c.id == course.id) {
-                // We found the course that started the search
-                return;
-            }
-    
             var hasMemberOverlap = false;
     
             course.members.forEach(function(member) {
@@ -348,25 +356,116 @@ Horarios.App = function() {
         });
     
         return clashes;
-    }
+    };
     
+    this.isLateNightCourse = function(course) {
+        return course.period == 7;
+    };
+
+    this.isEarlyMorningCourse = function(course) {
+        return course.period == 2;
+    };
+
+    this.getFirstWorkingDay = function() {
+        return weekDays[0];
+    };
+
+    this.getLastWorkingDay = function() {
+        return weekDays[weekDays.length - 1];
+    };
+
+    this.getFirstWorkingPeriod = function() {
+        return periods[0].id;
+    };
+
+    this.getLastWorkingPeriod = function() {
+        return periods[periods.length - 1].id;
+    };
+
+    this.isWorkingDay = function(weekDay) {
+        var firstWorkingDay = this.getFirstWorkingDay().id;
+        var lastWorkingDay = this.getLastWorkingDay().id;
+
+        return weekDay >= firstWorkingDay && weekDay <= lastWorkingDay;
+    };
+
     this.findWorkingImpedimentsByCourse = function(course) {
-        // TODO: implement this
-        return [];
-    }
+        var problems = [];
+        var candidates = [];
+        var nextDay = course.weekDay + 1;
+        var previousDay = course.weekDay - 1;
+
+        //console.log('IMPO: ', course, 'early', this.isEarlyMorningCourse(course), 'late', this.isLateNightCourse(course));
+        //console.log('weekDay', course.weekDay, 'period', course.period, 'nextDay: ', nextDay, 'previousDay', previousDay);
+        //console.log('TEST', this.isEarlyMorningCourse(course), this.isWorkingDay(previousDay), this.isEarlyMorningCourse(course) && this.isWorkingDay(previousDay));
+
+        if(this.isEarlyMorningCourse(course) && this.isWorkingDay(previousDay)) {
+            candidates = this.findCoursesByWeekDayAndPeriod(previousDay, this.getLastWorkingPeriod());
+
+        } else if(this.isLateNightCourse(course) && this.isWorkingDay(nextDay)) {
+            candidates = this.findCoursesByWeekDayAndPeriod(nextDay, this.getFirstWorkingPeriod());
+        }
     
+        candidates.forEach(function(c) {
+            var hasMemberOverlap = false;
+    
+            course.members.forEach(function(member) {
+                if(c.members.includes(member)) {
+                    hasMemberOverlap = true;
+                }
+            });
+    
+            if(hasMemberOverlap) {
+                problems.push(c);
+            }
+        });
+    
+        return problems;
+    }
+
+    this.highlightScheduleClashes = function(clashes) {
+        if(!clashes || clashes.length == 0) {
+            return;
+        }
+
+        clashes.forEach(function(course) {
+            $('#course-node-' + course.id + ' div.side').append('C').addClass('clash');
+        });
+    };
+
+    this.highlightWorkingImpediments = function(course, impediments) {
+        if(!impediments || impediments.length == 0) {
+            return;
+        }
+
+        impediments.forEach(function(course) {
+            $('#course-node-' + course.id + ' div.side').append('I').addClass('impediment');
+        });
+
+        // highlight the offending course as well
+        $('#course-node-' + course.id + ' div.side').append('I').addClass('impediment');
+    };
+
+    this.clearConstraintHighlights = function() {
+        $('.course-node').each(function(i, el) {
+            $(el).find('div.side').empty();
+            $(el).find('div.side').removeClass('clash impediment');
+        });
+    };
+
     this.checkConstraintsByCourse = function(course) {
         var clashes = this.findScheduleClashesByCourse(course);
+        var isSelfClash = clashes.length == 1 && clashes[0].id == course.id;
         var impediments = this.findWorkingImpedimentsByCourse(course);
     
-        if(clashes.length > 0) {
-            // TODO: alert about clashes
-            console.log('CLASHES FOUND:', clashes);
+        this.clearConstraintHighlights();
+
+        if(clashes.length > 0 && !isSelfClash) {
+            this.highlightScheduleClashes(clashes);
         }
     
         if(impediments.length > 0) {
-            // TODO: alert about impediments
-            console.log('WORKING IMPEDIMENTS FOUND:', impediments);
+            this.highlightWorkingImpediments(course, impediments);
         }
     }
     
@@ -443,6 +542,7 @@ Horarios.App = function() {
     }
     
     this.addOrUpdateCourse = function(courseObj) {
+        console.log(courseObj);
         var isUpdate = courseObj.id;
         var group = this.getGroupById(courseObj.group);
     
@@ -537,12 +637,27 @@ Horarios.App = function() {
         });
     
         $('#modal-group').modal('hide');
-    }
+    };
+
+    this.findById = function(collection, id) {
+        var item = null;
+
+        if(!collection) {
+            return null;
+        }
+        
+        collection.forEach(function(i) {
+            if(i.id == id) {
+                item = i;
+            }
+        });
+
+        return item;
+    };
 };
 
 // TODO: move this to API endpoint
 var weekDays = [
-    {id: 1, name: ""},
     {id: 2, name: "Segunda-feira"},
     {id: 3, name: "Terça-feira"},
     {id: 4, name: "Quarta-feira"},
@@ -554,12 +669,12 @@ var weekDays = [
 
 // TODO: move this to API endpoint
 var periods = [
-    {id: 1, name: "Manha1"},
-    {id: 2, name: "Manha2"},
-    {id: 3, name: "Tarde1"},
-    {id: 4, name: "Tarde2"},
-    {id: 5, name: "Noite1"},
-    {id: 6, name: "Noite2"}
+    {id: 2, name: "Manha1"},
+    {id: 3, name: "Manha2"},
+    {id: 4, name: "Tarde1"},
+    {id: 5, name: "Tarde2"},
+    {id: 6, name: "Noite1"},
+    {id: 7, name: "Noite2"}
 ];
 
 $(function () {

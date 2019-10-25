@@ -23,3 +23,41 @@ h2 {
 #buttonProgramSelector {
   font-weight: bold;
 }
+
+/* Course node */
+
+.course-node {
+  height: 100%;
+}
+
+.course-node div.header {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1000;
+  width: 50px;
+  height: 20px;
+  background: green;
+}
+
+.course-node div.side {
+  width: 20px;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.course-node div.side.clash {
+  background: red;
+}
+
+.course-node div.side.impediment {
+  background: orange;
+}
+
+.course-node div.content {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
