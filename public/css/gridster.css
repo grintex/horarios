@@ -17,11 +17,7 @@ body {
     border-collapse: collapse;
     border-spacing: 0;
   }
-  .demo {
-    margin: 3em 0;
-    padding: 7.5em 0 5.5em;
-    background: #26941f;
-  }
+  
   .demo:hover .gridster {
     margin: 0 auto;
     opacity: .8;

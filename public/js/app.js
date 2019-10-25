@@ -135,13 +135,7 @@ Horarios.App = function() {
 
             courses.forEach(function(course) {
                 group.grid.add_widget(
-                    '<li class="new" data-course="' + course.id + '">' +
-                        '<header><i class="icon ion-md-move"></i></header>' +
-                        '<a href="javascript:void(0);" class="btn btn-outline-light" data-toggle="modal" data-target="#modal-course" data-course="' + course.id + '"><i class="icon ion-md-create edit"></i></a>' +
-                        course.name +
-                        '<br />' +
-                        course.members.join(', ') +
-                    '</li>',
+                    self.generateCourseGridNodeHTML(course),
                     1,
                     1,
                     course.weekDay,
@@ -288,16 +282,41 @@ Horarios.App = function() {
         }).data('gridster');
     
         for(var i = 0; i < periods.length; i++) {
-            g.add_widget('<li class="new fixed"><header style="pointer-events: none;"></header>' + periods[i].name + '</li>', 1, 1, 1, i + 2);
+            g.add_widget(this.generateGridNodeHTML(periods[i].name, {}, false), 1, 1, 1, i + 2);
         }
     
         for(var j = 0; j < weekDays.length; j++) {
-            g.add_widget('<li class="new fixed"><header style="pointer-events: none;"></header>' + weekDays[j].name + '</li>', 1, 1, j + 1, 1);
+            g.add_widget(this.generateGridNodeHTML(weekDays[j].name, {}, false), 1, 1, j + 1, 1);
         }
     
         return g;
     }
     
+    this.generateGridNodeHTML = function(content, data, clickable) {
+        var complement = '';
+        var shouldClick = clickable == undefined ? true : clickable;
+        var attributes = data || {};
+
+        for(var a in attributes) {
+            complement += 'data-' + a + '="' + attributes[a] + '" ';
+        }
+
+        return '<li class="new ' + (shouldClick ? '' : 'fixed' ) + '" ' + complement + '><header style="' + (shouldClick ? '' : 'pointer-events: none;') + 'width: 100%; height: 100%; position: absolute; z-index: 1;"></header>' + (content || '') + '</li>';
+    };
+
+
+    this.generateCourseGridNodeHTML = function(course) {
+        var content = 
+            '<div>' + 
+                '<a href="javascript:void(0);" class="btn btn-outline-light" style="position: absolute; z-index: 1000;" data-toggle="modal" data-target="#modal-course" data-course="' + course.id + '"><i class="icon ion-md-create edit"></i></a>' +
+                course.name +
+                '<br />' +
+                course.members.join(', ') +
+            '</div>';
+        
+        return this.generateGridNodeHTML(content, {course: course.id}, true);
+    };
+
     this.findScheduleClashesByCourse = function(course) {
         var clashes = [];
         var candidates = this.findCoursesByWeekDayAndPeriod(course.weekDay, course.period);
@@ -442,7 +461,7 @@ Horarios.App = function() {
             // Creating a new course
             courseObj.id = this.getNextCourseId();
             this.data.program.courses.push(courseObj);
-            group.grid.add_widget('<li class="new" data-course="' + courseObj.id + '"><header>|||</header>' + courseObj.name + '</li>', 1, 1, 8, 2);
+            group.grid.add_widget(this.generateCourseGridNodeHTML(courseObj), 1, 1, 8, 2);
         
             console.log('Course added: ', courseObj);
         }
