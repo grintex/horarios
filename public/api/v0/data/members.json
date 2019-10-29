@@ -15,7 +15,7 @@
     "email": "emilio.wuerges@uffs.edu.br"
   },
   "duarte": {
-    "id": "duarte@uffs",
+    "id": "duarte",
     "name": "Denio Duarte",
     "email": "duarte@uffs.edu.br"
   },
@@ -40,12 +40,12 @@
     "email": "raquel.pegoraro@uffs.edu.br"
   },
   "padilha": {
-    "id": "padilha@uffs",
+    "id": "padilha",
     "name": "Adriano Sanick Padilha",
     "email": "padilha@uffs.edu.br"
   },
   "braulio": {
-    "id": "braulio@uffs",
+    "id": "braulio",
     "name": "Braulio Adriano de Mello",
     "email": "braulio@uffs.edu.br"
   },
@@ -55,12 +55,12 @@
     "email": "graziela.tonin@uffs.edu.br"
   },
   "lcaimi": {
-    "id": "lcaimi@uffs",
+    "id": "lcaimi",
     "name": "Luciano Lores Caimi",
     "email": "lcaimi@uffs.edu.br"
   },
   "asebben": {
-    "id": "asebben@uffs",
+    "id": "asebben",
     "name": "Andressa Sebben",
     "email": "asebben@uffs.edu.br"
   },
@@ -75,7 +75,7 @@
     "email": "cf-k@uffs.edu.br"
   },
   "lbordin": {
-    "id": "lbordin@uffs",
+    "id": "lbordin",
     "name": "Leandro Bordin",
     "email": "lbordin@uffs.edu.br"
   },
@@ -85,7 +85,7 @@
     "email": "divane.marcon@uffs.edu.br"
   },
   "radin": {
-    "id": "radin@uffs",
+    "id": "radin",
     "name": "Jose Carlos Radin",
     "email": "radin@uffs.edu.br"
   },
@@ -95,7 +95,7 @@
     "email": "tatiane.mattei@uffs.edu.br"
   },
   "cora": {
-    "id": "cora@uffs",
+    "id": "cora",
     "name": "Elsio Jose Cora",
     "email": "cora@uffs.edu.br"
   },
@@ -105,7 +105,7 @@
     "email": "josiane.hoffmann@uffs.edu.br"
   },
   "acneri": {
-    "id": "acneri@uffs",
+    "id": "acneri",
     "name": "Antonio Marcos Correa Neri",
     "email": "acneri@uffs.edu.br"
   },
