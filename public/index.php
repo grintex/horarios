@@ -28,40 +28,78 @@ $user = isset($_SESSION['user']) ? $_SESSION['user'] : (object) array('name' => 
 <body>
     <header class="bg-dark">
         <div class="container">
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                <a class="navbar-brand" href="./"><i class="icon ion-md-stopwatch"></i> Organizador de Horários</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarText">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
-                            <a class="btn btn-outline-light ml-md-3" href="./logout">Sair</a>
-                        </li>
-                    </ul>
+            <nav class="navbar navbar-dark bg-dark">
+                <div class="col-sm-4">
+                    <a class="navbar-brand" href="./"><i class="icon ion-md-stopwatch"></i> Organizador de Horários</a>
+                </div>
+                <div class="col-sm-7 text-right">
                     <span class="navbar-text">
-                        <?php echo ucwords(strtolower($user->name)) . ' (' . $user->username . ')'; ?>
+                        <?php echo ucwords(strtolower($user->name)) . '<br /><small>' . $user->username . '</small>'; ?>
                     </span>
+                </div>
+                <div class="col-sm-1">
+                    <div class="user-area dropdown float-right">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img class="user-avatar rounded-circle" src="https://colorlib.com/polygon/sufee/images/admin.jpg" alt="User Avatar">
+                        </a>
+                        <div class="user-menu dropdown-menu">
+                            <a class="nav-link" href="#"><i class="fa fa- user"></i>My Profile</a>
+                            <a class="nav-link" href="#"><i class="fa fa- user"></i>Notifications <span class="count">13</span></a>
+                            <a class="nav-link" href="#"><i class="fa fa -cog"></i>Settings</a>
+                            <a class="nav-link" href="#"><i class="fa fa-power -off"></i>Logout</a>
+                        </div>
+                    </div>
                 </div>
             </nav>
         </div>
     </header>
 
-    <div id="groups" class="container-fluid">
-        <div class="row" id="groups-header">
-            <div class="col-lg-12">
-                <div class="card text-white bg-dark border-secondary status-meta">
-                    <div class="card-header text-right">
+    <div class="container">
+        <div class="row meta-block">
+            <div class="col-lg-6">
+                <div class="card text-white bg-dark border-secondary">
+                    <div class="card-header">
+                        Curso
+                    </div>
+                    <div class="card-body">
                         <div class="dropdown" id="programSelector">
                             <button class="btn btn-outline-light dropdown-toggle" type="button" id="buttonProgramSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                             <div class="dropdown-menu" aria-labelledby="buttonProgramSelector" id="dropdownMenuProgramSelector"></div>
                         </div>
                     </div>
-                    <div class="card-body"></div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="card text-white bg-dark border-secondary">
+                    <div class="card-header">
+                        Período
+                    </div>
+                    <div class="card-body">
+                        <div class="dropdown" id="periodSelector">
+                            <button class="btn btn-outline-light dropdown-toggle" type="button" id="buttonPeriodSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">2020.1</button>
+                            <div class="dropdown-menu" aria-labelledby="buttonPeriodSelector" id="dropdownMenuPeriodSelector"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card text-white bg-dark border-secondary">
+                    <div class="card-header">
+                        Revisão
+                    </div>
+                    <div class="card-body">
+                        <div class="dropdown" id="revisionSelector">
+                            <button class="btn btn-outline-light dropdown-toggle" type="button" id="buttonRevisionSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">REV001 - 01/11/2019 14:28</button>
+                            <div class="dropdown-menu" aria-labelledby="buttonRevisionSelector" id="dropdownMenuRevisionSelector"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
 
+    <div id="groups" class="container-fluid">
+        <div class="row" id="groups-header"></div>
         <div id="groups-content"></div>
 
         <div id="groups-footer">

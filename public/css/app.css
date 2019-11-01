@@ -1,3 +1,7 @@
+header {
+  margin-bottom: 1em;
+}
+
 h2 {
   font-size: 1.5em;
   color: #f5f5f5;
@@ -14,7 +18,7 @@ div.card-header a {
 }
 
 .schedule-block {
-  margin-bottom: 6em;
+  margin-bottom: 2em;
 }
 
 .gridster ul {
@@ -197,4 +201,28 @@ div.card-header a {
     border: solid 2px #ff4c5e;
     color: #721c24;
   }
+}
+
+.user-avatar {
+  width: 50px;
+  height: auto;
+}
+
+.card-header {
+  font-weight: bold;
+  color: rgb(199, 199, 199);
+}
+
+.meta-block {
+  margin-bottom: 30px;
+}
+
+.meta-block .card-body {
+  height: 70px;
+  padding-top: 10px;
+  color: rgb(233, 233, 233);
+}
+
+.meta-block .card-body button {
+  font-size: 1.2em;  
 }
