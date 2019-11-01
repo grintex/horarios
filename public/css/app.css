@@ -19,6 +19,9 @@ h2 {
 }
 
 .gridster li header {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   z-index: 1;
@@ -50,6 +53,7 @@ h2 {
 
 .course-node {
   height: 100%;
+  border: 1px solid #858585;
 }
 
 .course-node div.header {
@@ -77,14 +81,6 @@ h2 {
   top: 0;
 }
 
-.course-node div.side.clash {
-  background: red;
-}
-
-.course-node div.side.impediment {
-  background: orange;
-}
-
 .course-node div.content {
   pointer-events: none;  
   position: absolute;
@@ -103,4 +99,89 @@ h2 {
 .course-node div.content small {
   font-size: 0.7em;
   color: rgb(160, 160, 160);
+}
+
+.course-node.clash {
+  background-color: rgb(255, 176, 183);
+  border: solid 2px;
+}
+
+.course-node.impediment {
+  background-color: #fff3cd;
+  border: solid 2px;
+}
+
+.course-node.clash div.content strong {
+  color: #721c24;
+}
+
+.course-node.clash div.content small {
+  color: #721c24;
+}
+
+.course-node.impediment div.content strong {
+  color: #856404;
+}
+
+.course-node.impediment div.content small {
+  color: #856404;
+}
+
+.clash, .impediment {
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
+
+.clash {
+  animation-name: color-clash;
+}
+
+.impediment {
+  animation-name: color-impediment;
+}
+
+.clash.impediment {
+  animation-name: color-clash-impediment;
+}
+
+@keyframes color-clash {
+  0% {
+    border-color: rgb(255, 176, 183);
+  }
+  50% {
+    border-color: #ff4c5e;
+  }
+  100% {
+    border-color: rgb(255, 176, 183);
+  }
+}
+
+@keyframes color-impediment {
+  0% {
+    border-color: #fff3cd;
+  }
+  50% {
+    border-color: #fdc200;
+  }
+  100% {
+    border-color: #fff3cd;
+  }
+}
+
+@keyframes color-clash-impediment {
+  0% {
+    background-color: rgb(255, 176, 183);
+    border: solid 2px #ff4c5e;
+    color: #721c24;
+  }
+  75% {
+    background-color: #fff3cd;
+    border: solid 2px #ffcc24;
+    color: #856404;
+  }
+  100% {
+    background-color: rgb(255, 176, 183);
+    border: solid 2px #ff4c5e;
+    color: #721c24;
+  }
 }

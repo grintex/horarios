@@ -463,7 +463,7 @@ Horarios.App = function() {
         }
 
         clashes.forEach(function(course) {
-            $('#course-node-' + course.id + ' div.side').append('C').addClass('clash');
+            $('#course-node-' + course.id).addClass('clash');
         });
     };
 
@@ -473,17 +473,17 @@ Horarios.App = function() {
         }
 
         impediments.forEach(function(course) {
-            $('#course-node-' + course.id + ' div.side').append('I').addClass('impediment');
+            $('#course-node-' + course.id).addClass('impediment');
         });
 
         // highlight the offending course as well
-        $('#course-node-' + course.id + ' div.side').append('I').addClass('impediment');
+        $('#course-node-' + course.id).addClass('impediment');
     };
 
     this.clearConstraintHighlights = function() {
         $('.course-node').each(function(i, el) {
             $(el).find('div.side').empty();
-            $(el).find('div.side').removeClass('clash impediment');
+            $(el).removeClass('clash impediment');
         });
     };
 

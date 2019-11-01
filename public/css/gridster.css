@@ -49,7 +49,7 @@ body {
   .gridster .preview-holder {
     border: none !important;
     border-radius: 0 !important;
-    background: rgb(255, 186, 240) !important;
+    background: #00bc8c !important;
   }
   .gridster ul {
     background-color: transparent;
