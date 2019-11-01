@@ -52,7 +52,7 @@ body {
     background: rgb(255, 186, 240) !important;
   }
   .gridster ul {
-    background-color: #464646;
+    background-color: transparent;
   }
   .gridster li {
     font-size: 1.0em;

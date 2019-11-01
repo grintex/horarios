@@ -341,7 +341,7 @@ Horarios.App = function() {
             complement += 'data-' + a + '="' + attributes[a] + '" ';
         }
 
-        return '<li class="new ' + (shouldClick ? '' : 'fixed' ) + '" ' + complement + '><header style="' + (shouldClick ? '' : 'pointer-events: none;') + 'width: 100%; height: 100%; position: absolute; z-index: 1;"></header>' + (content || '') + '</li>';
+        return '<li class="new ' + (shouldClick ? '' : 'fixed' ) + '" ' + complement + '><header></header>' + (content || '') + '</li>';
     };
 
 
@@ -349,15 +349,22 @@ Horarios.App = function() {
         var content = 
             '<div class="course-node" id="course-node-' + course.id + '">' +
                 '<div class="header">' + 
-                    '<a href="javascript:void(0);" class="btn btn-outline-light" data-toggle="modal" data-target="#modal-course" data-course="' + course.id + '"><i class="icon ion-md-create edit"></i></a>' +
+                    '<div class="btn-group">' +
+                        '<button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">' +
+                            '<i class="fa fa-options"></i>' +
+                        '</button>' +
+                        '<div class="dropdown-menu dropdown-menu-lg-right">' +
+                            '<button class="dropdown-item" type="button" data-toggle="modal" data-target="#modal-course" data-course="' + course.id + '"><i class="icon ion-md-create edit"></i> Editar</button>' +
+                        '</div>' +
+                    '</div>' +
                 '</div>' + 
                 '<div class="side">' + 
                     '' +
                 '</div>' +
                 '<div class="content">' + 
-                    course.name +
+                    '<strong>' + course.name + '</strong>' +
                     '<br />' +
-                    course.members.join(', ') +
+                    '<small>' + course.members.join(', ') + '</small>' +
                 '</div>' +                 
             '</div>';
         

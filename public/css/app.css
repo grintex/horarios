@@ -7,17 +7,39 @@ h2 {
   margin-bottom: 6em;
 }
 
+.gridster ul {
+  
+}
+
+.gridster .gs-w {
+  background: #5e5e5e;
+  cursor: pointer;
+  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.gridster li header {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
 .gridster li.fixed {
   background-color: transparent;
   border: 1px #6b6b6b solid;
   vertical-align: middle;
   color: #9b9b9b;
   font-size: 0.9em;
+  padding-top: 1em;
 }
 
 .gridster li.fixed header {
   pointer-events: none;
-  height: 1.1em;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
 }
 
 #buttonProgramSelector {
@@ -35,9 +57,16 @@ h2 {
   top: 0;
   right: 0;
   z-index: 1000;
-  width: 50px;
+  width: 30px;
+  height: 30px;
+}
+
+.course-node div.header .btn-group button.dropdown-toggle {
+  padding: 0 1px 1px 0;
+  margin-right: -3px;
+  margin-top: 3px;
   height: 20px;
-  background: green;
+  width: 20px;
 }
 
 .course-node div.side {
@@ -57,8 +86,21 @@ h2 {
 }
 
 .course-node div.content {
+  pointer-events: none;  
   position: absolute;
   left: 10px;
   top: 10px;
+  color: rgb(204, 204, 204);
+  text-align: left;
+}
+
+.course-node div.content strong {
+  font-weight: bold;
+  font-size: 0.8em;
+  color: rgb(200, 200, 200);
+}
+
+.course-node div.content small {
   font-size: 0.7em;
+  color: rgb(160, 160, 160);
 }
