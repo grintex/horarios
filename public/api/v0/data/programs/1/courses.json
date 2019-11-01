@@ -768,7 +768,7 @@
         "program": 1,
         "group": 6,
         "weekDay": 6,
-        "period": 6,
+        "period": 7,
         "members": [
             "emilio.wuerges"
         ]
@@ -779,8 +779,8 @@
         "name": "Geometria Anal\u00edtica",
         "program": 1,
         "group": 6,
-        "weekDay": 6,
-        "period": 7,
+        "weekDay": 4,
+        "period": 6,
         "members": [
             "acneri"
         ]
@@ -791,7 +791,7 @@
         "name": "Engenharia de Software I",
         "program": 1,
         "group": 6,
-        "weekDay": 4,
+        "weekDay": 6,
         "period": 6,
         "members": [
             "raquel.pegoraro"

@@ -152,6 +152,21 @@ Horarios.App = function() {
         });
 
         this.buildDropdownProgramSelection();
+        this.checkProgramConstraints();
+    };
+
+    this.checkProgramConstraints = function() {
+        var self = this;
+
+        this.clearConstraintHighlights();
+
+        this.data.program.groups.forEach(function(group) {
+            var courses = self.findCoursesByGroupId(group.id);
+            
+            courses.forEach(function(course) {
+                self.checkConstraintsByCourse(course);
+            });
+        });
     };
 
     this.init = function(context) {
@@ -207,8 +222,8 @@ Horarios.App = function() {
         course.period = data.row | 0;
         course.weekDay = data.col | 0;
 
-        this.checkConstraintsByCourse(course);
         this.commitCourse(course);
+        this.checkProgramConstraints();
     };
 
     this.commitCourse = function(course) {
@@ -458,8 +473,6 @@ Horarios.App = function() {
         var isSelfClash = clashes.length == 1 && clashes[0].id == course.id;
         var impediments = this.findWorkingImpedimentsByCourse(course);
     
-        this.clearConstraintHighlights();
-
         if(clashes.length > 0 && !isSelfClash) {
             this.highlightScheduleClashes(clashes);
         }
