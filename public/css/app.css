@@ -1,6 +1,16 @@
 h2 {
-  font-size: 1.8em;
-  color: #e4e4e4;
+  font-size: 1.5em;
+  color: #f5f5f5;
+}
+
+h2 i {
+  color: #bebebe;
+  margin-right: 0.5em;
+}
+
+div.card-header a {
+  font-size: 0.7em;
+  margin: -0.5em 0 0 0.5em;
 }
 
 .schedule-block {
@@ -31,9 +41,11 @@ h2 {
   background-color: transparent;
   border: 1px #6b6b6b solid;
   vertical-align: middle;
-  color: #9b9b9b;
-  font-size: 0.9em;
-  padding-top: 1em;
+  color: #838383;
+  font-size: 1.0em;
+  padding-top: 2.0em;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .gridster li.fixed header {
@@ -54,6 +66,7 @@ h2 {
 .course-node {
   height: 100%;
   border: 1px solid #858585;
+  vertical-align: middle;
 }
 
 .course-node div.header {
@@ -84,20 +97,20 @@ h2 {
 .course-node div.content {
   pointer-events: none;  
   position: absolute;
-  left: 10px;
-  top: 10px;
+  width: 85%;
+  left: 1em;
+  top: 1em;
   color: rgb(204, 204, 204);
-  text-align: left;
+  text-align: center;
 }
 
 .course-node div.content strong {
-  font-weight: bold;
-  font-size: 0.8em;
+  font-size: 1em;
   color: rgb(200, 200, 200);
 }
 
 .course-node div.content small {
-  font-size: 0.7em;
+  font-size: 0.85em;
   color: rgb(160, 160, 160);
 }
 

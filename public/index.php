@@ -21,8 +21,8 @@ $user = isset($_SESSION['user']) ? $_SESSION['user'] : (object) array('name' => 
     <link rel="stylesheet" href="./css/bootstrap.min.css" media="screen">
     <link rel="stylesheet" href="./css/ionicons.min.css" media="screen">
     <link rel="stylesheet" href="./js/3rdparty/jquery.dsmorse-gridster.min.css" type="text/css">
-    <link rel="stylesheet" href="./css/gridster.css" media="screen">
-    <link rel="stylesheet" href="./css/app.css" media="screen">
+    <link rel="stylesheet" href="./css/gridster.css?20191101" media="screen">
+    <link rel="stylesheet" href="./css/app.css?20191101" media="screen">
 </head>
 
 <body>
@@ -166,7 +166,7 @@ $user = isset($_SESSION['user']) ? $_SESSION['user'] : (object) array('name' => 
         </div>
     </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="./js/3rdparty/jquery.min.js"></script>
     <script src="./js/3rdparty/jquery.dsmorse-gridster.with-extras.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="./js/3rdparty/bootstrap.bundle.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="./js/3rdparty/store.everything.min.js" type="text/javascript" charset="utf-8"></script>
