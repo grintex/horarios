@@ -119,9 +119,59 @@
     "name": "Nedilso Lauro Brugnera",
     "email": "nedilso.brugnera@uffs.edu.br"
   },
-"douglas.balduino": {
+  "douglas.balduino": {
     "id": "douglas.balduino",
     "name": "Douglas Balduino Pereira",
     "email": "douglas.balduino@uffs.edu.br"
+  },
+  "janice": {
+    "id": "janice",
+    "name": "Janice",
+    "email": "janice@uffs.edu.br"
+  },
+  "glaucio.fontana": {
+    "id": "glaucio.fontana",
+    "name": "Glaucio",
+    "email": "glaucio.fontana@uffs.edu.br"
+  },
+  "pericles": {
+    "id": "pericles",
+    "name": "Péricles",
+    "email": "pericles@uffs.edu.br"
+  },
+  "mary.surdi": {
+    "id": "mary.surdi",
+    "name": "Mary Stela Surdi",
+    "email": "mary.surdi@uffs.edu.br"
+  },
+  "fernando.vojniak": {
+    "id": "fernando.vojniak",
+    "name": "Fernando Vojniak",
+    "email": "fernando.vojniak@uffs.edu.br"
+  },
+  "isis.matos": {
+    "id": "isis.matos",
+    "name": "Isis Oliveira Bastos Matos",
+    "email": "isis.matos@uffs.edu.br"
+  },
+  "paulo.bosin": {
+    "id": "paulo.bosin",
+    "name": "Paulo Bosin",
+    "email": "paulo.bosin@uffs.edu.br"
+  },
+  "ubi.vieira": {
+    "id": "ubi.vieira",
+    "name": "Ubi Vieira",
+    "email": "ubi.vieira@uffs.edu.br"
+  },
+  "subst.pavan": {
+    "id": "subst.pavan",
+    "name": "Substituto Pavan",
+    "email": "subst.pavan@uffs.edu.br"
+  },
+  "vaga.zatesko": {
+    "id": "vaga.zatesko",
+    "name": "Vaga Zatesko",
+    "email": "vaga.zatesko@uffs.edu.br"
   }
 }

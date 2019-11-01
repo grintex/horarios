@@ -1,7 +1,62 @@
 [
-    {"id": 1, "code": "GCS011", "name": "Mat Meio ambiente", "program": 2, "group": 1, "weekDay": 8, "period": 2, "members": ["marco.spohn"]},
-    {"id": 2, "code": "AAS011", "name": "Mat Algoritmos e Programação", "program": 2,  "group": 1, "weekDay": 8, "period": 2, "members": ["fernando.bevilacqua"]},
-    {"id": 3, "code": "BAS011", "name": "Mat I", "program": 2, "group": 2, "weekDay": 8, "period": 2, "members": ["fernando.bevilacqua"]},
-    {"id": 4, "code": "CAS011", "name": "Mat II", "program": 2, "group": 2, "weekDay": 8, "period": 2, "members": ["fernando.bevilacqua"]},
-    {"id": 5, "code": "MAS011", "name": "Matemática C", "program": 2, "group": 2, "weekDay": 8, "period": 2, "members": ["fernando.bevilacqua"]}
+    {
+        "id": 1,
+        "code": "GCS011",
+        "name": "Mat Meio ambiente",
+        "program": 2,
+        "group": 1,
+        "weekDay": 4,
+        "period": 3,
+        "members": [
+            "marco.spohn"
+        ]
+    },
+    {
+        "id": 2,
+        "code": "AAS011",
+        "name": "Mat Algoritmos e Programa\u00e7\u00e3o",
+        "program": 2,
+        "group": 1,
+        "weekDay": 2,
+        "period": 5,
+        "members": [
+            "fernando.bevilacqua"
+        ]
+    },
+    {
+        "id": 3,
+        "code": "BAS011",
+        "name": "Mat I",
+        "program": 2,
+        "group": 1,
+        "weekDay": 8,
+        "period": 2,
+        "members": [
+            "fernando.bevilacqua"
+        ]
+    },
+    {
+        "id": 4,
+        "code": "CAS011",
+        "name": "Mat II",
+        "program": 2,
+        "group": 1,
+        "weekDay": 8,
+        "period": 2,
+        "members": [
+            "fernando.bevilacqua"
+        ]
+    },
+    {
+        "id": 5,
+        "code": "MAS011",
+        "name": "Matem\u00e1tica C",
+        "program": 2,
+        "group": 1,
+        "weekDay": 4,
+        "period": 4,
+        "members": [
+            "fernando.bevilacqua"
+        ]
+    }
 ]
