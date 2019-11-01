@@ -1,0 +1,22 @@
+{
+    "name": "grintex/horarios",
+    "description": "Ferramenta web para organização dos horários semestrais de cursos de graduação.",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fernando Bevilacqua",
+            "email": "fernando.bevilacqua@uffs.edu.br"
+        }
+    ],
+    "require": {
+        "php": "^7.2",
+        "ccuffs/auth-iduffs": "dev-master"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/ccuffs/auth-iduffs"
+        }
+    ]
+}
