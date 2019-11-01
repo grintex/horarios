@@ -139,7 +139,7 @@ Horarios.App = function() {
     
         this.data.program.groups.forEach(function(group) {
             var courses = self.findCoursesByGroupId(group.id);
-            group.grid = self.createGrid('container', group);
+            group.grid = self.createGroupBlock('groups-content', group);
 
             courses.forEach(function(course) {
                 group.grid.add_widget(
@@ -257,16 +257,28 @@ Horarios.App = function() {
         }, this);
     };
 
-    this.createGrid = function(containerId, group) {
+    this.createGroupBlock = function(containerId, group) {
         var self = this;
         var num = group.id;
         var key = 'group-' + num;
-    
+
+        var template = $('#groups-content-template').html();
+        console.log(template);
+
         $('#' + containerId).append(
-            '<div id="' + key + '" class="schedule-block">' +
-                '<h2><i class="icon ion-md-today"></i> ' + group.name + ' <a href="javascript:void(0);" data-group="'+ group.id +'" data-toggle="modal" data-target="#modal-group"><i class="icon ion-md-create edit"></i></a></h2>' +
-                '<button type="button" class="btn btn-outline-light ml-md-3" data-toggle="modal" data-target="#modal-course" data-group="' + group.id + '"><i class="icon ion-md-add-circle"></i> Adicionar CCR</button>' +
-                '<div class="gridster"><ul></ul></div>' +
+            '<div id="' + key + '" class="row justify-content-center section">' +
+                '<div class="col-lg-12 schedule-block">' +
+                    '<div class="card text-white bg-dark border-secondary status-meta">' +
+                        '<div class="card-header">' +
+                            '<h2 class="float-left"><i class="icon ion-md-today"></i> ' + group.name + ' <a href="javascript:void(0);" data-group="'+ group.id +'" data-toggle="modal" data-target="#modal-group"><i class="icon ion-md-create edit"></i></a></h2>' +
+                            '<button type="button" class="btn btn-outline-light ml-md-3 float-right" data-toggle="modal" data-target="#modal-course" data-group="' + group.id + '"><i class="icon ion-md-add-circle"></i> Adicionar CCR</button>' +
+                        '</div>' +
+                        '<div class="card-body">' +
+                            '<div class="gridster"><ul></ul></div>'+
+                        '</div>' +
+                        //'<div class="card-footer text-muted"></div>' +
+                    '</div>' +
+                '</div>' +
             '</div>'
         );
     
@@ -606,7 +618,7 @@ Horarios.App = function() {
         } else {
             // Creating a new group
             groupObj.id = this.getNextGroupId();
-            groupObj.grid = this.createGrid('container', groupObj);
+            groupObj.grid = this.createGroupBlock('groups-content', groupObj);
 
             this.data.program.groups.push(groupObj);
         

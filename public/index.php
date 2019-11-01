@@ -47,8 +47,8 @@ $user = isset($_SESSION['user']) ? $_SESSION['user'] : (object) array('name' => 
         </div>
     </header>
 
-    <div class="container-fluid">
-        <div class="row justify-content-center section">
+    <div id="groups" class="container-fluid">
+        <div class="row" id="groups-header">
             <div class="col-lg-12">
                 <div class="card text-white bg-dark border-secondary status-meta">
                     <div class="card-header text-right">
@@ -57,14 +57,14 @@ $user = isset($_SESSION['user']) ? $_SESSION['user'] : (object) array('name' => 
                             <div class="dropdown-menu" aria-labelledby="buttonProgramSelector" id="dropdownMenuProgramSelector"></div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div id="container"></div>
-                    </div>
+                    <div class="card-body"></div>
                 </div>
             </div>
         </div>
 
-        <div>
+        <div id="groups-content"></div>
+
+        <div id="groups-footer">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-group">group</button>
         </div>
     </div>
