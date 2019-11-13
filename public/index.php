@@ -29,12 +29,16 @@ $user = isset($_SESSION['user']) ? $_SESSION['user'] : (object) array('name' => 
     <header class="bg-dark">
         <div class="container">
             <nav class="navbar navbar-dark bg-dark">
-                <div class="col-sm-4">
-                    <a class="navbar-brand" href="./"><i class="icon ion-md-stopwatch"></i> Organizador de Horários</a>
+                <div class="col-sm-2 brand">
+                    <img src="./img/logo/grintex-logo-white-transparent.png" title="Grintex" />
                 </div>
-                <div class="col-sm-7 text-right">
-                    <span class="navbar-text">
-                        <?php echo ucwords(strtolower($user->name)) . '<br /><small>' . $user->username . '</small>'; ?>
+                <div class="col-sm-3 text-left">
+                    <span class="navbar-text"></span>
+                </div>
+                <div class="col-sm-6 text-right">
+                    <span class="navbar-text user-info">
+                        <strong><?php echo ucwords(trim(strtolower($user->name))); ?></strong><br />
+                        <span><?php echo $user->username; ?></span>
                     </span>
                 </div>
                 <div class="col-sm-1">
@@ -43,10 +47,8 @@ $user = isset($_SESSION['user']) ? $_SESSION['user'] : (object) array('name' => 
                             <img class="user-avatar rounded-circle" src="https://colorlib.com/polygon/sufee/images/admin.jpg" alt="User Avatar">
                         </a>
                         <div class="user-menu dropdown-menu">
-                            <a class="nav-link" href="#"><i class="fa fa- user"></i>My Profile</a>
-                            <a class="nav-link" href="#"><i class="fa fa- user"></i>Notifications <span class="count">13</span></a>
-                            <a class="nav-link" href="#"><i class="fa fa -cog"></i>Settings</a>
-                            <a class="nav-link" href="#"><i class="fa fa-power -off"></i>Logout</a>
+                            <a class="nav-link" href="https://id.uffs.edu.br"><i class="icon ion-md-contact"></i>Meu perfil</a>
+                            <a class="nav-link" href="./logout"><i class="icon ion-md-log-out"></i> Sair</a>
                         </div>
                     </div>
                 </div>
@@ -171,34 +173,30 @@ $user = isset($_SESSION['user']) ? $_SESSION['user'] : (object) array('name' => 
         </div>
     </div>
 
-    <footer class="fdb-block footer-large bg-dark">
+    <footer class="">
         <div class="container">
             <div class="row align-items-top text-center text-md-left">
-                <div class="col-3 text-md-left">
-                    <h3><strong>About Us</strong></h3>
-                    <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+                <div class="col-4 text-md-left">
+                    <h3>Sobre</h3>
+                    <p class="small">Esse site foi criado pelo <a href="https://grintex.uffs.cc">Grupo de Inovação Tecnológica Experimental (GRINTEX)</a> da <a href="http://uffs.edu.br" target="_blank">Universidade Federal da Fronteira Sul</a>, campus Chapecó/SC. Ele é coordenado por membros do curso de <a href="https://cc.uffs.edu.br">Ciência da Computação</a> com participação de várias entidades, como a Secretaria Especial de Tecnologia da Informação (SETI).</p>
                 </div>
 
-                <div class="col-3"></div>
+                <div class="col-2"></div>
 
                 <div class="col-3">
-                    <h3><strong>Country B</strong></h3>
+                    <h3>Country B</h3>
                     <p>Street Address 100<br>Contact Name</p>
                     <p>+13 827 312 5002</p>
                     <p><a href="https://www.froala.com">countryb@amazing.com</a></p>
                 </div>
 
                 <div class="col-3">
-                    <h3><strong>Country B</strong></h3>
+                    <h3>Country B</h3>
                     <p>Street Address 100<br>Contact Name</p>
                     <p>+13 827 312 5002</p>
                     <p><a href="https://www.froala.com">countryb@amazing.com</a></p>
-                </div>
-            </div>
-
-            <div class="row mt-5">
-                <div class="col text-center text-muted">
-                    © 2018 Froala. All Rights Reserved
+                    <p><a href="https://www.froala.com">countryb@amazing.com</a></p>
+                    <p><a href="https://www.froala.com">countryb@amazing.com</a></p>
                 </div>
             </div>
         </div>
