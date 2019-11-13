@@ -1,5 +1,16 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
 header {
   margin-bottom: 1em;
+}
+
+h1 {
+  font-size: 1.4em;
+  color: #b3b3b3;
 }
 
 h2 {
@@ -203,9 +214,48 @@ div.card-header a {
   }
 }
 
+.navbar .brand img {
+  width: 100px;
+  height: auto;
+}
+
 .user-avatar {
   width: 50px;
   height: auto;
+}
+
+.user-info {
+  line-height: 1.2em;
+}
+
+.user-info strong {
+  color: rgb(242, 242, 242);
+}
+
+.user-info span {
+  font-size: 0.8em;
+}
+
+.user-menu i {
+  color: #00bc8c;
+  font-size: 1em;
+  margin-right: 0.3em;
+}
+
+.user-menu a:active,
+.user-menu a:hover,
+.user-menu a:visited,
+.user-menu a:link {
+  color: rgb(235, 235, 235);
+}
+
+.user-menu .nav-link:hover {
+  background: #00bc8c;
+  color: #fff;
+}
+
+.user-menu .nav-link:hover i {
+  color: #fff;
 }
 
 .card-header {
@@ -225,4 +275,27 @@ div.card-header a {
 
 .meta-block .card-body button {
   font-size: 1.2em;  
+  color: #00bc8c;
+  border-color: #00bc8c;
+}
+
+.meta-block .card-body button:hover {
+  background: #00bc8c;
+  color: #fff;
+}
+
+footer {
+  padding-top: 1em;
+  padding-bottom: 2em;
+  line-height: 1.2em;
+}
+
+footer h3 {
+  color: rgb(242, 242, 242);
+  font-size: 1.3em;
+}
+
+footer p {
+  font-size: 0.8em;
+  color :#8892a0;
 }
