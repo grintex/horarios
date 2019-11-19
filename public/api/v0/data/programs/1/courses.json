@@ -559,7 +559,7 @@
         "name": "Calculo I",
         "program": 1,
         "group": 5,
-        "weekDay": 4,
+        "weekDay": 3,
         "period": 6,
         "members": [
             "milton.kist"
@@ -571,7 +571,7 @@
         "name": "Circuitos Digitais",
         "program": 1,
         "group": 5,
-        "weekDay": 3,
+        "weekDay": 4,
         "period": 7,
         "members": [
             "padilha",
@@ -584,7 +584,7 @@
         "name": "Estrutura de Dados",
         "program": 1,
         "group": 5,
-        "weekDay": 3,
+        "weekDay": 4,
         "period": 6,
         "members": [
             "subst.pavan",
@@ -621,7 +621,7 @@
         "name": "Calculo I",
         "program": 1,
         "group": 5,
-        "weekDay": 4,
+        "weekDay": 3,
         "period": 7,
         "members": [
             "milton.kist"
