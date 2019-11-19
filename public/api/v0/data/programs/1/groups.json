@@ -47,11 +47,13 @@
     {
         "id": 10,
         "name": "Matematica",
+        "hidden": true,
         "grid": null
     },
     {
         "id": 11,
         "name": "Ambiental",
+        "hidden": true,
         "grid": null
     }
 ]
