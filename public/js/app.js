@@ -12,7 +12,8 @@ Horarios.App = function() {
     this.active = {
         groupId: undefined,
         programId: 1,
-        user: {id: 'fernando.bevilacqua'}
+        user: {id: 'fernando.bevilacqua'},
+        readOnly: true
     };
 
     this.boot = function() {
@@ -105,7 +106,6 @@ Horarios.App = function() {
         }
         
         $('#dropdownMenuProgramSelector a').click(function(e) {
-            console.log(e);
             self.handleSelectProgram(e);
         });
     };
@@ -263,12 +263,12 @@ Horarios.App = function() {
         var key = 'group-' + num;
 
         $('#' + containerId).append(
-            '<div id="' + key + '" class="row justify-content-center section">' +
+            '<div id="' + key + '" class="row justify-content-center section" style="' + (group.hidden ? 'display:none;' : '') + '">' +
                 '<div class="col-lg-12 schedule-block">' +
                     '<div class="card text-white status-meta">' +
                         '<div class="card-header alert alert-secondary">' +
-                            '<h2 class="float-left"><i class="icon ion-md-today"></i> ' + group.name + ' <a href="javascript:void(0);" data-group="'+ group.id +'" data-toggle="modal" data-target="#modal-group"><i class="icon ion-md-create edit"></i></a></h2>' +
-                            '<button type="button" class="btn btn-outline-light ml-md-3 float-right" data-toggle="modal" data-target="#modal-course" data-group="' + group.id + '"><i class="icon ion-md-add-circle"></i> Adicionar CCR</button>' +
+                            '<h2 class="float-left"><i class="icon ion-md-today"></i> ' + group.name + ' ' + (this.active.readOnly ? '' : '<a href="javascript:void(0);" data-group="'+ group.id +'" data-toggle="modal" data-target="#modal-group"><i class="icon ion-md-create edit"></i></a>') + '</h2>' +
+                            (this.active.readOnly ? '' : '<button type="button" class="btn btn-outline-light ml-md-3 float-right" data-toggle="modal" data-target="#modal-course" data-group="' + group.id + '"><i class="icon ion-md-add-circle"></i> Adicionar CCR</button>') +
                         '</div>' +
                         '<div class="card-body">' +
                             '<div class="gridster"><ul></ul></div>'+
@@ -338,14 +338,14 @@ Horarios.App = function() {
             complement += 'data-' + a + '="' + attributes[a] + '" ';
         }
 
-        return '<li class="new ' + (shouldClick ? '' : 'fixed' ) + '" ' + complement + '><header></header>' + (content || '') + '</li>';
+        return '<li class="new ' + (shouldClick ? '' : 'fixed' ) + ' ' + (this.active.readOnly ? 'readonly' : '') + '" ' + complement + '><header></header>' + (content || '') + '</li>';
     };
 
 
     this.generateCourseGridNodeHTML = function(course) {
         var content = 
             '<div class="course-node" id="course-node-' + course.id + '">' +
-                '<div class="header">' + 
+                '<div class="header ' + (this.active.readOnly ? 'readonly' : '') +'">' +
                     '<div class="btn-group">' +
                         '<button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">' +
                             '<i class="fa fa-options"></i>' +
@@ -425,10 +425,6 @@ Horarios.App = function() {
         var candidates = [];
         var nextDay = course.weekDay + 1;
         var previousDay = course.weekDay - 1;
-
-        //console.log('IMPO: ', course, 'early', this.isEarlyMorningCourse(course), 'late', this.isLateNightCourse(course));
-        //console.log('weekDay', course.weekDay, 'period', course.period, 'nextDay: ', nextDay, 'previousDay', previousDay);
-        //console.log('TEST', this.isEarlyMorningCourse(course), this.isWorkingDay(previousDay), this.isEarlyMorningCourse(course) && this.isWorkingDay(previousDay));
 
         if(this.isEarlyMorningCourse(course) && this.isWorkingDay(previousDay)) {
             candidates = this.findCoursesByWeekDayAndPeriod(previousDay, this.getLastWorkingPeriod());
