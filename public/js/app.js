@@ -694,12 +694,12 @@ var weekDays = [
 
 // TODO: move this to API endpoint
 var periods = [
-    {id: 2, name: "Manha1"},
-    {id: 3, name: "Manha2"},
-    {id: 4, name: "Tarde1"},
-    {id: 5, name: "Tarde2"},
-    {id: 6, name: "Noite1"},
-    {id: 7, name: "Noite2"}
+    {id: 2, name:"07:30", label: "Manha1"},
+    {id: 3, name:"10:20", label: "Manha2"},
+    {id: 4, name:"13:30", label: "Tarde1"},
+    {id: 5, name:"16:00", label: "Tarde2"},
+    {id: 6, name:"19:10", label: "Noite1"},
+    {id: 7, name:"21:00", label: "Noite2"}
 ];
 
 $(function () {

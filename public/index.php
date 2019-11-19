@@ -104,7 +104,7 @@ $user = isset($_SESSION['user']) ? $_SESSION['user'] : (object) array('name' => 
         <div class="row" id="groups-header"></div>
         <div id="groups-content"></div>
 
-        <div id="groups-footer">
+        <div id="groups-footer" style="display: none;">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-group">group</button>
         </div>
     </div>
@@ -173,7 +173,7 @@ $user = isset($_SESSION['user']) ? $_SESSION['user'] : (object) array('name' => 
         </div>
     </div>
 
-    <footer class="">
+    <footer class="" style="display: none;">
         <div class="container">
             <div class="row align-items-top text-center text-md-left">
                 <div class="col-4 text-md-left">
