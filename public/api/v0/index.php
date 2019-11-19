@@ -2,7 +2,7 @@
 
 function loadFile($path) {
 	if(!file_exists($path)) {
-		throw new Error('Unable to open file: ' . $path);
+		throw new Exception('Unable to open file: ' . $path);
 	}
 
 	$data = file_get_contents($path);
@@ -44,7 +44,14 @@ function updateItem($programId, $name, $dataAssoc) {
 	$ok = file_put_contents($path, json_encode($items, JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT));
 
 	if($ok === false) {
-		throw new Error('Error saving ' . $name . ' data for program with id=' . $programId);
+		throw new Exception('Error saving ' . $name . ' data for program with id=' . $programId);
+	}
+}
+
+// TODO: this is a temporary solution, fix it.
+function enforceWritePermissions() {
+	if(file_exists(__DIR__ . '/.readonly')) {
+		throw new Exception('Changes are not allowed in read only mode.');
 	}
 }
 
@@ -74,20 +81,24 @@ try {
 			break;
 
 		case 'updategroup':
+			enforceWritePermissions();
+
 			$group = isset($_REQUEST['group']) ? $_REQUEST['group'] : false;
 
 			if($group === false) {
-				throw Error('Invalid group info');
+				throw new Exception('Invalid group info');
 			}
 
 			updateItem($aProgramId, 'groups', $group);
 			break;
 
 		case 'updatecourse':
+			enforceWritePermissions();
+
 			$course = isset($_REQUEST['course']) ? $_REQUEST['course'] : false;
 
 			if($course === false) {
-				throw Error('Invalid course info');
+				throw new Exception('Invalid course info');
 			}
 
 			updateItem($aProgramId, 'courses', $course);
@@ -101,7 +112,7 @@ try {
 			$programs = loadData('programs', true);
 
 			if(!isset($programs[$aProgramId])) {
-				throw new Error('Unknown program with id=' . $aProgramId);
+				throw new Exception('Unknown program with id=' . $aProgramId);
 			}
 
 			$aReturn['data'] = array(
