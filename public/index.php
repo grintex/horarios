@@ -91,7 +91,7 @@ $user = isset($_SESSION['user']) ? $_SESSION['user'] : (object) array('name' => 
                     </div>
                     <div class="card-body">
                         <div class="dropdown" id="revisionSelector">
-                            <button class="btn btn-outline-light dropdown-toggle" type="button" id="buttonRevisionSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">REV001 - 01/11/2019 14:28</button>
+                            <button class="btn btn-outline-light dropdown-toggle" type="button" id="buttonRevisionSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">REV002 - 13/11/2019 16:07</button>
                             <div class="dropdown-menu" aria-labelledby="buttonRevisionSelector" id="dropdownMenuRevisionSelector"></div>
                         </div>
                     </div>
