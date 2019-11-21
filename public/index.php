@@ -100,6 +100,19 @@ $user = isset($_SESSION['user']) ? $_SESSION['user'] : (object) array('name' => 
         </div>
     </div>
 
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="alert alert-danger" role="alert">
+                    <h4 class="alert-heading">Atenção</h4>
+                    <p>Esse horário é preliminar. Ele foi decidido e homologado pelo Colegiado do Curso, então há baixas chances que ele seja alterado. Entretanto, ele pode sofrer alterações conforme demandas da Coordenação Acadêmica em virtude de alocações fora do controle da Coordenação do Curso.</p>
+                    <hr>
+                    <p class="mb-0">Dúvidas? Escreva para <a href="mailto:computacao.ch@uffs.edu.br">computacao.ch@uffs.edu.br</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="groups" class="container-fluid">
         <div class="row" id="groups-header"></div>
         <div id="groups-content"></div>
