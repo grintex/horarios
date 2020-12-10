@@ -19,7 +19,7 @@
     </head>
     <body>
     <header class="bg-dark">
-        <div class="container">
+        <div class="container-fluid">
             <nav class="navbar navbar-dark bg-dark">
                 <div class="col-sm-2 brand">
                     <img src="./img/logo/grintex-logo-white-transparent.png" title="Grintex" />
@@ -48,71 +48,78 @@
         </div>
     </header>
 
-    <div class="container">
-        <div class="row meta-block">
-            <div class="col-lg-6">
-                <div class="card text-white bg-dark border-secondary">
-                    <div class="card-header">
-                        Curso
-                    </div>
-                    <div class="card-body">
-                        <div class="dropdown" id="programSelector">
-                            <button class="btn btn-outline-light dropdown-toggle" type="button" id="buttonProgramSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                            <div class="dropdown-menu" aria-labelledby="buttonProgramSelector" id="dropdownMenuProgramSelector"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-2">
-                <div class="card text-white bg-dark border-secondary">
-                    <div class="card-header">
-                        Período
-                    </div>
-                    <div class="card-body">
-                        <div class="dropdown" id="periodSelector">
-                            <button class="btn btn-outline-light dropdown-toggle" type="button" id="buttonPeriodSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">2020.1</button>
-                            <div class="dropdown-menu" aria-labelledby="buttonPeriodSelector" id="dropdownMenuPeriodSelector"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="card text-white bg-dark border-secondary">
-                    <div class="card-header">
-                        Revisão
-                    </div>
-                    <div class="card-body">
-                        <div class="dropdown" id="revisionSelector">
-                            <button class="btn btn-outline-light dropdown-toggle" type="button" id="buttonRevisionSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">REV002 - 13/11/2019 16:07</button>
-                            <div class="dropdown-menu" aria-labelledby="buttonRevisionSelector" id="dropdownMenuRevisionSelector"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid">
+        
     </div>
 
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-12">
-                <div class="alert alert-danger" role="alert">
-                    <h4 class="alert-heading">Atenção</h4>
-                    <p>Esse horário é preliminar. Ele foi decidido e homologado pelo Colegiado do Curso, então há baixas chances que ele seja alterado. Entretanto, ele pode sofrer alterações conforme demandas da Coordenação Acadêmica em virtude de alocações fora do controle da Coordenação do Curso.</p>
-                    <hr>
-                    <p class="mb-0">Dúvidas? Escreva para <a href="mailto:computacao.ch@uffs.edu.br">computacao.ch@uffs.edu.br</a></p>
+            <div class="col-2 px-1 bg-dark position-fixed" id="sticky-sidebar">
+                <div class="nav flex-column flex-nowrap vh-100 overflow-auto text-white p-2">
+                    <a href="./" class="nav-link">Link</a>
+                    <a href="./" class="nav-link">Link</a>
+                    <a href="./" class="nav-link">Link</a>
+                    <a href="./" class="nav-link">Link</a>
+                    <a href="./" class="nav-link">Link</a>
+                    <a href="./" class="nav-link">Link ...</a>
+                </div>
+            </div>
+            <div class="col-10 offset-2" id="main">
+                <div class="row meta-block">
+                    <div class="col-lg-6">
+                        <div class="card text-white bg-dark border-secondary">
+                            <div class="card-header">
+                                Curso
+                            </div>
+                            <div class="card-body">
+                                <div class="dropdown" id="programSelector">
+                                    <button class="btn btn-outline-light dropdown-toggle" type="button" id="buttonProgramSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                    <div class="dropdown-menu" aria-labelledby="buttonProgramSelector" id="dropdownMenuProgramSelector"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="card text-white bg-dark border-secondary">
+                            <div class="card-header">
+                                Período
+                            </div>
+                            <div class="card-body">
+                                <div class="dropdown" id="periodSelector">
+                                    <button class="btn btn-outline-light dropdown-toggle" type="button" id="buttonPeriodSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">2020.1</button>
+                                    <div class="dropdown-menu" aria-labelledby="buttonPeriodSelector" id="dropdownMenuPeriodSelector"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card text-white bg-dark border-secondary">
+                            <div class="card-header">
+                                Revisão
+                            </div>
+                            <div class="card-body">
+                                <div class="dropdown" id="revisionSelector">
+                                    <button class="btn btn-outline-light dropdown-toggle" type="button" id="buttonRevisionSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">REV002 - 13/11/2019 16:07</button>
+                                    <div class="dropdown-menu" aria-labelledby="buttonRevisionSelector" id="dropdownMenuRevisionSelector"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="groups" class="container-fluid">
+                    <div class="row" id="groups-header"></div>
+                    <div id="groups-content"></div>
+
+                    <div id="groups-footer" style="display: none;">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-group">group</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="groups" class="container-fluid">
-        <div class="row" id="groups-header"></div>
-        <div id="groups-content"></div>
-
-        <div id="groups-footer" style="display: none;">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-group">group</button>
-        </div>
-    </div>
+    
 
     <!-- Modals -->
     <div class="modal fade" id="modal-course" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
