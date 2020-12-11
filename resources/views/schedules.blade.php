@@ -57,7 +57,7 @@
             <div class="col-3 px-1 bg-dark position-fixed" id="sidebar">
                 <div class="nav flex-column flex-nowrap vh-100 overflow-auto text-white p-2">
                     <p class="font-weight-bold">Docentes</p>
-                    <table class="table table-striped table-dark" id="involedPersonnel">
+                    <table class="table table-dark" id="involedPersonnel">
                         <thead>
                             <tr>
                             <th scope="col">Nome</th>

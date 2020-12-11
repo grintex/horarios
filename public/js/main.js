@@ -193,7 +193,6 @@ Horarios.App = function() {
         var unique = {};
 
         courses.forEach(function(course) {
-            console.log(course);
             if(fromProgramId === undefined || fromProgramId == course.program) {
                 unique[course.name] = course;
             }
@@ -222,6 +221,21 @@ Horarios.App = function() {
         return str;
     };
 
+    this.createWeekScheduleChart = function(person) {
+        var content = '';
+
+        ['S', 'T', 'Q', 'Q', 'S', 'S'].forEach(function(weekDay, idx) {
+            var weekDayOccurrences = person.weekDays.filter(function(v){ return v === (idx + 2); }).length;
+
+            content += '<div style="width: 12%; height: 100%; position: relative; margin-right: 3%; float: left;">' +
+                        '<div style="position: absolute; bottom: 35%; width: 100%; height: ' + (1 + 64 * (weekDayOccurrences / 6.0)) + '%; background: #00BC80;">' + (weekDayOccurrences != 0 ? '<p style="font-size: 0.8em; position: absolute; top: -30px; left: 20%; color: #afafaf;">' + weekDayOccurrences  + '</p>': '') + '</div>' +
+                        '<div style="position: absolute; left: 30%; bottom: 0; color: #8f8f8f;">' + weekDay + '</div>' +
+                    '</div>';
+        });
+ 
+        return '<div style="width: 100%; height: 100px;">' + content + '</div>';
+    };
+
     this.refreshInvoledPersonnelSidebar = function(personnel) {
         var self = this;
         var content = '';
@@ -229,12 +243,19 @@ Horarios.App = function() {
         personnel.forEach(function(person) {
             var courses = self.findUniqueCourses(person.courses);
             var ch = courses.length * 4; // TODO: get ch from course
+            var id = 'row-ip-' + self.stringToSlug(person.id);
 
-            content += '<tr id="row-ip-' + self.stringToSlug(person.id) + '">' +
+            content += '<tr id="' + id + '" class="person">' +
                             '<td>' + person.id +'</td>' +
-                            '<td>' + courses.length + '</td>' + 
-                            '<td>' + ch + '</td>' + 
+                            '<td><strong>' + courses.length + '</strong> <span class="text-muted">ccr</span></td>' + 
+                            '<td>' + ch + ' <span class="text-muted">cr</span></td>' + 
                         '</tr>';
+
+            content += '<tr id="' + id + '-distribution">' +
+                            '<td colspan="3" class="weekdays-distribution">'+ self.createWeekScheduleChart(person) + '</td>' +
+                        '</tr>';
+
+            content += '<tr class="separator"><td colspan="3"></td></tr>';
         });
 
         $('#involedPersonnel tbody').empty().append(content);
@@ -584,7 +605,6 @@ Horarios.App = function() {
         });
 
         for(var member in personInvoledInImpediments) {
-            console.log(course, member, personInvoledInImpediments[member]);
             var el = $('#row-ip-' + self.stringToSlug(member));
 
             if(!el.hasClass('impediment')) {
