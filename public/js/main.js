@@ -145,7 +145,7 @@ Horarios.App = function() {
                 group.grid.add_widget(
                     self.generateCourseGridNodeHTML(course),
                     1,
-                    1,
+                    course.slots || 1,
                     course.weekDay,
                     course.period);
             });
@@ -390,8 +390,8 @@ Horarios.App = function() {
             autogenerate_stylesheet: true,
             shift_widgets_up: false,
             shift_larger_widgets_down: false,
-            min_cols: 8,
-            max_cols: 8,
+            min_cols: 7,
+            max_cols: 7,
             max_rows: 7,
             min_rows: 7,
             widget_margins: [5, 5],
@@ -429,8 +429,6 @@ Horarios.App = function() {
         for(var j = 0; j < weekDays.length; j++) {
             g.add_widget(this.generateGridNodeHTML(weekDays[j].name, {}, false), 1, 1, 1, 1);
         }
-
-
 
         return g;
     }
@@ -642,16 +640,28 @@ Horarios.App = function() {
     }
     
     this.findCoursesByWeekDayAndPeriod = function(weekDay, period) {
+        var self = this;
         var items = [];
     
         this.data.program.courses.forEach(function(course) {
-            if(course.weekDay == weekDay && course.period == period)  {
+            if(course.weekDay == weekDay && self.courseHasPeriodOverlap(course, period))  {
                 items.push(course);
             }
         });
     
         return items;
     }
+
+    this.courseHasPeriodOverlap = function(course, period) {
+        var slots = course.slots || 1;
+        var offset = slots - 1;
+        
+        offset = offset < 0 ? 0 : offset;
+        
+        var upperLimit = course.period + offset;
+
+        return course.period == period || (period >= course.period && period <= upperLimit);
+    };
     
     this.getCourseById = function(id) {
         var item = null;
@@ -740,7 +750,7 @@ Horarios.App = function() {
             // Creating a new course
             courseObj.id = this.getNextCourseId();
             this.data.program.courses.push(courseObj);
-            group.grid.add_widget(this.generateCourseGridNodeHTML(courseObj), 1, 1, 8, 2);
+            group.grid.add_widget(this.generateCourseGridNodeHTML(courseObj), 1, 1, 7, 2); // TODO: find best position
         
             console.log('Course added: ', courseObj);
         }
@@ -836,7 +846,6 @@ var weekDays = [
     {id: 5, name: "Quinta-feira"},
     {id: 6, name: "Sexta-feira"},
     {id: 7, name: "Sábado"},
-    {id: 8, name: "N/A"}
 ];
 
 // TODO: move this to API endpoint
