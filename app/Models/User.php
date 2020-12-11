@@ -58,4 +58,12 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    /**
+     * Get the comments for the blog post.
+     */
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
 }
