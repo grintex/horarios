@@ -43,6 +43,30 @@ return [
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
 
+        'index' => [
+            'driver' => 'sqlite',
+            'url' => env('DATABASE_URL_INDEX'),
+            'database' => env('DB_DATABASE_INDEX', database_path('index.sqlite')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+        ],
+
+        'uffs-personnel' => [
+            'driver' => 'sqlite',
+            'url' => env('DATABASE_URL_UFFS_PERSONNEL'),
+            'database' => env('DB_DATABASE_UFFS_PERSONNEL', database_path('uffs-personnel.sqlite')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+        ],
+
+        'dados-uffs' => [
+            'driver' => 'sqlite',
+            'url' => env('DATABASE_URL_UFFS_DADOS'),
+            'database' => env('DB_DATABASE_UFFS_DADOS', database_path('dados-uffs.sqlite')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+        ],
+
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
