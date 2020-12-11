@@ -153,6 +153,71 @@ Horarios.App = function() {
 
         this.buildDropdownProgramSelection();
         this.checkProgramConstraints();
+        this.refreshInvoledPersonnelSidebar(this.findInvolvedPersonnel());
+    };
+
+    this.objToArray = function(obj) {
+        var list = [];
+
+        for(var p in obj) {
+            list.push(obj[p]);
+        }
+
+        return list;
+    };
+
+    this.findInvolvedPersonnel = function() {
+        var self = this;
+        var personnel = {};
+
+        this.data.program.groups.forEach(function(group) {
+            var courses = self.findCoursesByGroupId(group.id);
+            
+            courses.forEach(function(course) {
+                course.members.forEach(function(person) {
+                    if(personnel[person] === undefined) {
+                        personnel[person] = {id: person, weekDays: [], programs: [], periods: [], courses: []};
+                    }
+                    personnel[person].weekDays.push(course.weekDay);
+                    personnel[person].programs.push(course.program);
+                    personnel[person].periods.push(course.period);
+                    personnel[person].courses.push(course);
+                });
+            });
+        });
+
+        return this.objToArray(personnel);
+    };
+
+    this.findUniqueCourses = function(courses, fromProgramId) {
+        var unique = {};
+
+        courses.forEach(function(course) {
+            console.log(course);
+            if(fromProgramId === undefined || fromProgramId == course.program) {
+                unique[course.name] = course;
+            }
+        });
+
+        return this.objToArray(unique);
+    };
+
+    this.refreshInvoledPersonnelSidebar = function(personnel) {
+        var self = this;
+        var content = '';
+
+        personnel.forEach(function(person) {
+            var courses = self.findUniqueCourses(person.courses);
+            var ch = courses.length * 4; // TODO: get ch from course
+
+            content += '<tr id="row-ip-' + person.id + '">' +
+                            '<td>' + person.id +'</td>' +
+                            '<td>' + courses.length + '</td>' + 
+                            '<td>' + ch + '</td>' + 
+                        '</tr>';
+        });
+
+        $('#involedPersonnel tbody').empty().append(content);
     };
 
     this.checkProgramConstraints = function() {

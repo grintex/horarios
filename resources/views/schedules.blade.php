@@ -54,17 +54,23 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-2 px-1 bg-dark position-fixed" id="sticky-sidebar">
+            <div class="col-3 px-1 bg-dark position-fixed" id="sidebar">
                 <div class="nav flex-column flex-nowrap vh-100 overflow-auto text-white p-2">
-                    <a href="./" class="nav-link">Link</a>
-                    <a href="./" class="nav-link">Link</a>
-                    <a href="./" class="nav-link">Link</a>
-                    <a href="./" class="nav-link">Link</a>
-                    <a href="./" class="nav-link">Link</a>
-                    <a href="./" class="nav-link">Link ...</a>
+                    <p class="font-weight-bold">Docentes</p>
+                    <table class="table table-striped table-dark" id="involedPersonnel">
+                        <thead>
+                            <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">CCR</th>
+                            <th scope="col">Créditos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="col-10 offset-2" id="main">
+            <div class="col-9 offset-3" id="main">
                 <div class="row meta-block">
                     <div class="col-lg-6">
                         <div class="card text-white bg-dark border-secondary">
