@@ -29,8 +29,8 @@
                 </div>
                 <div class="col-sm-6 text-right">
                     <span class="navbar-text user-info">
-                        <strong>user_name</strong><br />
-                        <span>username</span>
+                        <strong>{{ Auth::user()->name }}</strong><br />
+                        <span>{{ Auth::user()->uid }}</span>
                     </span>
                 </div>
                 <div class="col-sm-1">
@@ -40,7 +40,15 @@
                         </a>
                         <div class="user-menu dropdown-menu">
                             <a class="nav-link" href="https://id.uffs.edu.br"><i class="icon ion-md-contact"></i>Meu perfil</a>
-                            <a class="nav-link" href="./logout"><i class="icon ion-md-log-out"></i> Sair</a>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <a class="nav-link" href="{{ route('logout') }}"
+                                                    onclick="event.preventDefault();
+                                                                this.closest('form').submit();">
+                                    <i class="icon ion-md-log-out"></i>
+                                    {{ __('Logout') }}
+                                </a>
+                            </form>
                         </div>
                     </div>
                 </div>
