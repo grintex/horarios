@@ -136,6 +136,18 @@ div.card-header a {
   color: rgb(160, 160, 160);
 }
 
+tr.clash {
+  background-color: rgb(255, 176, 183) !important;
+  border: solid 2px;
+  color: #721c24;
+}
+
+tr.impediment {
+  background-color: #fff3cd !important;
+  border: solid 2px;
+  color: #856404;
+}
+
 .course-node.clash {
   background-color: rgb(255, 176, 183);
   border: solid 2px;

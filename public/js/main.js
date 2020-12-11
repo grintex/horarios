@@ -202,6 +202,26 @@ Horarios.App = function() {
         return this.objToArray(unique);
     };
 
+    // Source: https://gist.github.com/codeguy/6684588#gistcomment-2624012
+    this.stringToSlug = function(str) {
+        str = str.replace(/^\s+|\s+$/g, ''); // trim
+        str = str.toLowerCase();
+      
+        // remove accents, swap ñ for n, etc
+        var from = "àáãäâèéëêìíïîòóöôùúüûñç·/_,:;";
+        var to   = "aaaaaeeeeiiiioooouuuunc------";
+    
+        for (var i=0, l=from.length ; i<l ; i++) {
+            str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+        }
+    
+        str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+            .replace(/\s+/g, '-') // collapse whitespace and replace by -
+            .replace(/-+/g, '-'); // collapse dashes
+    
+        return str;
+    };
+
     this.refreshInvoledPersonnelSidebar = function(personnel) {
         var self = this;
         var content = '';
@@ -210,7 +230,7 @@ Horarios.App = function() {
             var courses = self.findUniqueCourses(person.courses);
             var ch = courses.length * 4; // TODO: get ch from course
 
-            content += '<tr id="row-ip-' + person.id + '">' +
+            content += '<tr id="row-ip-' + self.stringToSlug(person.id) + '">' +
                             '<td>' + person.id +'</td>' +
                             '<td>' + courses.length + '</td>' + 
                             '<td>' + ch + '</td>' + 
@@ -516,23 +536,61 @@ Horarios.App = function() {
     }
 
     this.highlightScheduleClashes = function(clashes) {
+        var self = this;
+        var personInvoledInClash = {};
+        
         if(!clashes || clashes.length == 0) {
             return;
         }
 
         clashes.forEach(function(course) {
             $('#course-node-' + course.id).addClass('clash');
+
+            course.members.forEach(function(member) {
+                if(personInvoledInClash[member] === undefined) {
+                    personInvoledInClash[member] = 0;
+                }
+                personInvoledInClash[member]++;
+            });
         });
+
+        for(var member in personInvoledInClash) {
+            if(personInvoledInClash[member] > 1) {
+                var el = $('#row-ip-' + self.stringToSlug(member));
+
+                if(!el.hasClass('clash')) {
+                    el.addClass('clash');
+                }
+            }
+        }
     };
 
     this.highlightWorkingImpediments = function(course, impediments) {
+        var self = this;
+        var personInvoledInImpediments = {};
+
         if(!impediments || impediments.length == 0) {
             return;
         }
 
-        impediments.forEach(function(course) {
+        impediments.forEach(function(courseSuffering) {
             $('#course-node-' + course.id).addClass('impediment');
+
+            courseSuffering.members.forEach(function(member) {
+                if(course.members.indexOf(member) != -1) {
+                    personInvoledInImpediments[member] = true;
+                }
+            });
         });
+
+        for(var member in personInvoledInImpediments) {
+            console.log(course, member, personInvoledInImpediments[member]);
+            var el = $('#row-ip-' + self.stringToSlug(member));
+
+            if(!el.hasClass('impediment')) {
+                el.addClass('impediment');
+            }
+        }
 
         // highlight the offending course as well
         $('#course-node-' + course.id).addClass('impediment');
@@ -541,6 +599,10 @@ Horarios.App = function() {
     this.clearConstraintHighlights = function() {
         $('.course-node').each(function(i, el) {
             $(el).find('div.side').empty();
+            $(el).removeClass('clash impediment');
+        });
+
+        $('#involedPersonnel tbody tr').each(function(i, el) {
             $(el).removeClass('clash impediment');
         });
     };
