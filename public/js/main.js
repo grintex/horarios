@@ -55,14 +55,15 @@ Horarios.App = function() {
             $('#modal-course-name').val(course ? course.name : '');
             $('#modal-course-id').val(course ? course.id : '');
 
-            for(memberId in self.data.members) {
+            for(memberId in {}) {
                 var member = self.data.members[memberId];
                 var key = 'member-'+ memberId;
                 var checked = course && course.members.includes(memberId) ? 'checked="checked"' : '';
 
                 text += 
                     '<input class="form-check-input" type="checkbox" value="' + member.id + '" id="' + key + '" ' + checked + '>' +
-                    '<label class="form-check-label" for="' + key + '">'+ member.name + ' (' + member.email + ')</label>';
+                    '<label class="form-check-label" for="' + key + '">'+ member.name + ' (' + member.email + ')</label>' +
+                    '<a href="#"><img src="/examples/images/avatar/1.jpg" class="avatar" alt="Avatar"> Michael Holz</a>';
             }
     
             $('#modal-course-members').html(text);
@@ -284,10 +285,8 @@ Horarios.App = function() {
         }
 
         this.data.programs = context.programs;
-        this.data.members = context.members;
 
         console.log('List of programs updated:', this.data.programs);
-        console.log('List of members updated:', this.data.members);
 
         this.buildFinalUI();
         this.loadProgram(programId);
@@ -374,7 +373,7 @@ Horarios.App = function() {
                     '<div class="card text-white status-meta">' +
                         '<div class="card-header alert alert-secondary">' +
                             '<h2 class="float-left"><i class="icon ion-md-today"></i> ' + group.name + ' ' + (this.active.readOnly ? '' : '<a href="javascript:void(0);" data-group="'+ group.id +'" data-toggle="modal" data-target="#modal-group"><i class="icon ion-md-create edit"></i></a>') + '</h2>' +
-                            (this.active.readOnly ? '' : '<button type="button" class="btn btn-outline-light ml-md-3 float-right" data-toggle="modal" data-target="#modal-course" data-group="' + group.id + '"><i class="icon ion-md-add-circle"></i> Adicionar CCR</button>') +
+                            (this.active.readOnly ? '' : '<button type="button" class="btn btn-outline-success ml-md-3 float-right" data-toggle="modal" data-target="#modal-course" data-group="' + group.id + '"><i class="icon ion-md-add-circle"></i> Adicionar CCR</button>') +
                         '</div>' +
                         '<div class="card-body">' +
                             '<div class="gridster"><ul></ul></div>'+
@@ -861,6 +860,22 @@ var periods = [
 $(function () {
     var app = new Horarios.App();
     app.boot();
+
+    $('.basicAutoComplete')
+        .autoComplete({
+            formatResult: function(item) {
+                var format = { id: 0, text: item.name, html: item.name };
+
+                if(item.complement != '') {
+                    format.html += ', <small>' + item.complement + '</small>';
+                }
+
+                return format;
+            }
+        })
+        .on('autocomplete.select', function(event, item) {
+            console.log('Item selected:', window.location.href + item.url, item);
+        });
 
     // TODO: move this into App class.
     setInterval(function() {

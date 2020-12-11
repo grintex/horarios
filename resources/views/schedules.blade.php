@@ -159,6 +159,7 @@
                         </div>
 
                         <div class="form-group" style="height: 200px; overflow: scroll;">
+                            <input type="text" class="form-control basicAutoComplete" data-url="{{ route('api.search.person') }}" autocomplete="off" placeholder="Ex.: Fulano Silva">
                             <div class="form-check" id="modal-course-members">
                                 Loading...
                             </div>
@@ -166,8 +167,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary submit">Save changes</button>
+                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success submit">Save changes</button>
                 </div>
             </div>
         </div>
@@ -231,7 +232,9 @@
     <script src="{{ asset('js/3rdparty/jquery.min.js') }}"></script>
     <script src="{{ asset('js/3rdparty/jquery.dsmorse-gridster.with-extras.min.js') }}" ></script>
     <script src="{{ asset('js/3rdparty/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('js/3rdparty/bootstrap-autocomplete.min.js') }}"></script>
     <script src="{{ asset('js/3rdparty/store.everything.min.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>
