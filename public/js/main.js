@@ -5,20 +5,49 @@ Horarios.App = function() {
     
     this.data = {
         program: null,
-        members: {},
         programs: {}
     };
     
     this.active = {
         groupId: undefined,
+        course: undefined,
         programId: 1,
-        user: {id: 'fernando.bevilacqua'},
         readOnly: false
     };
 
     this.boot = function() {
         this.buildInitialUI();
+        this.initAutocomplete();
         this.load();
+    };
+
+    this.initAutocomplete = function() {
+        var self = this;
+        var config = {
+            formatResult: this.autocompleteFormatResult
+        };
+
+        $('.autocomplete').autoComplete(config).on('autocomplete.select', function(event, item) { self.autocompelteSelect(event, item); });  
+    };
+
+    this.autocompleteFormatResult = function(item) {
+        var format = { id: 0, text: item.name, html: item.name };
+
+        if(item.complement != '') {
+            format.html += ', <small>' + item.complement + '</small>';
+        }
+
+        return format;
+    };
+
+    this.autocompelteSelect = function(event, item) {
+        if(item.type == 'person') {
+            // We are editing the course's modal.
+            // Let's add this person to the list of course responsibles.
+            this.refreshModalCourseMembers([item.memberId], true);
+            event.currentTarget.value = '';
+        }
+        console.log('Item selected:', window.location.href + item.url, item);
     };
 
     this.buildInitialUI = function() {
@@ -32,14 +61,13 @@ Horarios.App = function() {
     this.buildModals = function() {
         var self = this;
 
-        $('#modal-course button.submit').click(function(e) { self.handleModalCourseSubmit(e) });
+        $('#modal-course button.submit').click(function(e) { self.handleModalCourseSubmit(e); });
         $('#modal-group button.submit').click(function(e) { self.handleModalGroupSubmit(e); });
     
         $('#modal-course').on('show.bs.modal', function (event) {
             var groupId = $(event.relatedTarget).data('group');
             var courseId = $(event.relatedTarget).data('course');
             var course = self.getCourseById(courseId);
-            var text = '';
 
             self.active.groupId = groupId;
 
@@ -48,6 +76,7 @@ Horarios.App = function() {
                 // all global controls with the selected course (which takes
                 // precedence from everything else)
                 self.active.groupId = course.group;
+                self.active.course = course;
             }
 
             console.log('group:', self.active.groupId, 'course: ', courseId);
@@ -55,18 +84,12 @@ Horarios.App = function() {
             $('#modal-course-name').val(course ? course.name : '');
             $('#modal-course-id').val(course ? course.id : '');
 
-            for(memberId in {}) {
-                var member = self.data.members[memberId];
-                var key = 'member-'+ memberId;
-                var checked = course && course.members.includes(memberId) ? 'checked="checked"' : '';
-
-                text += 
-                    '<input class="form-check-input" type="checkbox" value="' + member.id + '" id="' + key + '" ' + checked + '>' +
-                    '<label class="form-check-label" for="' + key + '">'+ member.name + ' (' + member.email + ')</label>' +
-                    '<a href="#"><img src="/examples/images/avatar/1.jpg" class="avatar" alt="Avatar"> Michael Holz</a>';
+            if(!course) {
+                $('#modal-course-members').html('Ninguém responsável ainda.');
+                return;
             }
-    
-            $('#modal-course-members').html(text);
+
+            self.refreshModalCourseMembers(course.members);
         });
 
         $('#modal-group').on('show.bs.modal', function (event) {
@@ -76,6 +99,58 @@ Horarios.App = function() {
             $('#modal-group-id').val(group ? group.id : '');
             $('#modal-group-name').val(group ? group.name : '');
         });
+    };
+
+    this.refreshModalCourseMembers = function(members, append) {
+        var self = this;
+
+        if(!members || members.length == 0) {
+            return;
+        }
+
+        var nonExistingMembers = [];
+
+        members.forEach(function(member) {
+            var key = self.stringToSlug('modal-member-'+ member);
+            var el = document.getElementById(key);
+            if(!el) {
+                nonExistingMembers.push(member);
+                return;
+            }
+            $(el).fadeOut(200).fadeIn(200).fadeOut(200).fadeIn(200);
+        });
+
+        if(nonExistingMembers.length == 0) {
+            return;
+        }
+
+        var text = '';
+
+        nonExistingMembers.forEach(function(member) {
+            var key = self.stringToSlug('modal-member-'+ member);
+
+            text += 
+                '<div class="mt-3" id="' + key + '"> ' + 
+                    '<ion-icon name="chevron-forward-circle-outline"></ion-icon> ' + 
+                    '<span data-member-id="' + member + '">' + member + '</span>' + 
+                    '<a href="javascript:void(0);" class="float-right pr-2" data-click-remove="#' + key + '"><ion-icon name="trash-outline"></ion-icon></ion-icon> <small>Remover</small></a>' +
+                '</div>';
+        });
+
+        if(append) {
+            $('#modal-course-members').append(text);
+        } else {
+            $('#modal-course-members').html(text);
+        }
+
+        $('#modal-course-members [data-click-remove]').each(function(i, el) {
+            $(el).off();
+            $(el).click(function() {
+                var queryToRemove = $(this).data('click-remove');
+                console.log(queryToRemove);
+                $(queryToRemove).fadeOut().remove();
+            })
+        })
     };
 
     this.handleSelectProgram = function(e) {
@@ -787,8 +862,8 @@ Horarios.App = function() {
     this.handleModalCourseSubmit = function() {
         var selectedMembers = [];
     
-        $('#modal-course-members input:checked').each(function(i, el) {
-            selectedMembers.push($(el).val());
+        $('#modal-course-members .member').each(function(i, el) {
+            selectedMembers.push($(el).data('member-id'));
         });
     
         var id = $('#modal-course-id').val();
@@ -860,22 +935,6 @@ var periods = [
 $(function () {
     var app = new Horarios.App();
     app.boot();
-
-    $('.basicAutoComplete')
-        .autoComplete({
-            formatResult: function(item) {
-                var format = { id: 0, text: item.name, html: item.name };
-
-                if(item.complement != '') {
-                    format.html += ', <small>' + item.complement + '</small>';
-                }
-
-                return format;
-            }
-        })
-        .on('autocomplete.select', function(event, item) {
-            console.log('Item selected:', window.location.href + item.url, item);
-        });
 
     // TODO: move this into App class.
     setInterval(function() {

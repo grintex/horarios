@@ -53,6 +53,7 @@ class ApiSearchController extends Controller
             $item = new stdClass();
             $item = new stdClass();
             $item->name = ucwords($name);
+            $item->memberId = $person->uid;
             $item->complement = $person->uid;
             $item->type = 'person';
 

@@ -140,7 +140,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Add course</h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Ajuste de CCR</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -150,25 +150,31 @@
                         <input type="hidden" id="modal-course-id" value="">
 
                         <div class="form-group">
-                            <label for="modal-course-name">CCR</label>
-                            <input type="text" class="form-control basicAutoComplete" id="modal-course-name" data-url="{{ route('api.search.course') }}" autocomplete="off" placeholder="Ex.: GEX006 ou Geometria">
+                            <label for="modal-course-name" class="font-weight-bold color-main">Nome do CCR</label>
+                            <input type="text" class="form-control autocomplete" id="modal-course-name" data-url="{{ route('api.search.course') }}" autocomplete="off" placeholder="Ex.: GEX006 ou Geometria">
                         </div>
 
                         <div class="form-group">
-                            <label>Docentes responsáveis</label>
+                            <label class="font-weight-bold color-main">Docentes responsáveis</label>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control autocomplete" data-url="{{ route('api.search.person') }}" autocomplete="off" placeholder="Ex.: Fulano Silva" aria-describedby="courseSearch">
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="courseSearch"><ion-icon name="search-outline"></ion-icon></span>
+                            </div>
                         </div>
 
                         <div class="form-group" style="height: 200px; overflow: scroll;">
-                            <input type="text" class="form-control basicAutoComplete" data-url="{{ route('api.search.person') }}" autocomplete="off" placeholder="Ex.: Fulano Silva">
-                            <div class="form-check" id="modal-course-members">
-                                Loading...
+                            <div id="modal-course-members">
+                                <ion-icon name="ion-loading-c"></ion-icon>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-light" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success submit">Save changes</button>
+                    <button type="button" class="btn btn-success submit">Salvar</button>
                 </div>
             </div>
         </div>
@@ -228,6 +234,8 @@
             </div>
         </div>
     </footer>
+
+    <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
 
     <script src="{{ asset('js/3rdparty/jquery.min.js') }}"></script>
     <script src="{{ asset('js/3rdparty/jquery.dsmorse-gridster.with-extras.min.js') }}" ></script>
