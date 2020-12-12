@@ -60,6 +60,42 @@ class IndexBuild extends Command
         return $personnel;
     }
 
+    protected function findCourses() {
+        $pdo = DB::connection('dados-uffs')->getPdo();
+        $stmt = $pdo->query("
+            SELECT
+                _id,
+                cod_ccr,
+                nome_ccr,
+                cr_ccr,
+                ch_ccr,
+                desc_matriz,
+                fase_oferta,
+                ccr_obrigatorio,
+                ccr_optativo,
+                nome_campus,
+                cod_uffs,
+                cod_emec,
+                nome_curso,
+                turno,
+                per_ingresso,
+                em_andamento,
+                data_atualizacao
+            FROM
+                'graduacao_ccrs_matrizes/graduacao_ccrs_matrizes'
+            GROUP BY
+                cod_ccr
+        ");
+        
+        $courses = [];
+
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $courses[] = $row;
+        }
+
+        return $courses;
+    }
+
     protected function createProfessorsIndexedContent(array $personnel) {
         $pdo = DB::connection('index')->getPdo();
 
@@ -80,7 +116,7 @@ class IndexBuild extends Command
             "indexed_content" TEXT
         )');
 
-        $this->line(' Adding indexed content');
+        $this->line(' Adding courses content');
 
         $bar = $this->output->createProgressBar(count($personnel));
         $bar->start();
@@ -117,7 +153,7 @@ class IndexBuild extends Command
 
     protected function createCoursesIndexedContent()
     {
-        $pdo = DB::connection('dados-uffs')->getPdo();
+        $pdo = DB::connection('index')->getPdo();
 
         $this->comment('Creating table: courses');
 
@@ -144,31 +180,53 @@ class IndexBuild extends Command
             "data_atualizacao" TEXT,
             "indexed_content"	TEXT
         )');
-        $pdo->exec("INSERT INTO courses SELECT NULL, *, ' ' FROM 'graduacao_ccrs_matrizes/graduacao_ccrs_matrizes' GROUP BY cod_ccr");
 
-        $this->line(' Adding indexed content');
+        $this->line(' Adding personnel content');
        
-        $stmt = $pdo->query("SELECT COUNT(*) FROM courses");
-        $count = $stmt->fetch()[0];
+        $courses = $this->findCourses();
+        $count = count($courses);
 
         $bar = $this->output->createProgressBar($count);
         $bar->start();
         
-        $stmt = $pdo->query("SELECT * FROM courses");
-        
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        foreach($courses as $course) {
             $case_indexed_content = '';
-            $case_indexed_content .= $row['nome_curso'] . ' ';
-            $case_indexed_content .= $row['cod_ccr'] . ' ';
-            $case_indexed_content .= $row['nome_ccr'] . ' ';
+            $case_indexed_content .= $course['nome_curso'] . ' ';
+            $case_indexed_content .= $course['cod_ccr'] . ' ';
+            $case_indexed_content .= $course['nome_ccr'] . ' ';
+            $case_indexed_content .= $course['turno'] . ' ';
             
             // Repeat all content again with no accents and in lower case
             $lowercase_indexed_content = strtolower(Sanitizer::removeAccents($case_indexed_content));
             
             $indexed_content = $lowercase_indexed_content . ' ' . $case_indexed_content;
 
-            $qry = $pdo->prepare("UPDATE courses SET indexed_content = ? WHERE id = ?");
-            $qry->execute([$indexed_content, $row['id']]);
+            $qry = $pdo->prepare("
+                INSERT INTO
+                    courses (
+                        _id,
+                        cod_ccr,
+                        nome_ccr,
+                        cr_ccr,
+                        ch_ccr,
+                        desc_matriz,
+                        fase_oferta,
+                        ccr_obrigatorio,
+                        ccr_optativo,
+                        nome_campus,
+                        cod_uffs,
+                        cod_emec,
+                        nome_curso,
+                        turno,
+                        per_ingresso,
+                        em_andamento,
+                        data_atualizacao,
+                        indexed_content
+                    )
+                VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            
+            $course['indexed_content'] = $indexed_content;
+            $qry->execute(array_values($course));
 
             $bar->advance();
         }
@@ -177,7 +235,7 @@ class IndexBuild extends Command
         $this->newLine();
         $this->line(' Creating index for improved performance');
 
-        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_graduacao_historico_indexed_content ON idx_graduacao_historico(indexed_content)");
+        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_courses_indexed_content ON courses(indexed_content)");
         $pdo->commit();
     }
 }
