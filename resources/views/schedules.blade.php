@@ -151,7 +151,7 @@
 
                         <div class="form-group">
                             <label for="modal-course-name">CCR</label>
-                            <input type="text" class="form-control" id="modal-course-name" placeholder="1234 Main St">
+                            <input type="text" class="form-control basicAutoComplete" id="modal-course-name" data-url="{{ route('api.search.course') }}" autocomplete="off" placeholder="Ex.: GEX006 ou Geometria">
                         </div>
 
                         <div class="form-group">

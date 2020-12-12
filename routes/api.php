@@ -18,6 +18,7 @@ use App\Http\Controllers\ScheduleController;
 Route::apiResource('schedules', ScheduleController::class);
 
 Route::match(array('GET','POST'), '/search/person', 'App\Http\Controllers\ApiSearchController@person')->name('api.search.person');
+Route::match(array('GET','POST'), '/search/course', 'App\Http\Controllers\ApiSearchController@course')->name('api.search.course');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
