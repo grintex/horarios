@@ -166,6 +166,10 @@ tr.impediment {
   color: #856404;
 }
 
+.course-node.brand-new {
+  border: solid 2px;
+}
+
 .course-node.clash {
   background-color: rgb(255, 176, 183);
   border: solid 2px;
@@ -192,9 +196,15 @@ tr.impediment {
   color: #856404;
 }
 
-.clash, .impediment {
+.clash,
+.impediment,
+.brand-new {
   animation-duration: 2s;
   animation-iteration-count: infinite;
+}
+
+.brand-new {
+  animation-name: color-brand-new;
 }
 
 .clash {
@@ -207,6 +217,18 @@ tr.impediment {
 
 .clash.impediment {
   animation-name: color-clash-impediment;
+}
+
+@keyframes color-brand-new {
+  0% {
+    border-color: rgb(176, 255, 186);
+  }
+  50% {
+    border-color: #069425;
+  }
+  100% {
+    border-color: rgb(176, 255, 186);
+  }
 }
 
 @keyframes color-clash {

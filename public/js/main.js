@@ -46,6 +46,10 @@ Horarios.App = function() {
             // Let's add this person to the list of course responsibles.
             this.refreshModalCourseMembers([item.memberId], true);
             event.currentTarget.value = '';
+
+        } else if (item.type == 'course') {
+            $('#modal-course-code').val(item.code);
+            $('#modal-course-credits').val(item.credits);
         }
         console.log('Item selected:', window.location.href + item.url, item);
     };
@@ -82,6 +86,8 @@ Horarios.App = function() {
             console.log('group:', self.active.groupId, 'course: ', courseId);
 
             $('#modal-course-name').val(course ? course.name : '');
+            $('#modal-course-code').val(course ? course.code : '');
+            $('#modal-course-credits').val(course ? (course.credits || 4) : '');
             $('#modal-course-id').val(course ? course.id : '');
 
             if(!course) {
@@ -798,12 +804,12 @@ Horarios.App = function() {
     }
     
     this.addOrUpdateCourse = function(courseObj) {
-        console.log(courseObj);
         var isUpdate = courseObj.id;
         var group = this.getGroupById(courseObj.group);
     
         if(!group) {
             console.error('Provided course has invalid group. Course: ', courseObj);
+            return;
         }
     
         if(!group.grid) {
@@ -826,6 +832,10 @@ Horarios.App = function() {
             this.data.program.courses.push(courseObj);
             group.grid.add_widget(this.generateCourseGridNodeHTML(courseObj), 1, 1, 7, 2); // TODO: find best position
         
+            var query = '#course-node-' + courseObj.id;
+            $(query).addClass('brand-new');
+            setTimeout(function() { $(query).removeClass('brand-new'); }, 1000);
+
             console.log('Course added: ', courseObj);
         }
 
@@ -868,11 +878,19 @@ Horarios.App = function() {
     
         var id = $('#modal-course-id').val();
         var name = $('#modal-course-name').val();
+        var code = $('#modal-course-code').val() || 'GCS011';
+        var credits = $('#modal-course-credits').val() || 4;
+
+        if(!name) {
+            // TODO: show some warning?
+            return;
+        }
     
         this.addOrUpdateCourse({
             id: id,
-            code: 'GCS011',
+            code: code,
             name: name,
+            credits: credits,
             group: this.active.groupId,
             weekDay: 7,
             period: 1,

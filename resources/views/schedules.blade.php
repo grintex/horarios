@@ -140,7 +140,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Ajuste de CCR</h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Informação de CCR</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -150,8 +150,19 @@
                         <input type="hidden" id="modal-course-id" value="">
 
                         <div class="form-group">
-                            <label for="modal-course-name" class="font-weight-bold color-main">Nome do CCR</label>
+                            <label for="modal-course-name" class="font-weight-bold color-main">Nome</label>
                             <input type="text" class="form-control autocomplete" id="modal-course-name" data-url="{{ route('api.search.course') }}" autocomplete="off" placeholder="Ex.: GEX006 ou Geometria">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="modal-course-code" class="font-weight-bold color-main">Código</label>
+                                <input type="text" class="form-control" id="modal-course-code" placeholder="Ex.: GEX602">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="modal-course-credits" class="font-weight-bold color-main">Créditos</label>
+                                <input type="text" class="form-control" id="modal-course-credits" placeholder="Ex.: 2" oninput="this.value=this.value.replace(/(?![0-9])./gmi,'')">
+                            </div>
                         </div>
 
                         <div class="form-group">

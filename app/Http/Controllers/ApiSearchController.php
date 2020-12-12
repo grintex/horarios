@@ -84,6 +84,8 @@ class ApiSearchController extends Controller
         foreach($courses as $course) {
             $item = new stdClass();
             $item->name = $course->cod_ccr . ' - '. $course->nome_ccr;
+            $item->code = $course->cod_ccr;
+            $item->credits = $course->cr_ccr;
             $item->complement = $course->cr_ccr . 'CR ' . $course->ch_ccr . 'h' . ', ' . $course->desc_matriz;
             $item->type = 'course';
             
