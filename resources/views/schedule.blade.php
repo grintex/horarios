@@ -174,6 +174,5 @@
 
     <script>
         var HORARIOS_PAGE_DATA = @json($json_page_data, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK );
-        var HORARIOS_PAGE_DATA = @json($periods, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK );
     </script>
 @stop

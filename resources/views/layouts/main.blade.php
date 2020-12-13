@@ -35,7 +35,7 @@
                     </span>
                 </div>
                 <div class="col-sm-1">
-                    <div class="user-area dropdown float-right">
+                    <div class="user-area dropdown float-left">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img class="user-avatar rounded-circle" src="{{ Auth::user()->profile_photo_url }}" alt="User Avatar">
                         </a>
@@ -47,7 +47,7 @@
                                                     onclick="event.preventDefault();
                                                                 this.closest('form').submit();">
                                     <i class="icon ion-md-log-out"></i>
-                                    {{ __('Logout') }}
+                                    {{ __('Sair') }}
                                 </a>
                             </form>
                         </div>

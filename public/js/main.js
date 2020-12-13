@@ -6,13 +6,12 @@ Horarios.App = function() {
     this.data = {
         dirty: false,
         program: null,
-        programs: {}
     };
     
     this.active = {
         groupId: undefined,
         course: undefined,
-        programId: 1,
+        programId: undefined,
         readOnly: false
     };
 
@@ -23,7 +22,7 @@ Horarios.App = function() {
         this.initAutocomplete();
         this.initTicker();
         this.initAutoSave();
-        this.load();
+        this.init(data);
     };
 
     this.initTicker = function() {
@@ -238,11 +237,6 @@ Horarios.App = function() {
 
     this.loadProgram = function(programId) {
         console.log('Loading program with id=', programId);
-        this.api({method: 'program', program: programId}, function(data) {
-            console.log('Program loaded:', data);
-            this.data.program = data;
-            this.selectProgram(programId);
-        }, this);
     };
 
     this.restoreDataFromLocalStorage = function(prgramId) {
@@ -445,26 +439,13 @@ Horarios.App = function() {
         this.refreshSidebarSummary();
     };
 
-    this.init = function(context) {
-        var programId = 1; // TODO: select this from URL
-
-        if(!context) {
-            console.error('Invalid context data. Unable to init.');
-            return;
-        }
-
-        this.data.programs = context.programs;
-
-        console.log('List of programs updated:', this.data.programs);
-
+    this.init = function(data) {
         this.buildFinalUI();
-        this.loadProgram(programId);
-    };
 
-    this.load = function() {
-        this.api({method: 'context'}, function(data) {
-            this.init(data);
-        }, this);
+        this.data.program = data.program;
+        this.active.readOnly = data.readOnly;
+
+        this.selectProgram(data.programId);
     };
 
     this.api = function(params, callback, context) {
@@ -530,14 +511,6 @@ Horarios.App = function() {
         }, this);
 
         this.data.dirty = false;
-    };
-
-    this.loadCourses = function() {
-        console.log('Loading courses', this.active.program);
-
-        this.api({method: 'courses', program: this.active.program}, function(data) {
-            console.log('Returned', data);
-        }, this);
     };
 
     this.createGroupBlock = function(containerId, group) {

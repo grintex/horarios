@@ -60,16 +60,20 @@ class ScheduleController extends Controller
 
         if (!$schedule) return abort(404);
 
-        $courses = json_decode($schedule->courses);
         $rev_name = 'RASCUNHO (em construção)';
+        $schedule_is_revision = $schedule->locked && $schedule->revision > 0;
 
-        if($schedule->locked && $schedule->revision > 0) {
+        if($schedule_is_revision) {
             $rev_name =  sprintf('REV%03d - %s', $schedule->revision, $schedule->updated_at);
         }
 
         $json_page_data = [
-            'courses' => $courses,
-            'schedule' => $schedule
+            'program' => [
+                'courses' => json_decode($schedule->courses),
+                'groups' => json_decode($schedule->groups),
+            ],
+            'programId' => $schedule->user->id,
+            'readOnly' => $schedule_is_revision || $schedule->locked
         ];
 
         return view('schedule', [
