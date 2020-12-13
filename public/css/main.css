@@ -4,6 +4,19 @@
   font-family: 'Roboto', sans-serif;
 }
 
+:root {
+  --clash-color: #ff4b5d;
+  --impediment-color:  #ffdf74;
+}
+
+.clash-text {
+  color: var(--clash-color);
+}
+
+.impediment-text {
+  color: var(--impediment-color);
+}
+
 header {
   margin-bottom: 1em;
 }
@@ -48,6 +61,11 @@ div.card-header a {
 
 #involedPersonnel tr.separator {
   height: 10px;
+}
+
+#involedPersonnel .personel-handle-icon {
+  font-size: 1.3em;
+  margin-right: 5px;
 }
 
 .gridster ul {
@@ -96,6 +114,28 @@ div.card-header a {
 #buttonProgramSelector {
   font-weight: bold;
 }
+
+#sidebar-summary {
+  position: fixed;
+  width: 100%;
+  height: 40px;
+  z-index: 100;
+  text-align: right;
+  padding-right: 10px;
+  background: #303030;
+  border: 1px solid #3f3f3f;
+  font-size: 1.3em;
+}
+
+#sidebar-summary span {
+  font-size: 0.8em;
+  margin-right: 15px;
+}
+
+#sidebar-summary ion-icon {
+  vertical-align: middle;
+}
+
 
 /* Course node */
 

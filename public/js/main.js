@@ -360,19 +360,19 @@ Horarios.App = function() {
         return str;
     };
 
-    this.createWeekScheduleChart = function(person) {
+    this.createWeekScheduleChart = function(person, simplified) {
         var content = '';
 
         ['S', 'T', 'Q', 'Q', 'S', 'S'].forEach(function(weekDay, idx) {
             var weekDayOccurrences = person.weekDays.filter(function(v){ return v === (idx + 2); }).length;
 
             content += '<div style="width: 12%; height: 100%; position: relative; margin-right: 3%; float: left;">' +
-                        '<div style="position: absolute; bottom: 35%; width: 100%; height: ' + (1 + 64 * (weekDayOccurrences / 6.0)) + '%; background: #00BC80;">' + (weekDayOccurrences != 0 ? '<p style="font-size: 0.8em; position: absolute; top: -30px; left: 20%; color: #afafaf;">' + weekDayOccurrences  + '</p>': '') + '</div>' +
-                        '<div style="position: absolute; left: 30%; bottom: 0; color: #8f8f8f;">' + weekDay + '</div>' +
+                        '<div style="position: absolute; bottom: 35%; width: 100%; height: ' + (1 + 64 * (weekDayOccurrences / 6.0)) + '%; background: #00BC80;">' + (weekDayOccurrences != 0 ? '<p style="font-size: 0.8em; position: absolute; top: -30px; left: 20%; color: #afafaf;">' + (simplified ? '' : weekDayOccurrences)  + '</p>': '') + '</div>' +
+                        '<div style="position: absolute; left: 30%; bottom: 0; color: #8f8f8f;">' + (simplified ? '' : weekDay) + '</div>' +
                     '</div>';
         });
  
-        return '<div style="width: 100%; height: 100px;">' + content + '</div>';
+        return '<div style="width: 100%; height: ' + (simplified ? 30 : 100) + 'px;">' + content + '</div>';
     };
 
     this.refreshInvoledPersonnelSidebar = function(personnel) {
@@ -385,20 +385,62 @@ Horarios.App = function() {
             var id = 'row-ip-' + self.stringToSlug(person.id);
 
             content += '<tr id="' + id + '" class="person">' +
-                            '<td>' + person.id +'</td>' +
+                            '<td>' + 
+                                '<span class="personel-handle-icon"><ion-icon name="chevron-forward-circle-outline"></ion-icon></span> ' +
+                                '<span class="align-top">' + person.id + '</span>' +
+                            '</td>' +
                             '<td><strong>' + courses.length + '</strong> <span class="text-muted">ccr</span></td>' + 
                             '<td>' + ch + ' <span class="text-muted">cr</span></td>' + 
+                            '<td>'+ self.createWeekScheduleChart(person, true) + '</td>' +
                         '</tr>';
 
-            content += '<tr id="' + id + '-distribution">' +
-                            '<td colspan="3" class="weekdays-distribution">'+ self.createWeekScheduleChart(person) + '</td>' +
+            content += '<tr id="' + id + '-distribution" style="display: none;">' +
+                            '<td colspan="4" class="weekdays-distribution">'+ self.createWeekScheduleChart(person) + '</td>' +
                         '</tr>';
 
-            content += '<tr class="separator"><td colspan="3"></td></tr>';
+            content += '<tr class="separator"><td colspan="4"></td></tr>';
         });
 
         $('#involedPersonnel tbody').empty().append(content);
+        $('#involedPersonnel tr.person').each(function(i, el) {
+            $(el).click(function() {
+                var key = $(el).attr('id') + '-distribution';
+                $('#' + key).fadeToggle();
+            });
+        });
+
+        this.refreshSidebarSummary();
     };
+
+    this.refreshSidebarSummary = function() {
+        var persons = 0;
+        var clashes = 0;
+        var impediments = 0;
+
+        $('#involedPersonnel tr.person').each(function(i, el) {
+            persons++;
+
+            if($(el).hasClass('clash')) {
+                clashes++;
+            }
+
+            if($(el).hasClass('impediment')) {
+                impediments++;
+            }
+        });
+
+        var text = '<ion-icon name="people-outline" alt="Quantidade de docentes participando desse horário"></ion-icon> <span>' + persons + '</span>';
+
+        if(clashes > 0) {
+            text += '<ion-icon name="alert-circle" class="clash-text" title="Há conflito de horário"></ion-icon> <span class="clash-text">' + clashes + '</span>';
+        }
+
+        if(impediments > 0) {
+            text += '<ion-icon name="information-circle-outline" class="impediment-text" title="Há uma violação de rocomendação, ex.: trabalhar à noite e de manhã."></ion-icon> <span class="impediment-text">' + impediments + '</span>';
+        }
+
+        $('#sidebar-summary').html(text);
+    }
 
     this.checkProgramConstraints = function() {
         var self = this;
@@ -412,6 +454,8 @@ Horarios.App = function() {
                 self.checkConstraintsByCourse(course);
             });
         });
+
+        this.refreshSidebarSummary();
     };
 
     this.init = function(context) {

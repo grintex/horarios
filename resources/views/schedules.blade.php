@@ -63,14 +63,18 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-3 px-1 bg-dark position-fixed" id="sidebar">
-                <div class="nav flex-column flex-nowrap vh-100 overflow-auto text-white p-2">
-                    <p class="font-weight-bold">Docentes</p>
+                <div class="col-3" id="sidebar-summary" class="align-middle"></div>
+                <div class="nav flex-column flex-nowrap vh-100 overflow-auto text-white p-2 pt-5">
+                    <div>
+                        <p class="font-weight-bold float-left">Docentes</p>
+                    </div>
                     <table class="table table-dark" id="involedPersonnel">
                         <thead>
                             <tr>
                             <th scope="col">Nome</th>
                             <th scope="col">CCR</th>
                             <th scope="col">Créditos</th>
+                            <th scope="col">Semana</th>
                             </tr>
                         </thead>
                         <tbody>
