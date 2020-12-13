@@ -4,6 +4,7 @@ Horarios.App = function() {
     this.ENDPOINT_URL = './api/v0/?';
     
     this.data = {
+        dirty: false,
         program: null,
         programs: {}
     };
@@ -15,10 +16,66 @@ Horarios.App = function() {
         readOnly: false
     };
 
+    this.tickers = [];
+
     this.boot = function() {
         this.buildInitialUI();
         this.initAutocomplete();
+        this.initTicker();
+        this.initAutoSave();
         this.load();
+    };
+
+    this.initTicker = function() {
+        var self = this;
+
+        setInterval(function() {
+            self.tick();
+        }, 500);
+    };
+
+    this.tick = function() {
+        var self = this;
+
+        this.tickers.forEach(function(ticker) {
+            var now = self.now();
+
+            if(!ticker.callback) {
+                return;
+            }
+
+            if(now - ticker.timeLastCall >= ticker.intervalTimeMs) {
+                ticker.timeLastCall = now;
+                ticker.callback.call(ticker.callbackThis, ticker.callbackParams);
+            }
+        });
+    };
+
+    this.addTicker = function(intervalTimeMs, callback, params, callbackThis) {
+        this.tickers.push({
+            intervalTimeMs: intervalTimeMs,
+            timeLastCall: this.now(),
+            callback: callback,
+            callbackParams: params,
+            callbackThis: callbackThis || this
+        });
+    };
+
+    this.now = function() {
+        return (new Date()).getTime();
+    };
+
+    this.initAutoSave = function() {
+        this.addTicker(10000, this.save);
+    };
+
+    this.save = function(force) {
+        if(!this.data.dirty && !force) {
+            return;
+        }
+
+        console.log('Saving data');    
+        this.data.dirty = false;
     };
 
     this.initAutocomplete = function() {
@@ -408,19 +465,25 @@ Horarios.App = function() {
         course.period = data.row | 0;
         course.weekDay = data.col | 0;
 
+        this.data.dirty = true;
         this.commitCourse(course);
         this.checkProgramConstraints();
     };
 
     this.commitCourse = function(course) {
+        var self = this;
+
         console.log('Commiting course', course);
 
         this.api({method: 'updatecourse', program: this.active.programId, course: course}, function(data) {
             console.log('Course commited successfuly!', data);
+            self.data.dirty = false;
         }, this);
     };
 
     this.commitGroup = function(group) {
+        var self = this;
+
         console.log('Commiting group', group);
 
         // TODO: improve this
@@ -432,7 +495,10 @@ Horarios.App = function() {
 
         this.api({method: 'updategroup', program: this.active.programId, group: bareGroup}, function(data) {
             console.log('Group commited successfuly!', data);
+            self.data.dirty = false;
         }, this);
+
+        this.data.dirty = false;
     };
 
     this.loadCourses = function() {
@@ -839,6 +905,7 @@ Horarios.App = function() {
             console.log('Course added: ', courseObj);
         }
 
+        this.data.dirty = true;
         this.commitCourse(course);
     }
     
@@ -865,7 +932,8 @@ Horarios.App = function() {
         
             console.log('Group added: ', groupObj);
         }
-
+        
+        this.data.dirty = true;
         this.commitGroup(group);
     }
     
@@ -953,9 +1021,4 @@ var periods = [
 $(function () {
     var app = new Horarios.App();
     app.boot();
-
-    // TODO: move this into App class.
-    setInterval(function() {
-        // TODO: call store.set('horarios.data', app.data);
-    }, 2000);
 });
