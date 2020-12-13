@@ -18,7 +18,7 @@ Horarios.App = function() {
 
     this.tickers = [];
 
-    this.boot = function() {
+    this.boot = function(data) {
         this.buildInitialUI();
         this.initAutocomplete();
         this.initTicker();
@@ -231,19 +231,6 @@ Horarios.App = function() {
     this.buildDropdownProgramSelection = function() {
         var self = this;
 
-        $('#dropdownMenuProgramSelector').empty();
-    
-        for(p in self.data.programs) {
-            var program = self.data.programs[p];
-    
-            if(program.id == this.active.programId) {
-                $('#buttonProgramSelector').html(program.name);
-                continue;
-            }
-    
-            $('#dropdownMenuProgramSelector').append('<a class="dropdown-item" href="javascript:void(0);" data-program="' + program.id + '">' + program.name + '</a>');
-        }
-        
         $('#dropdownMenuProgramSelector a').click(function(e) {
             self.handleSelectProgram(e);
         });
@@ -1064,5 +1051,5 @@ var periods = [
 
 $(function () {
     var app = new Horarios.App();
-    app.boot();
+    app.boot(HORARIOS_PAGE_DATA);
 });

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ApiScheduleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,6 +13,9 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+// Schedule
+Route::get('schedule/{uid}/{period}/{schedule}', 'App\Http\Controllers\ScheduleController@show');
 
 Route::get('/schedules', function () {
     return view('schedules');

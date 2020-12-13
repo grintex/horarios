@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\ApiScheduleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,7 +15,7 @@ use App\Http\Controllers\ScheduleController;
 |
 */
 
-Route::apiResource('schedules', ScheduleController::class);
+Route::apiResource('schedules', ApiScheduleController::class);
 
 Route::match(array('GET','POST'), '/search/person', 'App\Http\Controllers\ApiSearchController@person')->name('api.search.person');
 Route::match(array('GET','POST'), '/search/course', 'App\Http\Controllers\ApiSearchController@course')->name('api.search.course');
