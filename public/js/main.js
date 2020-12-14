@@ -93,6 +93,7 @@ Horarios.App = function() {
     };
 
     this.save = function(force) {
+
         if(!this.data.dirty && !force) {
             return;
         }
@@ -153,8 +154,8 @@ Horarios.App = function() {
     this.buildModals = function() {
         var self = this;
 
-        $('#modal-course button.submit').click(function(e) { self.handleModalCourseSubmit(e); });
-        $('#modal-group button.submit').click(function(e) { self.handleModalGroupSubmit(e); });
+        $('#modal-course button.submit').on('click', function(e) { self.handleModalCourseSubmit(e); });
+        $('#modal-group button.submit').on('click', function(e) { self.handleModalGroupSubmit(e); });
     
         $('#modal-course').on('show.bs.modal', function (event) {
             var groupId = $(event.relatedTarget).data('group');
@@ -226,7 +227,7 @@ Horarios.App = function() {
             text += 
                 '<div class="mt-3" id="' + key + '"> ' + 
                     '<ion-icon name="chevron-forward-circle-outline"></ion-icon> ' + 
-                    '<span data-member-id="' + member + '">' + member + '</span>' + 
+                    '<span data-member-id="' + member + '" class="member">' + member + '</span>' + 
                     '<a href="javascript:void(0);" class="float-right pr-2" data-click-remove="#' + key + '"><ion-icon name="trash-outline"></ion-icon></ion-icon> <small>Remover</small></a>' +
                 '</div>';
         });
@@ -931,7 +932,9 @@ Horarios.App = function() {
                 course[p] = courseObj[p];
             }
 
+            this.refreshCourseWidgetHtmlContent(course);
             console.log('Course updated: ', courseObj);
+
         } else {
             // Creating a new course
             courseObj.id = this.getNextCourseId();
@@ -948,6 +951,11 @@ Horarios.App = function() {
         this.data.dirty = true;
         this.commitCourse(course);
     }
+
+    this.refreshCourseWidgetHtmlContent = function(course) {
+        var node = $('li[data-course=' + course.id + ']');
+        node.html(this.generateCourseGridNodeHTML(course));
+    };
     
     this.addOrUpdateGroup = function(groupObj) {
         var isUpdate = groupObj.id;
@@ -991,6 +999,7 @@ Horarios.App = function() {
 
         if(!name) {
             // TODO: show some warning?
+            console.warn('Empty name is not allowed');
             return;
         }
     
