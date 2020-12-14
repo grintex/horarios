@@ -14,12 +14,12 @@ use App\Http\Controllers\ApiScheduleController;
 |
 */
 
-// Schedule
-Route::get('schedule/{uid}/{period}/{schedule}', 'App\Http\Controllers\ScheduleController@show');
+// Specific schedule
+Route::get('schedule/{uid}/{period}/{schedule}', 'App\Http\Controllers\ScheduleController@show')->name('schedule.show');
 
-Route::get('/schedules', function () {
-    return view('schedules');
-});
+// Schedules
+Route::get('schedules', 'App\Http\Controllers\SchedulesController@index');
+Route::get('schedules/{uid}/{period?}', 'App\Http\Controllers\SchedulesController@redir');
 
 Route::get('/', function () {
     return view('welcome');
