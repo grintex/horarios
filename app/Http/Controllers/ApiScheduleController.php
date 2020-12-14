@@ -3,9 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Models\Schedule;
 
 class ApiScheduleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -68,7 +76,9 @@ class ApiScheduleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        echo $request->user();
+        exit();
+        $schedule = Schedule::where('id', $id)->first();
     }
 
     /**

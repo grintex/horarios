@@ -10,7 +10,7 @@ class ScheduleController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:sanctum']);
+        $this->middleware('auth:sanctum');
     }
 
 
@@ -73,7 +73,10 @@ class ScheduleController extends Controller
                 'groups' => json_decode($schedule->groups),
             ],
             'programId' => $schedule->user->id,
-            'readOnly' => $schedule_is_revision || $schedule->locked
+            'schedule' => $schedule,
+            'readOnly' => $schedule_is_revision || $schedule->locked,
+            'appBaseUrl' => url('/'),
+            'apiBaseEndpointUrl' => url('/api')
         ];
 
         return view('schedule', [

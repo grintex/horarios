@@ -1,11 +1,13 @@
 var Horarios = {};
 
 Horarios.App = function() {
-    this.ENDPOINT_URL = './api/v0/?';
+    this.ENDPOINT_URL = undefined;
+    this.APP_BASE_URL = undefined;
     
     this.data = {
         dirty: false,
         program: null,
+        schedule: null
     };
     
     this.active = {
@@ -65,7 +67,7 @@ Horarios.App = function() {
     };
 
     this.initAutoSave = function() {
-        this.addTicker(10000, this.save);
+        this.addTicker(1000, this.save);
     };
 
     this.save = function(force) {
@@ -73,7 +75,19 @@ Horarios.App = function() {
             return;
         }
 
-        console.log('Saving data');    
+        console.log('Saving data', this.data.program);
+
+        var payload = {
+            courses: this.data.program.courses,
+            groups: this.data.program.gorups,
+        }
+
+        axios.put(this.ENDPOINT_URL + '/schedules/' + this.data.schedule.id, payload, { withCredentials: true }).then(res => {
+            console.log(res);
+        }).catch(err => {
+            console.log(err);
+        });
+
         this.data.dirty = false;
     };
 
@@ -442,8 +456,14 @@ Horarios.App = function() {
     this.init = function(data) {
         this.buildFinalUI();
 
+        this.ENDPOINT_URL = data.apiBaseEndpointUrl;
+        this.APP_BASE_URL = data.appBaseUrl;
+
         this.data.program = data.program;
+        this.data.schedule = data.schedule;
         this.active.readOnly = data.readOnly;
+
+        axios.defaults.withCredentials = true;
 
         this.selectProgram(data.programId);
     };
