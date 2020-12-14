@@ -70,19 +70,37 @@ Horarios.App = function() {
         this.addTicker(1000, this.save);
     };
 
+    this.getSaveableData = function() {
+        var payload = {
+            courses: this.data.program.courses,
+            groups: [],
+        }
+
+        for(var p in this.data.program.groups) {
+            var group = this.data.program.groups[p];
+
+            if(group.hidden) {
+                continue;
+            }
+
+            payload.groups.push({
+                id: group.id,
+                name: group.name
+            });
+        }
+
+        return payload;
+    };
+
     this.save = function(force) {
         if(!this.data.dirty && !force) {
             return;
         }
 
-        console.log('Saving data', this.data.program);
+        var payload = this.getSaveableData();
+        console.log('Saving data', payload);
 
-        var payload = {
-            courses: this.data.program.courses,
-            groups: this.data.program.gorups,
-        }
-
-        axios.put(this.ENDPOINT_URL + '/schedules/' + this.data.schedule.id, payload, { withCredentials: true }).then(res => {
+        axios.put(this.ENDPOINT_URL + '/schedules/' + this.data.schedule.id, payload).then(res => {
             console.log(res);
         }).catch(err => {
             console.log(err);
@@ -462,8 +480,6 @@ Horarios.App = function() {
         this.data.program = data.program;
         this.data.schedule = data.schedule;
         this.active.readOnly = data.readOnly;
-
-        axios.defaults.withCredentials = true;
 
         this.selectProgram(data.programId);
     };

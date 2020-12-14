@@ -76,9 +76,25 @@ class ApiScheduleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        echo $request->user();
-        exit();
         $schedule = Schedule::where('id', $id)->first();
+
+        if(!$schedule) {
+            abort(404);
+        }
+
+        if($request->user()->id != $schedule->user_id) {
+            abort(404);
+        }
+
+        $validated = $request->validate([
+            'courses' => 'required',
+            'groups' => 'required'
+        ]);
+
+        $schedule->courses = $request->input('courses');
+        $schedule->groups = $request->input('groups');
+
+        $schedule->save();
     }
 
     /**
