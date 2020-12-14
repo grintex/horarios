@@ -82,8 +82,11 @@
                     <div class="row" id="groups-header"></div>
                     <div id="groups-content"></div>
 
-                    <div id="groups-footer" style="display: none;">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-group">group</button>
+                    <div id="groups-footer">
+                        <button type="button" class="btn btn-out-dashed btn-huge btn-dark" data-toggle="modal" data-target="#modal-group">
+                            <ion-icon name="add-circle-outline" class=""></ion-icon>
+                            Adicionar uma fase nova
+                        </button>
                     </div>
                 </div>
             </div>
@@ -91,11 +94,11 @@
     </div>
 
     <!-- Modals -->
-    <div class="modal fade" id="modal-course" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="modal-course" tabindex="-1" role="dialog" aria-labelledby="modal-course-title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Informação de CCR</h5>
+                    <h5 class="modal-title" id="modal-course-title">Informação de CCR</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -146,11 +149,11 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modal-group" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="modal-group" tabindex="-1" role="dialog" aria-labelledby="model-group-title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Add group</h5>
+                    <h5 class="modal-title" id="model-group-title">Fase</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -160,13 +163,34 @@
                         <input type="hidden" id="modal-group-id" value="">
                         <div class="form-group">
                             <label for="modal-group-name">Nome</label>
-                            <input type="text" class="form-control" id="modal-group-name" placeholder="1234 Main St">
+                            <input type="text" class="form-control" id="modal-group-name" placeholder="Ex.: Noturno - 10a fase">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary submit">Save changes</button>
+                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success submit">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-confirm" tabindex="-1" role="dialog" aria-labelledby="modal-confirm-title" aria-hidden="true">
+        <input type="hidden" id="modal-confirm-element-type" />
+        <input type="hidden" id="modal-confirm-element-id" />
+
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-confirm-title">Confirma?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-confirm-text">Texto</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Não</button>
+                    <button type="button" class="btn btn-success submit">Sim</button>
                 </div>
             </div>
         </div>

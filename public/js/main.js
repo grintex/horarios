@@ -156,6 +156,7 @@ Horarios.App = function() {
 
         $('#modal-course button.submit').on('click', function(e) { self.handleModalCourseSubmit(e); });
         $('#modal-group button.submit').on('click', function(e) { self.handleModalGroupSubmit(e); });
+        $('#modal-confirm button.submit').on('click', function(e) { self.handleModalConfirmSubmit(e); });
     
         $('#modal-course').on('show.bs.modal', function (event) {
             var groupId = $(event.relatedTarget).data('group');
@@ -188,11 +189,19 @@ Horarios.App = function() {
         });
 
         $('#modal-group').on('show.bs.modal', function (event) {
-            var groupId = $(event.relatedTarget).data('group');
-            var group = self.getGroupById(groupId);
-
             $('#modal-group-id').val(group ? group.id : '');
             $('#modal-group-name').val(group ? group.name : '');
+        });
+
+        $('#modal-confirm').on('show.bs.modal', function (event) {
+            var el = $(event.relatedTarget);
+            var title = el.data('title');
+            var text = el.data('text');
+
+            $('#modal-confirm-element-type').val(el.data('element-type'));
+            $('#modal-confirm-element-id').val(el.data('element-id'));
+            $('#modal-confirm-title').html(title);
+            $('#modal-confirm-text').html(text);
         });
     };
 
@@ -515,39 +524,7 @@ Horarios.App = function() {
         course.weekDay = data.col | 0;
 
         this.data.dirty = true;
-        this.commitCourse(course);
         this.checkProgramConstraints();
-    };
-
-    this.commitCourse = function(course) {
-        var self = this;
-
-        console.log('Commiting course', course);
-
-        this.api({method: 'updatecourse', program: this.active.programId, course: course}, function(data) {
-            console.log('Course commited successfuly!', data);
-            self.data.dirty = false;
-        }, this);
-    };
-
-    this.commitGroup = function(group) {
-        var self = this;
-
-        console.log('Commiting group', group);
-
-        // TODO: improve this
-        var bareGroup = {
-            id: group.id,
-            name: group.name,
-            grid: null
-        };
-
-        this.api({method: 'updategroup', program: this.active.programId, group: bareGroup}, function(data) {
-            console.log('Group commited successfuly!', data);
-            self.data.dirty = false;
-        }, this);
-
-        this.data.dirty = false;
     };
 
     this.createGroupBlock = function(containerId, group) {
@@ -560,7 +537,11 @@ Horarios.App = function() {
                 '<div class="col-lg-12 schedule-block">' +
                     '<div class="card text-white status-meta">' +
                         '<div class="card-header alert alert-secondary">' +
-                            '<h2 class="float-left"><i class="icon ion-md-today"></i> ' + group.name + ' ' + (this.active.readOnly ? '' : '<a href="javascript:void(0);" data-group="'+ group.id +'" data-toggle="modal" data-target="#modal-group"><i class="icon ion-md-create edit"></i></a>') + '</h2>' +
+                            '<h2 class="float-left">' +
+                                group.name + ' ' +
+                                (this.active.readOnly ? '' : '<a href="javascript:void(0);" class="btn-simple" title="Apagar essa fase" data-title="Apagar fase?" data-text="A fase e todas as informações referentes a ela serão apagadas também. Você tem certeza que deseja apagar essa fase?" data-element-type="group" data-element-id="'+ group.id +'" data-toggle="modal" data-target="#modal-confirm"><ion-icon name="trash-outline"></ion-icon></a>') +
+                                (this.active.readOnly ? '' : '<a href="javascript:void(0);" class="btn-simple" title="Editar o nome dessa fase" data-group="'+ group.id +'" data-toggle="modal" data-target="#modal-group"><ion-icon name="create-outline"></ion-icon></a>') +
+                            '</h2>' +
                             (this.active.readOnly ? '' : '<button type="button" class="btn btn-outline-success ml-md-3 float-right" data-toggle="modal" data-target="#modal-course" data-group="' + group.id + '"><i class="icon ion-md-add-circle"></i> Adicionar CCR</button>') +
                         '</div>' +
                         '<div class="card-body">' +
@@ -949,7 +930,6 @@ Horarios.App = function() {
         }
 
         this.data.dirty = true;
-        this.commitCourse(course);
     }
 
     this.refreshCourseWidgetHtmlContent = function(course) {
@@ -982,7 +962,6 @@ Horarios.App = function() {
         }
         
         this.data.dirty = true;
-        this.commitGroup(group);
     }
     
     this.handleModalCourseSubmit = function() {
@@ -1028,6 +1007,15 @@ Horarios.App = function() {
         });
     
         $('#modal-group').modal('hide');
+    };
+
+    this.handleModalConfirmSubmit = function() {
+        var id = $('#modal-confirm-element-id').val();
+        var type = $('#modal-confirm-element-type').val();
+        
+        console.log('Modal confirm', id, type);
+
+        $('#modal-confirm').modal('hide');
     };
 
     this.findById = function(collection, id) {
