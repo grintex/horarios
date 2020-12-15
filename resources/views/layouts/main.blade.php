@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>Horarios</title>
+        <title>Horarios | Grintex</title>
 
         <!-- Styles -->
         <style>
@@ -17,6 +17,9 @@
         <link rel="stylesheet" href="{{ asset('js/3rdparty/jquery.dsmorse-gridster.min.css') }}" type="text/css">
         <link rel="stylesheet" href="{{ asset('css/gridster.css') }}" media="screen">
         <link rel="stylesheet" href="{{ asset('css/main.css') }}" media="screen">
+
+        <!-- Placed in the header as advised by ionicons itself --> 
+        <script nomodule="" src="https://unpkg.com/ionicons@5.2.3/dist/ionicons/ionicons.js"></script>
     </head>
     <body>
     <header class="bg-dark">
@@ -87,8 +90,6 @@
             </div>
         </div>
     </footer>
-
-    <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
 
     <script src="{{ asset('js/3rdparty/jquery.min.js') }}"></script>
     <script src="{{ asset('js/3rdparty/jquery.dsmorse-gridster.with-extras.min.js') }}" ></script>
