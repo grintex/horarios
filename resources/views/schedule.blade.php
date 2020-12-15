@@ -180,7 +180,7 @@
     </div>
 
     <div class="modal fade" id="modal-confirm" tabindex="-1" role="dialog" aria-labelledby="modal-confirm-title" aria-hidden="true">
-        <input type="hidden" id="modal-confirm-element-type" />
+        <input type="hidden" id="modal-confirm-element-action" />
         <input type="hidden" id="modal-confirm-element-id" />
 
         <div class="modal-dialog modal-dialog-centered" role="document">

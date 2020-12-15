@@ -228,7 +228,7 @@ Horarios.App = function() {
             var title = el.data('title');
             var text = el.data('text');
 
-            $('#modal-confirm-element-type').val(el.data('element-type'));
+            $('#modal-confirm-element-action').val(el.data('element-action'));
             $('#modal-confirm-element-id').val(el.data('element-id'));
             $('#modal-confirm-title').html(title);
             $('#modal-confirm-text').html(text);
@@ -554,7 +554,7 @@ Horarios.App = function() {
                         '<div class="card-header alert alert-secondary">' +
                             '<h2 class="float-left">' +
                                 '<span id="name-group-' + group.id + '">' + group.name + '</span> ' +
-                                (this.active.readOnly ? '' : '<a href="javascript:void(0);" class="btn-simple" title="Apagar essa fase" data-title="Apagar fase?" data-text="A fase e todas as informações referentes a ela serão apagadas também. Você tem certeza que deseja apagar essa fase?" data-element-type="group" data-element-id="'+ group.id +'" data-toggle="modal" data-target="#modal-confirm"><ion-icon name="trash-outline"></ion-icon></a>') +
+                                (this.active.readOnly ? '' : '<a href="javascript:void(0);" class="btn-simple" title="Apagar essa fase" data-title="Apagar fase?" data-text="A fase e todas as informações referentes a ela serão apagadas também. Você tem certeza que deseja apagar a fase \''+ group.name +'\'?" data-element-action="remove-group" data-element-id="'+ group.id +'" data-toggle="modal" data-target="#modal-confirm"><ion-icon name="trash-outline"></ion-icon></a>') +
                                 (this.active.readOnly ? '' : '<a href="javascript:void(0);" class="btn-simple" title="Editar o nome dessa fase" data-group="'+ group.id +'" data-toggle="modal" data-target="#modal-group"><ion-icon name="create-outline"></ion-icon></a>') +
                             '</h2>' +
                             (this.active.readOnly ? '' : '<button type="button" class="btn btn-outline-success ml-md-3 float-right" data-toggle="modal" data-target="#modal-course" data-group="' + group.id + '"><i class="icon ion-md-add-circle"></i> Adicionar CCR</button>') +
@@ -869,6 +869,19 @@ Horarios.App = function() {
     
         return item;
     }
+
+    this.removeGroupById = function(id) {
+        var groups = this.data.program.groups;
+
+        for(var i = 0; i < groups.length; i++) {
+            if(groups[i].id == id) {
+                groups.splice(i, 1);
+                return true;
+            }
+        }
+   
+        return false;
+    }
     
     this.findCoursesByGroupId = function(groupId) {
         var items = [];
@@ -1051,10 +1064,15 @@ Horarios.App = function() {
 
     this.handleModalConfirmSubmit = function() {
         var id = $('#modal-confirm-element-id').val();
-        var type = $('#modal-confirm-element-type').val();
+        var action = $('#modal-confirm-element-action').val();
         
-        console.log('Modal confirm', id, type);
+        if(action == 'remove-group') {
+            this.removeGroupById(id);
+            this.data.dirty = true;
+            $('#group-' + id).fadeOut();
+        }
 
+        console.log('Modal confirm', action, id);
         $('#modal-confirm').modal('hide');
     };
 
