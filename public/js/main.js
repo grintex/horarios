@@ -185,13 +185,12 @@ Horarios.App = function() {
         });
 
         $('#modal-group').on('show.bs.modal', function (event) {
-            var el = $(event.relatedTarget);
             var group = {
                 id: '',
                 name: '',
             }
 
-            var groupId = el.data('element-id');
+            var groupId = $(event.relatedTarget).data('group');
             
             if(groupId) {
                 group = self.getGroupById(groupId);
@@ -537,7 +536,7 @@ Horarios.App = function() {
                     '<div class="card text-white status-meta">' +
                         '<div class="card-header alert alert-secondary">' +
                             '<h2 class="float-left">' +
-                                group.name + ' ' +
+                                '<span id="name-group-' + group.id + '">' + group.name + '</span> ' +
                                 (this.active.readOnly ? '' : '<a href="javascript:void(0);" class="btn-simple" title="Apagar essa fase" data-title="Apagar fase?" data-text="A fase e todas as informações referentes a ela serão apagadas também. Você tem certeza que deseja apagar essa fase?" data-element-type="group" data-element-id="'+ group.id +'" data-toggle="modal" data-target="#modal-confirm"><ion-icon name="trash-outline"></ion-icon></a>') +
                                 (this.active.readOnly ? '' : '<a href="javascript:void(0);" class="btn-simple" title="Editar o nome dessa fase" data-group="'+ group.id +'" data-toggle="modal" data-target="#modal-group"><ion-icon name="create-outline"></ion-icon></a>') +
                             '</h2>' +
@@ -939,6 +938,8 @@ Horarios.App = function() {
     this.addOrUpdateGroup = function(groupObj) {
         var isUpdate = groupObj.id;
 
+        groupObj.name = this.stripTags(groupObj.name);
+
         if(isUpdate) {
             // Update
             var group = this.getGroupById(groupObj.id);
@@ -948,6 +949,7 @@ Horarios.App = function() {
                 group[p] = groupObj[p];
             }
 
+            $('#name-group-' + group.id).html(group.name);
             console.log('Group updated: ', groupObj);
 
         } else {
@@ -962,6 +964,10 @@ Horarios.App = function() {
         
         this.data.dirty = true;
     }
+
+    this.stripTags = function(str) {
+        return str.replace(/(<([^>]+)>)/gi, '');
+    };
     
     this.handleModalCourseSubmit = function() {
         var selectedMembers = [];
