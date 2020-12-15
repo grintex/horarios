@@ -67,7 +67,7 @@ Horarios.App = function() {
     };
 
     this.initAutoSave = function() {
-        this.addTicker(1000, this.save);
+        this.addTicker(500, this.save);
     };
 
     this.getSaveableData = function() {
@@ -92,7 +92,25 @@ Horarios.App = function() {
         return payload;
     };
 
+    this.setSavingStatus = function(value) {
+        var el = $('#save-status');
+
+        el.fadeOut();
+
+        if (typeof value === 'string' || value instanceof String) {
+            el.html('<ion-icon name="alert-circle-outline" class="text-danger"></ion-icon> <small>' + value + '</small>').fadeIn();
+            return;
+        }
+
+        if(value) {
+            el.html('<ion-icon name="refresh-outline" class="spin"></ion-icon> <small>Salvando</small>').fadeIn();
+        } else {
+            el.html('<ion-icon name="checkmark-circle-outline"></ion-icon><small> Conteúdo salvo!</small>').fadeIn();
+        }
+    };
+
     this.save = function(force) {
+        var self = this;
 
         if(!this.data.dirty && !force) {
             return;
@@ -101,10 +119,14 @@ Horarios.App = function() {
         var payload = this.getSaveableData();
         console.log('Saving data', payload);
 
+        this.setSavingStatus(true);
+
         axios.put(this.ENDPOINT_URL + '/schedules/' + this.data.schedule.id, payload).then(res => {
             console.log(res);
+            this.setSavingStatus(false);
         }).catch(err => {
             console.log(err);
+            this.setSavingStatus('Erro ao salvar!');
         });
 
         this.data.dirty = false;
@@ -316,6 +338,7 @@ Horarios.App = function() {
         this.buildSelectableDropdownLinks();
         this.checkProgramConstraints();
         this.refreshInvoledPersonnelSidebar(this.findInvolvedPersonnel());
+        this.setSavingStatus(false);
     };
 
     this.objToArray = function(obj) {
@@ -452,7 +475,10 @@ Horarios.App = function() {
             }
         });
 
-        var text = '<ion-icon name="people-outline" alt="Quantidade de docentes participando desse horário"></ion-icon> <span>' + persons + '</span>';
+        var text = '';
+        
+        text += '<span class="float-left mt-1 text-muted" id="save-status"></span>';
+        text += '<ion-icon name="people-outline" alt="Quantidade de docentes participando desse horário"></ion-icon> <span>' + persons + '</span>';
 
         if(clashes > 0) {
             text += '<ion-icon name="alert-circle" class="clash-text" title="Há conflito de horário"></ion-icon> <span class="clash-text">' + clashes + '</span>';
@@ -490,24 +516,6 @@ Horarios.App = function() {
         this.active.readOnly = data.readOnly;
 
         this.selectProgram(data.programId);
-    };
-
-    this.api = function(params, callback, context) {
-        var jqxhr = $.getJSON(this.ENDPOINT_URL, params);
-
-        jqxhr.done(function(response) {
-            console.debug('Response received:', response);
-
-            if(response.success) {
-                callback.call(context, response.data);
-            } else {
-                console.error('Endpoint error:', response.message);
-            }
-        });
-        
-        jqxhr.fail(function(e) {
-            console.error('Ajax fail', e);
-        });
     };
 
     this.onCourseMoved = function(data) {

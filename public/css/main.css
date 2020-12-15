@@ -469,3 +469,21 @@ Custom scrollbars
 ::-webkit-scrollbar-thumb:window-inactive {
   background: rgba(120,120,120,0.4);
 }
+
+/** spin, source: https://codepen.io/teerapuch/pen/vLJXeR */
+
+.spin {
+  animation-name: spin;
+  animation-duration: 5000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear; 
+}
+
+@keyframes spin {
+  from {
+      transform:rotate(0deg);
+  }
+  to {
+      transform:rotate(360deg);
+  }
+}
