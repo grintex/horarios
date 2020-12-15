@@ -196,6 +196,7 @@ Horarios.App = function() {
             $('#modal-course-name').val(course ? course.name : '');
             $('#modal-course-code').val(course ? course.code : '');
             $('#modal-course-credits').val(course ? (course.credits || 4) : '');
+            $('#modal-course-slots').val(course ? (course.slots || 1) : '');
             $('#modal-course-id').val(course ? course.id : '');
 
             if(!course) {
@@ -293,6 +294,10 @@ Horarios.App = function() {
             var el = $(e.currentTarget);
             var url = el.data('url');
             
+            if(!url) {
+                return;
+            }
+
             self.gotoURLFromAppBase(url);
         });
     };
@@ -312,15 +317,23 @@ Horarios.App = function() {
     };
 
     this.selectProgram = function(programId) {
-        var self = this;
-
         this.active.programId = programId;
         console.debug('Program selected: ', programId);
     
         this.restoreDataFromLocalStorage();
     
-        $('#container').empty();
-    
+        this.refreshGroupsContent();
+        this.buildSelectableDropdownLinks();
+        this.checkProgramConstraints();
+        this.refreshInvoledPersonnelSidebar(this.findInvolvedPersonnel());
+        this.setSavingStatus(false);
+    };
+
+    this.refreshGroupsContent = function() {
+        var self = this;
+
+        $('#groups-content').empty();
+
         this.data.program.groups.forEach(function(group) {
             var courses = self.findCoursesByGroupId(group.id);
             group.grid = self.createGroupBlock('groups-content', group);
@@ -334,11 +347,6 @@ Horarios.App = function() {
                     course.period);
             });
         });
-
-        this.buildSelectableDropdownLinks();
-        this.checkProgramConstraints();
-        this.refreshInvoledPersonnelSidebar(this.findInvolvedPersonnel());
-        this.setSavingStatus(false);
     };
 
     this.objToArray = function(obj) {
@@ -514,6 +522,7 @@ Horarios.App = function() {
         this.data.program = data.program;
         this.data.schedule = data.schedule;
         this.active.readOnly = data.readOnly;
+        this.active.programId = data.programId;
 
         this.selectProgram(data.programId);
     };
@@ -579,11 +588,11 @@ Horarios.App = function() {
                 handle: 'header',
     
                 start: function (e, ui) {
-                    console.debug('START position: ' + ui.position.top + ' ' + ui.position.left);
+                    //console.debug('START position: ' + ui.position.top + ' ' + ui.position.left);
                 },
     
                 drag: function (e, ui) {
-                    console.debug('DRAG offset: ' + ui.pointer.diff_top + ' ' + ui.pointer.diff_left);
+                    //console.debug('DRAG offset: ' + ui.pointer.diff_top + ' ' + ui.pointer.diff_left);
                 },
     
                 stop: function (e, ui) {
@@ -913,18 +922,33 @@ Horarios.App = function() {
         if(isUpdate) {
             // Update
             var course = this.getCourseById(courseObj.id);
+            var hardRefresh = false;
 
             // TODO: improve this pile of crap
             for(var p in courseObj) {
+                var isDifferent = course[p] != courseObj[p];
+
+                if(p == 'slots' && isDifferent) {
+                    hardRefresh = true;
+                }
+
                 course[p] = courseObj[p];
             }
 
-            this.refreshCourseWidgetHtmlContent(course);
-            console.log('Course updated: ', courseObj);
+            if(hardRefresh) {
+                this.refreshGroupsContent();
+            } else {
+                this.refreshCourseWidgetHtmlContent(course);
+            }
+
+            console.log('Course updated: ', courseObj, course);
 
         } else {
             // Creating a new course
             courseObj.id = this.getNextCourseId();
+            courseObj.weekDay = 7;
+            courseObj.period = periods[0].id;
+
             this.data.program.courses.push(courseObj);
             group.grid.add_widget(this.generateCourseGridNodeHTML(courseObj), 1, 1, 7, 2); // TODO: find best position
         
@@ -988,21 +1012,24 @@ Horarios.App = function() {
         var name = $('#modal-course-name').val();
         var code = $('#modal-course-code').val() || 'GCS011';
         var credits = $('#modal-course-credits').val() || 4;
+        var slots = $('#modal-course-slots').val() || 1;
 
         if(!name) {
             // TODO: show some warning?
             console.warn('Empty name is not allowed');
             return;
         }
+
+        slots = slots <= 0 || slots >= periods.length ? 1 : slots;
+        credits = credits <= 0 ? 1 : credits;
     
         this.addOrUpdateCourse({
             id: id,
             code: code,
             name: name,
-            credits: credits,
+            credits: credits | 0,
+            slots: slots | 0,
             group: this.active.groupId,
-            weekDay: 7,
-            period: 1,
             members: selectedMembers
         });
     

@@ -35,7 +35,7 @@
                                     <button class="btn btn-outline-light dropdown-toggle" type="button" id="buttonProgramSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ $program_name }}</button>
                                     <div class="dropdown-menu" aria-labelledby="buttonProgramSelector" id="dropdownMenuProgramSelector">
                                         @foreach ($relations as $user)
-                                            <a class="dropdown-item dropdown-link" href="javascript:void(0);" data-url="oi/ola/test" data-program="{{ $user->uid }}">{{ str_replace('Coordenacao do Curso de ', '', $user->name) }}</a>
+                                            <a class="dropdown-item dropdown-link" href="javascript:void(0);" data-url="" data-program="{{ $user->uid }}">{{ str_replace('Coordenacao do Curso de ', '', $user->name) }}</a>
                                         @endforeach
                                     </div>
                                 </div>
@@ -52,7 +52,7 @@
                                     <button class="btn btn-outline-light dropdown-toggle" type="button" id="buttonPeriodSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ $schedule->period }}</button>
                                     <div class="dropdown-menu" aria-labelledby="buttonPeriodSelector" id="dropdownMenuPeriodSelector">
                                         @foreach ($periods as $info)
-                                            <a class="dropdown-item dropdown-link" href="javascript:void(0);" data-url="oi/ola/test/period" data-period="{{ $info->period }}">{{ $info->period }}</a>
+                                            <a class="dropdown-item dropdown-link" href="javascript:void(0);" data-url="" data-period="{{ $info->period }}">{{ $info->period }}</a>
                                         @endforeach                                        
                                     </div>
                                 </div>
@@ -69,7 +69,7 @@
                                     <button class="btn btn-outline-light dropdown-toggle" type="button" id="buttonRevisionSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ $rev_name }}</button>
                                     <div class="dropdown-menu" aria-labelledby="buttonRevisionSelector" id="dropdownMenuRevisionSelector">
                                         @foreach ($revisions as $schedule)
-                                            <a class="dropdown-item dropdown-link" href="javascript:void(0);" data-url="oi/ola/test/schedule" data-schedule-id="{{ $schedule->id }}">{{ sprintf("REV%03d", $schedule->revision) }} - {{ $schedule->updated_at }}</a>
+                                            <a class="dropdown-item dropdown-link" href="javascript:void(0);" data-url="" data-schedule-id="{{ $schedule->id }}">{{ sprintf("REV%03d", $schedule->revision) }} - {{ $schedule->updated_at }}</a>
                                         @endforeach                                        
                                     </div>
                                 </div>
@@ -113,13 +113,17 @@
                         </div>
 
                         <div class="form-row">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="modal-course-code" class="font-weight-bold color-main">Código</label>
                                 <input type="text" class="form-control" id="modal-course-code" placeholder="Ex.: GEX602">
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="modal-course-credits" class="font-weight-bold color-main">Créditos</label>
                                 <input type="text" class="form-control" id="modal-course-credits" placeholder="Ex.: 2" oninput="this.value=this.value.replace(/(?![0-9])./gmi,'')">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="modal-course-slots" class="font-weight-bold color-main">Períodos</label>
+                                <input type="text" class="form-control" id="modal-course-slots" placeholder="Ex.: 1" oninput="this.value=this.value.replace(/(?![0-9])./gmi,'')">
                             </div>
                         </div>
 
