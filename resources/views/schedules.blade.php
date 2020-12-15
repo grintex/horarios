@@ -56,199 +56,52 @@
         </div>
     </header>
 
-    <div class="container-fluid">
-        
-    </div>
-
-    <div class="container-fluid">
+    <div class="container">
         <div class="row">
-            <div class="col-3 px-1 bg-dark position-fixed" id="sidebar">
-                <div class="col-3" id="sidebar-summary" class="align-middle"></div>
-                <div class="nav flex-column flex-nowrap vh-100 overflow-auto text-white p-2 pt-5">
-                    <div>
-                        <p class="font-weight-bold float-left">Docentes</p>
+            <div class="col-12 px-1 bg-dark">
+                <div class="card text-white bg-dark border-secondary">
+                    <div class="card-header">
+                        Meus horários
+                        <a href="{{ route('schedule.create') }}" class="btn btn-success float-right"><ion-icon name="add-circle-outline"></ion-icon> Novo horário</a>
                     </div>
-                    <table class="table table-dark" id="involedPersonnel">
-                        <thead>
-                            <tr>
-                            <th scope="col">Nome</th>
-                            <th scope="col">CCR</th>
-                            <th scope="col">Créditos</th>
-                            <th scope="col">Semana</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="col-9 offset-3" id="main">
-                <div class="row meta-block">
-                    <div class="col-lg-6">
-                        <div class="card text-white bg-dark border-secondary">
-                            <div class="card-header">
-                                Curso
+                    <div class="card-body">
+                        @if (count($schedules) == 0)
+                            <div class="text-center">
+                                <p class="text-secondary"><ion-icon name="sad-outline" style="font-size: 128px;"></ion-icon></p>
+                                <p class="font-weight-bold">Oops!</p>
+                                <p class="text-muted">Você ainda não criou um horário. <br />Como vamos ter aulas desse jeito?</p>
                             </div>
-                            <div class="card-body">
-                                <div class="dropdown" id="programSelector">
-                                    <button class="btn btn-outline-light dropdown-toggle" type="button" id="buttonProgramSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                                    <div class="dropdown-menu" aria-labelledby="buttonProgramSelector" id="dropdownMenuProgramSelector"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-2">
-                        <div class="card text-white bg-dark border-secondary">
-                            <div class="card-header">
-                                Período
-                            </div>
-                            <div class="card-body">
-                                <div class="dropdown" id="periodSelector">
-                                    <button class="btn btn-outline-light dropdown-toggle" type="button" id="buttonPeriodSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">2020.1</button>
-                                    <div class="dropdown-menu" aria-labelledby="buttonPeriodSelector" id="dropdownMenuPeriodSelector"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="card text-white bg-dark border-secondary">
-                            <div class="card-header">
-                                Revisão
-                            </div>
-                            <div class="card-body">
-                                <div class="dropdown" id="revisionSelector">
-                                    <button class="btn btn-outline-light dropdown-toggle" type="button" id="buttonRevisionSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">REV002 - 13/11/2019 16:07</button>
-                                    <div class="dropdown-menu" aria-labelledby="buttonRevisionSelector" id="dropdownMenuRevisionSelector"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="groups" class="container-fluid">
-                    <div class="row" id="groups-header"></div>
-                    <div id="groups-content"></div>
-
-                    <div id="groups-footer" style="display: none;">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-group">group</button>
+                        @else
+                            <table class="table table-dark" id="involedPersonnel">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col">Revisão</th>
+                                        <th scope="col">Periodo</th>
+                                        <th scope="col">Criação</th>
+                                        <th scope="col">Última atualização</th>
+                                        <th scope="col">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($schedules as $schedule)
+                                        <tr>
+                                            <td><ion-icon name="calendar-clear-outline"></ion-icon></th>
+                                            <td><a href="{{ route('schedule.show', [$schedule->user->uid, $schedule->period, $schedule->id]) }}">{{ $schedule->revision > 0 ? sprintf('REV%03d', $schedule->revision) : 'Rascunho' }}</a></th>
+                                            <td>{{ $schedule->period }}</th>
+                                            <td>{{ $schedule->created_at }}</th>
+                                            <td>{{ $schedule->updated_at }}</th>
+                                            <td></th>
+                                        </tr>
+                                    @endforeach  
+                                </tbody>
+                            </table>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    
-
-    <!-- Modals -->
-    <div class="modal fade" id="modal-course" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Informação de CCR</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="modal-course-form">
-                        <input type="hidden" id="modal-course-id" value="">
-
-                        <div class="form-group">
-                            <label for="modal-course-name" class="font-weight-bold color-main">Nome</label>
-                            <input type="text" class="form-control autocomplete" id="modal-course-name" data-url="{{ route('api.search.course') }}" autocomplete="off" placeholder="Ex.: GEX006 ou Geometria">
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="modal-course-code" class="font-weight-bold color-main">Código</label>
-                                <input type="text" class="form-control" id="modal-course-code" placeholder="Ex.: GEX602">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="modal-course-credits" class="font-weight-bold color-main">Créditos</label>
-                                <input type="text" class="form-control" id="modal-course-credits" placeholder="Ex.: 2" oninput="this.value=this.value.replace(/(?![0-9])./gmi,'')">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="font-weight-bold color-main">Docentes responsáveis</label>
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control autocomplete" data-url="{{ route('api.search.person') }}" autocomplete="off" placeholder="Ex.: Fulano Silva" aria-describedby="courseSearch">
-                            <div class="input-group-append">
-                                <span class="input-group-text" id="courseSearch"><ion-icon name="search-outline"></ion-icon></span>
-                            </div>
-                        </div>
-
-                        <div class="form-group" style="height: 200px; overflow: scroll;">
-                            <div id="modal-course-members">
-                                <ion-icon name="ion-loading-c"></ion-icon>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success submit">Salvar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modal-group" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Add group</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="modal-group-form">
-                        <input type="hidden" id="modal-group-id" value="">
-                        <div class="form-group">
-                            <label for="modal-group-name">Nome</label>
-                            <input type="text" class="form-control" id="modal-group-name" placeholder="1234 Main St">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary submit">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <footer class="" style="display: none;">
-        <div class="container">
-            <div class="row align-items-top text-center text-md-left">
-                <div class="col-4 text-md-left">
-                    <h3>Sobre</h3>
-                    <p class="small">Esse site foi criado pelo <a href="https://grintex.uffs.cc">Grupo de Inovação Tecnológica Experimental (GRINTEX)</a> da <a href="http://uffs.edu.br" target="_blank">Universidade Federal da Fronteira Sul</a>, campus Chapecó/SC. Ele é coordenado por membros do curso de <a href="https://cc.uffs.edu.br">Ciência da Computação</a> com participação de várias entidades, como a Secretaria Especial de Tecnologia da Informação (SETI).</p>
-                </div>
-
-                <div class="col-2"></div>
-
-                <div class="col-3">
-                    <h3>Country B</h3>
-                    <p>Street Address 100<br>Contact Name</p>
-                    <p>+13 827 312 5002</p>
-                    <p><a href="https://www.froala.com">countryb@amazing.com</a></p>
-                </div>
-
-                <div class="col-3">
-                    <h3>Country B</h3>
-                    <p>Street Address 100<br>Contact Name</p>
-                    <p>+13 827 312 5002</p>
-                    <p><a href="https://www.froala.com">countryb@amazing.com</a></p>
-                    <p><a href="https://www.froala.com">countryb@amazing.com</a></p>
-                    <p><a href="https://www.froala.com">countryb@amazing.com</a></p>
-                </div>
-            </div>
-        </div>
-    </footer>
 
     <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
 

@@ -66,8 +66,12 @@ class SchedulesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('schedules');
+        $user = $request->user();
+
+        return view('schedules', [
+            'schedules' => $user->schedules
+        ]);
     }
 }

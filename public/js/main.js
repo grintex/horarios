@@ -185,6 +185,18 @@ Horarios.App = function() {
         });
 
         $('#modal-group').on('show.bs.modal', function (event) {
+            var el = $(event.relatedTarget);
+            var group = {
+                id: '',
+                name: '',
+            }
+
+            var groupId = el.data('element-id');
+            
+            if(groupId) {
+                group = self.getGroupById(groupId);
+            }
+
             $('#modal-group-id').val(group ? group.id : '');
             $('#modal-group-name').val(group ? group.name : '');
         });

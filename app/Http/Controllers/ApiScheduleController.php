@@ -86,13 +86,9 @@ class ApiScheduleController extends Controller
             abort(404);
         }
 
-        $validated = $request->validate([
-            'courses' => 'required',
-            'groups' => 'required'
-        ]);
-
-        $schedule->courses = $request->input('courses');
-        $schedule->groups = $request->input('groups');
+        // TODO: check the security of this
+        $schedule->courses = $request->input('courses', '[]');
+        $schedule->groups = $request->input('groups', '[]');
 
         $schedule->save();
     }

@@ -82,26 +82,33 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function create(Request $request)
     {
-        //
+        $user = $request->user();
+        
+        $schedule = Schedule::create([
+            'user_id' => $user->id,
+            'name' => '',
+            'revision' => 0,
+            'period' => '2020.2',
+            'courses' => '[]',
+            'groups' => '[]',
+            'relations' => '%.ch',
+            'deleted' => false,
+            'locked' => false
+        ]);
+
+        $params = [
+            'uid' => $user->uid,
+            'period' => $schedule->period,
+            'schedule' => $schedule->id
+        ];
+
+        return redirect()->route('schedule.show', $params);
     }
 
     /**

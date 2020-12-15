@@ -16,6 +16,7 @@ use App\Http\Controllers\ApiScheduleController;
 
 // Specific schedule
 Route::get('schedule/{uid}/{period}/{schedule}', 'App\Http\Controllers\ScheduleController@show')->name('schedule.show');
+Route::get('schedule/create', 'App\Http\Controllers\ScheduleController@create')->name('schedule.create');
 
 // Schedules
 Route::get('schedules', 'App\Http\Controllers\SchedulesController@index');
