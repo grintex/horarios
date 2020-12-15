@@ -17,19 +17,17 @@
         <link rel="stylesheet" href="{{ asset('js/3rdparty/jquery.dsmorse-gridster.min.css') }}" type="text/css">
         <link rel="stylesheet" href="{{ asset('css/gridster.css') }}" media="screen">
         <link rel="stylesheet" href="{{ asset('css/main.css') }}" media="screen">
-
-        <!-- Placed in the header as advised by ionicons itself --> 
-        <script nomodule="" src="https://unpkg.com/ionicons@5.2.3/dist/ionicons/ionicons.js"></script>
     </head>
     <body>
     <header class="bg-dark">
         <div class="container-fluid">
             <nav class="navbar navbar-dark bg-dark">
+                <div class="col-sm-1"></div>
                 <div class="col-sm-2 brand">
                     <img src="{{ asset('img/logo/grintex-logo-white-transparent.png') }}" title="Grintex" />
                 </div>
-                <div class="col-sm-3 text-left">
-                    <span class="navbar-text"></span>
+                <div class="col-sm-2 text-left">
+                    <a class="navbar-text" href="{{ route('schedules') }}"><ion-icon name="calendar-clear-outline" class="color-main align-middle"></ion-icon> Inicial</a>
                 </div>
                 <div class="col-sm-6 text-right">
                     <span class="navbar-text user-info">
@@ -91,6 +89,8 @@
         </div>
     </footer>
 
+    <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
+    
     <script src="{{ asset('js/3rdparty/jquery.min.js') }}"></script>
     <script src="{{ asset('js/3rdparty/jquery.dsmorse-gridster.with-extras.min.js') }}" ></script>
     <script src="{{ asset('js/3rdparty/bootstrap.bundle.min.js') }}"></script>

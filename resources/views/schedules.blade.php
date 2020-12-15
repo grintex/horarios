@@ -20,7 +20,7 @@
                             <table class="table table-dark" id="involedPersonnel">
                                 <thead>
                                     <tr>
-                                        <th scope="col"></th>
+                                        <th scope="col">Id</th>
                                         <th scope="col">Revisão</th>
                                         <th scope="col">Periodo</th>
                                         <th scope="col">Criação</th>
@@ -31,12 +31,15 @@
                                 <tbody>
                                     @foreach ($schedules as $schedule)
                                         <tr>
-                                            <td><ion-icon name="calendar-clear-outline"></ion-icon></th>
-                                            <td><a href="{{ route('schedule.show', [$schedule->user->uid, $schedule->period, $schedule->id]) }}">{{ $schedule->revision > 0 ? sprintf('REV%03d', $schedule->revision) : 'Rascunho' }}</a></th>
-                                            <td>{{ $schedule->period }}</th>
-                                            <td>{{ $schedule->created_at }}</th>
-                                            <td>{{ $schedule->updated_at }}</th>
-                                            <td></th>
+                                            <td class="text-muted">{{ $schedule->id }}</td>
+                                            <td><a href="{{ route('schedule.show', [$schedule->user->uid, $schedule->period, $schedule->id]) }}">{{ $schedule->revision > 0 ? sprintf('REV%03d', $schedule->revision) : 'Rascunho' }}</a></td>
+                                            <td>{{ $schedule->period }}</td>
+                                            <td>{{ $schedule->created_at }}</td>
+                                            <td>{{ $schedule->updated_at }}</td>
+                                            <td>
+                                                <a href="{{ route('schedule.show', [$schedule->user->uid, $schedule->period, $schedule->id]) }}"><ion-icon name="create-outline"></ion-icon> Editar</a>
+                                                <a class="ml-2" href="{{ route('schedule.show', [$schedule->user->uid, $schedule->period, $schedule->id]) }}"><ion-icon name="browsers-outline"></ion-icon> Visualizar</a>
+                                            </td>
                                         </tr>
                                     @endforeach  
                                 </tbody>

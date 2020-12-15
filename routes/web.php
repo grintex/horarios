@@ -19,7 +19,7 @@ Route::get('schedule/{uid}/{period}/{schedule}', 'App\Http\Controllers\ScheduleC
 Route::get('schedule/create', 'App\Http\Controllers\ScheduleController@create')->name('schedule.create');
 
 // Schedules
-Route::get('schedules', 'App\Http\Controllers\SchedulesController@index');
+Route::get('schedules', 'App\Http\Controllers\SchedulesController@index')->name('schedules');
 Route::get('schedules/{uid}/{period?}', 'App\Http\Controllers\SchedulesController@redir');
 
 Route::get('/', function () {
