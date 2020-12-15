@@ -6,7 +6,7 @@
             <div class="col-12 px-1 bg-dark">
                 <div class="card text-white bg-dark border-secondary">
                     <div class="card-header">
-                        Meus horários
+                        Horários de {{ $owner->name }}
                         <a href="{{ route('schedule.create') }}" class="btn btn-success float-right"><ion-icon name="add-circle-outline"></ion-icon> Novo horário</a>
                     </div>
                     <div class="card-body">
@@ -14,7 +14,7 @@
                             <div class="text-center">
                                 <p class="text-secondary"><ion-icon name="sad-outline" style="font-size: 128px;"></ion-icon></p>
                                 <p class="font-weight-bold">Oops!</p>
-                                <p class="text-muted">Você ainda não criou um horário. <br />Como vamos ter aulas desse jeito?</p>
+                                <p class="text-muted">Nenhum horário criado ainda. <br />Como vamos ter aulas desse jeito?</p>
                             </div>
                         @else
                             <table class="table table-dark" id="involedPersonnel">

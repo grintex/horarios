@@ -1114,6 +1114,10 @@ var periods = [
 ];
 
 $(function () {
+    if(!window.HORARIOS_PAGE_DATA) {
+        return;
+    }
+    
     var app = new Horarios.App();
     app.boot(HORARIOS_PAGE_DATA);
 });

@@ -66,11 +66,31 @@ class SchedulesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function show(Request $request, $uid)
+    {
+        $user = User::where('uid', $uid)->first();
+
+        if (!$user) {
+            return abort(404);
+        }
+
+        return view('schedules', [
+            'owner' => $user,
+            'schedules' => $user->schedules
+        ]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index(Request $request)
     {
         $user = $request->user();
 
         return view('schedules', [
+            'owner' => $user,
             'schedules' => $user->schedules
         ]);
     }
