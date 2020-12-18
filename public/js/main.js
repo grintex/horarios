@@ -73,13 +73,15 @@ Horarios.App = function() {
         this.relationsContraints = {
             loading: false,
             ready: false,
+            pendingCourseChecks: [],
             contenders: {}
         }
         
-        this.addTicker(1000, this.checkRelationsConstraints);
+        this.addTicker(1000, this.ensureRelationsConstraintsDataIsUptoDate);
+        this.addTicker(100, this.runScheduledRelationsConstraintsCourseCheck, 30);
     };
 
-    this.checkRelationsConstraints = function() {
+    this.ensureRelationsConstraintsDataIsUptoDate = function() {
         var self = this;
         var context = this.relationsContraints;
 
@@ -87,11 +89,14 @@ Horarios.App = function() {
             context.loading = true;
 
             axios.get(this.ENDPOINT_URL + '/schedules/' + this.data.schedule.id + '/relations').then(res => {
-                self.fillRelationsContraintsData(res.data);
+                var changed = self.fillRelationsContraintsData(res.data);
                 context.loading = false;
                 context.ready = true;
 
-                console.log('context', context);
+                if(changed) {
+                    self.checkRelationsConstraints();
+                    self.runScheduledRelationsConstraintsCourseCheck(10000);
+                }
             }).catch(err => {
                 console.log(err);
                 context.loading = false;
@@ -100,9 +105,44 @@ Horarios.App = function() {
         }
     };
 
+    this.runScheduledRelationsConstraintsCourseCheck = function(allowedChecks) {
+        var self = this;
+        var performedChecks = 0;
+
+        this.relationsContraints.pendingCourseChecks.forEach(function(course) {
+            if(allowedChecks-- <= 0) {
+                return;
+            }
+
+            var check = self.checkConstraintsByCourse(course);
+            self.highlightConstraintsCheckByCourse(course, check);
+            performedChecks++;            
+        });
+
+        if(performedChecks <= 0) {
+            return;
+        }
+
+        this.relationsContraints.pendingCourseChecks.splice(0, performedChecks);
+        this.refreshInvoledRelationsSidebar();
+    }
+
+    this.checkRelationsConstraints = function() {
+        var pendingCourseChecks = [];
+
+        for(var id in this.relationsContraints.contenders) {
+            var contender = this.relationsContraints.contenders[id];
+
+            pendingCourseChecks = pendingCourseChecks.concat(contender.courses);
+        }
+
+        this.relationsContraints.pendingCourseChecks = pendingCourseChecks;
+        console.warn('this.relationsContraints.pendingCourseChecks', this.relationsContraints.pendingCourseChecks);
+    };
 
     this.fillRelationsContraintsData = function(data) {
         var self = this;
+        var changed = false;
 
         if(data.length == 0) {
             return;
@@ -123,7 +163,10 @@ Horarios.App = function() {
             };
 
             self.relationsContraints.contenders[entry.id] = contender;
+            changed = true;
         });
+
+        return changed;
     };
 
     this.initAutoSave = function() {
@@ -526,6 +569,10 @@ Horarios.App = function() {
         this.refreshSidebarSummary();
     };
 
+    this.refreshInvoledRelationsSidebar = function() {
+        console.log('refreshInvoledRelationsSidebar');
+    }
+
     this.refreshSidebarSummary = function() {
         var persons = 0;
         var clashes = 0;
@@ -568,11 +615,13 @@ Horarios.App = function() {
             var courses = self.findCoursesByGroupId(group.id);
             
             courses.forEach(function(course) {
-                self.checkConstraintsByCourse(course);
+                var check = self.checkConstraintsByCourse(course);
+                self.highlightConstraintsCheckByCourse(course, check);
             });
         });
 
         this.refreshSidebarSummary();
+        this.checkRelationsConstraints();
     };
 
     this.init = function(data) {
@@ -868,10 +917,10 @@ Horarios.App = function() {
         });
     };
 
-    this.checkConstraintsByCourse = function(course) {
-        var clashes = this.findScheduleClashesByCourse(course);
+    this.highlightConstraintsCheckByCourse = function(course, constraintsCheck) {
+        var clashes = constraintsCheck.clashes;
         var isSelfClash = clashes.length == 1 && clashes[0].id == course.id;
-        var impediments = this.findWorkingImpedimentsByCourse(course);
+        var impediments = constraintsCheck.impediments;
     
         if(clashes.length > 0 && !isSelfClash) {
             this.highlightScheduleClashes(clashes);
@@ -879,6 +928,16 @@ Horarios.App = function() {
     
         if(impediments.length > 0) {
             this.highlightWorkingImpediments(course, impediments);
+        }
+    }
+
+    this.checkConstraintsByCourse = function(course) {
+        var clashes = this.findScheduleClashesByCourse(course);
+        var impediments = this.findWorkingImpedimentsByCourse(course);
+    
+        return {
+            clashes: clashes,
+            impediments: impediments
         }
     }
     
@@ -1032,6 +1091,7 @@ Horarios.App = function() {
             console.log('Course added: ', courseObj);
         }
 
+        this.checkProgramConstraints();
         this.data.dirty = true;
     }
 
@@ -1108,6 +1168,9 @@ Horarios.App = function() {
     
         $('#modal-course').modal('hide');
         this.active.groupId = undefined;
+
+        this.refreshInvoledPersonnelSidebar(this.findInvolvedPersonnel());
+        this.checkProgramConstraints();
     }
     
     this.handleModalGroupSubmit = function() {
