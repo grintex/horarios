@@ -15,56 +15,31 @@ class ApiScheduleController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function relations(Request $request, $id)
     {
-        //
-    }
+        $schedule = Schedule::where('id', $id)->first();
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        if(!$schedule) {
+            abort(404);
+        }
+
+        $user_ids = User::where([
+            ['uid', 'like', $schedule->relations],
+            ['id', '<>', $schedule->user->id],
+        
+        ])->get()->map(function($user) {
+            return $user->id;
+        });
+
+        $schedules = Schedule::whereIn('user_id', $user_ids)->get();
+
+        return $schedules;
     }
 
     /**
@@ -91,16 +66,5 @@ class ApiScheduleController extends Controller
         $schedule->groups = $request->input('groups', '[]');
 
         $schedule->save();
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

@@ -3,6 +3,8 @@ var Horarios = {};
 Horarios.App = function() {
     this.ENDPOINT_URL = undefined;
     this.APP_BASE_URL = undefined;
+
+    this.relationsContraints = {};
     
     this.data = {
         dirty: false,
@@ -24,6 +26,7 @@ Horarios.App = function() {
         this.initAutocomplete();
         this.initTicker();
         this.initAutoSave();
+        this.initRelationsConstraints();
         this.init(data);
     };
 
@@ -64,6 +67,63 @@ Horarios.App = function() {
 
     this.now = function() {
         return (new Date()).getTime();
+    };
+
+    this.initRelationsConstraints = function() {
+        this.relationsContraints = {
+            loading: false,
+            ready: false,
+            contenders: {}
+        }
+        
+        this.addTicker(1000, this.checkRelationsConstraints);
+    };
+
+    this.checkRelationsConstraints = function() {
+        var self = this;
+        var context = this.relationsContraints;
+
+        if(!context.ready && !context.loading) {
+            context.loading = true;
+
+            axios.get(this.ENDPOINT_URL + '/schedules/' + this.data.schedule.id + '/relations').then(res => {
+                self.fillRelationsContraintsData(res.data);
+                context.loading = false;
+                context.ready = true;
+
+                console.log('context', context);
+            }).catch(err => {
+                console.log(err);
+                context.loading = false;
+                context.ready = false;
+            });
+        }
+    };
+
+
+    this.fillRelationsContraintsData = function(data) {
+        var self = this;
+
+        if(data.length == 0) {
+            return;
+        }
+
+        data.forEach(function(entry) {
+            var contender = self.relationsContraints.contenders[entry.id];
+
+            if(contender && contender.schedule.updated_at == entry.updated_at) {
+                // Nothing to update, we already have the most up-to-date data.
+                return;
+            }
+
+            contender = {
+                schedule: entry,
+                courses: JSON.parse(entry.courses),
+                groups: JSON.parse(entry.groups)
+            };
+
+            self.relationsContraints.contenders[entry.id] = contender;
+        });
     };
 
     this.initAutoSave = function() {

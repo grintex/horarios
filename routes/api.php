@@ -15,7 +15,8 @@ use App\Http\Controllers\ApiScheduleController;
 |
 */
 
-Route::apiResource('schedules', ApiScheduleController::class);
+Route::get('schedules/{id}/relations', 'App\Http\Controllers\ApiScheduleController@relations')->name('api.schedules.relations');
+Route::put('schedules/{id}', 'App\Http\Controllers\ApiScheduleController@update')->name('api.schedules.update');
 
 Route::match(array('GET','POST'), '/search/person', 'App\Http\Controllers\ApiSearchController@person')->name('api.search.person');
 Route::match(array('GET','POST'), '/search/course', 'App\Http\Controllers\ApiSearchController@course')->name('api.search.course');
