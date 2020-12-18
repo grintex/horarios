@@ -37,7 +37,7 @@ class ApiScheduleController extends Controller
             return $user->id;
         });
 
-        $schedules = Schedule::whereIn('user_id', $user_ids)->get();
+        $schedules = Schedule::whereIn('user_id', $user_ids)->with('user')->get();
 
         return $schedules;
     }

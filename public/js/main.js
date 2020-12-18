@@ -94,6 +94,7 @@ Horarios.App = function() {
                 context.ready = true;
 
                 if(changed) {
+                    self.buildInvoledRelationsSidebar();
                     self.checkRelationsConstraints();
                     self.runScheduledRelationsConstraintsCourseCheck(10000);
                 }
@@ -116,6 +117,7 @@ Horarios.App = function() {
 
             var check = self.checkConstraintsByCourse(course);
             self.highlightConstraintsCheckByCourse(course, check);
+            self.refreshInvoledRelationsSidebar(course, check);
             performedChecks++;            
         });
 
@@ -124,8 +126,42 @@ Horarios.App = function() {
         }
 
         this.relationsContraints.pendingCourseChecks.splice(0, performedChecks);
-        this.refreshInvoledRelationsSidebar();
-    }
+    };
+
+    this.refreshInvoledRelationsSidebar = function(course, check) {
+        var contenderId = course.contenderId;
+        var statusId = 'row-ir-' + this.stringToSlug(contenderId) + '-status';
+        var statusEl = $('#' + statusId);
+
+        if(check.clashes.length > 0) {
+            statusEl.addClass('clash');
+        }
+    };
+
+    this.buildInvoledRelationsSidebar = function() {
+        var content = '';
+
+        for(var userId in this.relationsContraints.contenders) {
+            var contender = this.relationsContraints.contenders[userId];
+
+            var id = 'row-ir-' + this.stringToSlug(userId);
+
+            content += '<tr id="' + id + '" class="contender">' +
+                            '<td>' + 
+                                '<span class="contender-handle-icon"><ion-icon name="chevron-forward-circle-outline"></ion-icon></span> ' +
+                                '<span class="align-top">' + contender.schedule.user.uid + '</span>' +
+                            '</td>' +
+                            '<td>' + contender.schedule.period + ' (' + contender.schedule.revision + ')</td>' + 
+                            '<td id="' + id + '-status">?</td>' + 
+                        '</tr>';
+
+            content += '<tr class="separator"><td colspan="3"></td></tr>';
+        }
+
+        $('#involedRelations tbody').empty().append(content);
+
+        this.refreshSidebarSummary();
+    };
 
     this.checkRelationsConstraints = function() {
         var pendingCourseChecks = [];
@@ -133,11 +169,14 @@ Horarios.App = function() {
         for(var id in this.relationsContraints.contenders) {
             var contender = this.relationsContraints.contenders[id];
 
+            contender.courses.forEach(function(course) {
+                course.contenderId = id ;
+            });
+
             pendingCourseChecks = pendingCourseChecks.concat(contender.courses);
         }
 
         this.relationsContraints.pendingCourseChecks = pendingCourseChecks;
-        console.warn('this.relationsContraints.pendingCourseChecks', this.relationsContraints.pendingCourseChecks);
     };
 
     this.fillRelationsContraintsData = function(data) {
@@ -569,10 +608,6 @@ Horarios.App = function() {
         this.refreshSidebarSummary();
     };
 
-    this.refreshInvoledRelationsSidebar = function() {
-        console.log('refreshInvoledRelationsSidebar');
-    }
-
     this.refreshSidebarSummary = function() {
         var persons = 0;
         var clashes = 0;
@@ -855,7 +890,9 @@ Horarios.App = function() {
         }
 
         clashes.forEach(function(course) {
-            $('#course-node-' + course.id).addClass('clash');
+            var courseNodeEl = $('#course-node-' + course.id);
+            
+            courseNodeEl.addClass('clash');
 
             course.members.forEach(function(member) {
                 if(personInvoledInClash[member] === undefined) {

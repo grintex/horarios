@@ -21,6 +21,21 @@
                         <tbody>
                         </tbody>
                     </table>
+
+                    <div>
+                        <p class="font-weight-bold float-left">Cursos envolvidos</p>
+                    </div>
+                    <table class="table table-dark" id="involedRelations">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nome</th>
+                                <th scope="col">Horário</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <div class="col-9 offset-3" id="main">
