@@ -686,6 +686,7 @@ Horarios.App = function() {
 
         this.data.dirty = true;
         this.checkProgramConstraints();
+        this.refreshInvoledPersonnelSidebar(this.findInvolvedPersonnel());
     };
 
     this.createGroupBlock = function(containerId, group) {
@@ -1192,6 +1193,7 @@ Horarios.App = function() {
 
         this.checkProgramConstraints();
         this.createClickActionHandlers();
+        this.refreshInvoledPersonnelSidebar(this.findInvolvedPersonnel());
         this.data.dirty = true;
     }
 
@@ -1298,6 +1300,7 @@ Horarios.App = function() {
 
         if(action == 'remove-course') {
             this.removeCourseById(id);
+            this.refreshInvoledPersonnelSidebar(this.findInvolvedPersonnel());
             this.data.dirty = true;
         }
 
