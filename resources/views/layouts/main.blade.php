@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
+        @include('ga')
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -27,32 +28,44 @@
                     <img src="{{ asset('img/logo/grintex-logo-white-transparent.png') }}" title="Grintex" />
                 </div>
                 <div class="col-sm-2 text-left">
-                    <a class="navbar-text" href="{{ route('schedules') }}"><ion-icon name="calendar-clear-outline" class="color-main align-middle"></ion-icon> Inicial</a>
+                    @auth
+                        <a class="navbar-text" href="{{ route('schedules') }}"><ion-icon name="calendar-clear-outline" class="color-main align-middle"></ion-icon> Inicial</a>
+                    @endauth
                 </div>
-                <div class="col-sm-6 text-right">
-                    <span class="navbar-text user-info">
-                        <strong>{{ Auth::user()->name }}</strong><br />
-                        <span>{{ Auth::user()->uid }}</span>
-                    </span>
-                </div>
-                <div class="col-sm-1">
-                    <div class="user-area dropdown float-left">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img class="user-avatar rounded-circle" src="{{ Auth::user()->profile_photo_url }}" alt="User Avatar">
-                        </a>
-                        <div class="user-menu dropdown-menu">
-                            <a class="nav-link" href="https://id.uffs.edu.br"><i class="icon ion-md-contact"></i>Meu perfil</a>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <a class="nav-link" href="{{ route('logout') }}"
-                                                    onclick="event.preventDefault();
-                                                                this.closest('form').submit();">
-                                    <i class="icon ion-md-log-out"></i>
-                                    {{ __('Sair') }}
-                                </a>
-                            </form>
-                        </div>
+                
+                @if (Route::has('login'))
+                    <div class="col-sm-6 text-right">
+                        @auth
+                            <span class="navbar-text user-info">
+                                <strong>{{ Auth::user()->name }}</strong><br />
+                                <span>{{ Auth::user()->uid }}</span>
+                            </span>
+                        @endauth
                     </div>
+                @endif
+
+                <div class="col-sm-1">
+                    @auth
+                        <div class="user-area dropdown float-left">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img class="user-avatar rounded-circle" src="{{ Auth::user()->profile_photo_url }}" alt="User Avatar">
+                            </a>
+                            <div class="user-menu dropdown-menu">
+                                <a class="nav-link" href="https://id.uffs.edu.br" target="_blank"><i class="icon ion-md-contact"></i>Meu perfil</a>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <a class="nav-link" href="{{ route('logout') }}"
+                                                        onclick="event.preventDefault();
+                                                                    this.closest('form').submit();">
+                                        <i class="icon ion-md-log-out"></i>
+                                        {{ __('Sair') }}
+                                    </a>
+                                </form>
+                            </div>
+                        </div>
+                    @else
+                        <a href="{{ route('login') }}" class="btn btn-outline-success"><ion-icon name="log-in-outline"></ion-icon> Entrar</a>
+                    @endauth
                 </div>
             </nav>
         </div>
@@ -60,30 +73,39 @@
 
     @yield('content')
 
-    <footer class="" style="display: none;">
+    <footer class="fdb-block footer-large fp-active" style="display: none;">
         <div class="container">
-            <div class="row align-items-top text-center text-md-left">
-                <div class="col-4 text-md-left">
-                    <h3>Sobre</h3>
-                    <p class="small">Esse site foi criado pelo <a href="https://grintex.uffs.cc">Grupo de Inovação Tecnológica Experimental (GRINTEX)</a> da <a href="http://uffs.edu.br" target="_blank">Universidade Federal da Fronteira Sul</a>, campus Chapecó/SC. Ele é coordenado por membros do curso de <a href="https://cc.uffs.edu.br">Ciência da Computação</a> com participação de várias entidades, como a Secretaria Especial de Tecnologia da Informação (SETI).</p>
+            <div class="row align-items-top text-left">
+                <div class="col-12 col-md-8 col-lg-6 text-md-left mt-5 mt-md-0">
+                    <h3><strong>Sobre</strong></h3>
+                    <p class="text-muted">Esse site é uma ferramenta para criação e organização de horários acadêmicos desenvolvido pelo grupo <a href="https://grintex.uffs.cc">Grupo de Inovação Tecnológica Experimental</a> da Universidade Federal da Fronteira Sul, campus Chapecó, SC. A ideia desse projeto surgiu no curso de Ciência da Computação e foi proposto no Forum de Gestão de Coordenadores de Curso.</p>
                 </div>
 
-                <div class="col-2"></div>
-
-                <div class="col-3">
-                    <h3>Country B</h3>
-                    <p>Street Address 100<br>Contact Name</p>
-                    <p>+13 827 312 5002</p>
-                    <p><a href="https://www.froala.com">countryb@amazing.com</a></p>
+                <div class="col-12 col-sm-6 col-md-2 col-lg-3 text-sm-left">
+                    <h3><strong>Links úteis</strong></h3>
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="https://github.com/grintex">Grintex</a>
+                        <a class="nav-link" href="https://cc.uffs.edu.br">Ciência da Computação</a>
+                    </nav>
                 </div>
 
-                <div class="col-3">
-                    <h3>Country B</h3>
-                    <p>Street Address 100<br>Contact Name</p>
-                    <p>+13 827 312 5002</p>
-                    <p><a href="https://www.froala.com">countryb@amazing.com</a></p>
-                    <p><a href="https://www.froala.com">countryb@amazing.com</a></p>
-                    <p><a href="https://www.froala.com">countryb@amazing.com</a></p>
+                <div class="col-12 col-sm-6 col-md-2 col-lg-3 text-sm-left">
+                    <h3><strong>UFFS</strong></h3>
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="https://ati.uffs.edu.br">Atendimento de TI</a>
+                        <a class="nav-link" href="https://professor.uffs.edu.br">Portal do Professor</a>
+                    </nav>
+                </div>
+
+
+            </div>
+
+            <div class="row mt-3">
+                <div class="col text-sm-center">
+                    <p class="text-small text-muted" style="font-size: 0.8em;">
+                        This website is based on <a href="https://themewagon.com/themes/free-responsive-bootstrap-4-admin-dashboard-template-label">Label template</a>. Icons made by <a href="https://www.flaticon.com/authors/freepik">Freepik</a> from www.flaticon.com.
+                        Os dados mostrados nesse site foram agregados de forma automatizada. Não há garantias que eles estejam completamente corretos. Se houver houver algo de errado, entre em contato.
+                    </p>
                 </div>
             </div>
         </div>
@@ -98,5 +120,7 @@
     <script src="{{ asset('js/3rdparty/store.everything.min.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
+
+    <!-- Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }}) -->
 </body>
 </html>

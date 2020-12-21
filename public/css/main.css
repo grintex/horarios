@@ -385,8 +385,8 @@ tr.impediment {
 }
 
 footer {
-  padding-top: 1em;
-  padding-bottom: 2em;
+  padding-top: 5em;
+  padding-bottom: 3em;
   line-height: 1.2em;
 }
 
@@ -398,6 +398,17 @@ footer h3 {
 footer p {
   font-size: 0.8em;
   color :#8892a0;
+}
+
+footer .nav-link {
+  padding-left: 0.5em;
+}
+
+.fdb-icon {
+  width: 100%;
+  height: auto;
+  padding: 10px;
+  margin-bottom: 10px;
 }
 
 /*
