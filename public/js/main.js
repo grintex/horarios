@@ -381,6 +381,7 @@ Horarios.App = function() {
         var self = this;
 
         if(!members || members.length == 0) {
+            $('#modal-course-members').empty();
             return;
         }
 
@@ -469,6 +470,7 @@ Horarios.App = function() {
         this.checkProgramConstraints();
         this.refreshInvoledPersonnelSidebar(this.findInvolvedPersonnel());
         this.setSavingStatus(false);
+        this.createClickActionHandlers();
     };
 
     this.refreshGroupsContent = function() {
@@ -782,8 +784,9 @@ Horarios.App = function() {
                             '<i class="fa fa-options"></i>' +
                         '</button>' +
                         '<div class="dropdown-menu dropdown-menu-lg-right">' +
-                        '<button class="dropdown-item" type="button" data-toggle="modal" data-target="#modal-course" data-course="' + course.id + '"><i class="icon ion-md-create edit pr-2"></i> Editar</button>' +
-                        '<button class="dropdown-item" type="button" data-title="Confirmação" data-text="Você quer mesmo remover \''+ course.name +'\'?" data-element-action="remove-course" data-element-id="'+ course.id +'" data-toggle="modal" data-target="#modal-confirm"><i class="icon ion-md-trash edit pr-2"></i> Remover</button>' +
+                            '<button class="dropdown-item" type="button" data-toggle="modal" data-target="#modal-course" data-course="' + course.id + '"><i class="icon ion-md-create edit pr-2"></i> Editar</button>' +
+                            '<button class="dropdown-item" type="button" data-click-action="duplicateCourseById" data-click-param="'+ course.id +'"><i class="icon ion-md-copy edit pr-2"></i> Duplicar</button>' +
+                            '<button class="dropdown-item" type="button" data-title="Confirmação" data-text="Você quer mesmo remover \''+ course.name +'\'?" data-element-action="remove-course" data-element-id="'+ course.id +'" data-toggle="modal" data-target="#modal-confirm"><i class="icon ion-md-trash edit pr-2"></i> Remover</button>' +
                         '</div>' +
                     '</div>' +
                 '</div>' + 
@@ -798,6 +801,31 @@ Horarios.App = function() {
             '</div>';
         
         return this.generateGridNodeHTML(content, {course: course.id}, true);
+    };
+
+    this.createClickActionHandlers = function(selector) {
+        var self = this;
+
+        selector = selector || '';
+
+        $(selector + ' [data-click-action]').each(function(i, el) {
+            $(el).off();
+
+            $(el).click(function() {
+                var action = $(this).data('click-action');
+                var param = $(this).data('click-param');
+                
+                var func = self[action];
+
+                if(!func) {
+                    console.error('Unable to find click-action named "' + action+ '" triggered by element ', $(this));
+                    return;
+                }
+
+                console.debug('click-action ', action, param);
+                func.call(self, param);
+            })
+        })
     };
 
     this.findScheduleClashesByCourse = function(course) {
@@ -1054,6 +1082,24 @@ Horarios.App = function() {
    
         return false;
     }
+
+    this.duplicateCourseById = function(id) {
+        var duplicatedCourse = {};
+        var course = this.getCourseById(id);
+
+        if(!course) {
+            console.log('Unable to duplicate course with provided id: ', id);
+            return;
+        }
+
+        for(var p in course) {
+            duplicatedCourse[p] = course[p];
+        }
+
+        duplicatedCourse.id = undefined;
+
+        this.addOrUpdateCourse(duplicatedCourse);
+    }
     
     this.findCoursesByGroupId = function(groupId) {
         var items = [];
@@ -1145,6 +1191,7 @@ Horarios.App = function() {
         }
 
         this.checkProgramConstraints();
+        this.createClickActionHandlers();
         this.data.dirty = true;
     }
 
@@ -1180,6 +1227,7 @@ Horarios.App = function() {
             console.log('Group added: ', groupObj);
         }
         
+        this.createClickActionHandlers();
         this.data.dirty = true;
     }
 
