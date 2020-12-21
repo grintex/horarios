@@ -563,7 +563,7 @@ Horarios.App = function() {
             var weekDayOccurrences = person.weekDays.filter(function(v){ return v === (idx + 2); }).length;
 
             content += '<div style="width: 12%; height: 100%; position: relative; margin-right: 3%; float: left;">' +
-                        '<div style="position: absolute; bottom: 35%; width: 100%; height: ' + (1 + 64 * (weekDayOccurrences / 6.0)) + '%; background: #00BC80;">' + (weekDayOccurrences != 0 ? '<p style="font-size: 0.8em; position: absolute; top: -30px; left: 20%; color: #afafaf;">' + (simplified ? '' : weekDayOccurrences)  + '</p>': '') + '</div>' +
+                        '<div style="position: absolute; bottom: 35%; width: 100%; height: ' + (1 + 64 * (weekDayOccurrences / 6.0)) + '%; background: #' + (weekDayOccurrences > 0 ? '00BC80' : '545454') + ';">' + (weekDayOccurrences != 0 ? '<p style="font-size: 0.8em; position: absolute; top: -30px; left: 20%; color: #afafaf;">' + (simplified ? '' : weekDayOccurrences)  + '</p>': '') + '</div>' +
                         '<div style="position: absolute; left: 30%; bottom: 0; color: #8f8f8f;">' + (simplified ? '' : weekDay) + '</div>' +
                     '</div>';
         });
@@ -782,7 +782,8 @@ Horarios.App = function() {
                             '<i class="fa fa-options"></i>' +
                         '</button>' +
                         '<div class="dropdown-menu dropdown-menu-lg-right">' +
-                            '<button class="dropdown-item" type="button" data-toggle="modal" data-target="#modal-course" data-course="' + course.id + '"><i class="icon ion-md-create edit"></i> Editar</button>' +
+                        '<button class="dropdown-item" type="button" data-toggle="modal" data-target="#modal-course" data-course="' + course.id + '"><i class="icon ion-md-create edit pr-2"></i> Editar</button>' +
+                        '<button class="dropdown-item" type="button" data-title="Confirmação" data-text="Você quer mesmo remover \''+ course.name +'\'?" data-element-action="remove-course" data-element-id="'+ course.id +'" data-toggle="modal" data-target="#modal-confirm"><i class="icon ion-md-trash edit pr-2"></i> Remover</button>' +
                         '</div>' +
                     '</div>' +
                 '</div>' + 
@@ -1038,6 +1039,21 @@ Horarios.App = function() {
    
         return false;
     }
+
+    this.removeCourseById = function(id) {
+        var courses = this.data.program.courses;
+
+        for(var i = 0; i < courses.length; i++) {
+            if(courses[i].id == id) {
+                var group = this.getGroupById(courses[i].group);
+                group.grid.remove_widget($('li[data-course=' + id + ']'));
+                courses.splice(i, 1);
+                return true;
+            }
+        }
+   
+        return false;
+    }
     
     this.findCoursesByGroupId = function(groupId) {
         var items = [];
@@ -1230,6 +1246,11 @@ Horarios.App = function() {
             this.removeGroupById(id);
             this.data.dirty = true;
             $('#group-' + id).fadeOut();
+        }
+
+        if(action == 'remove-course') {
+            this.removeCourseById(id);
+            this.data.dirty = true;
         }
 
         console.log('Modal confirm', action, id);
