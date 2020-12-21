@@ -64,7 +64,7 @@
                             </div>
                         </div>
                     @else
-                        <a href="{{ route('login') }}" class="btn btn-outline-success"><ion-icon name="log-in-outline"></ion-icon> Entrar</a>
+                        <a href="{{ route('login') }}" class="btn btn-success"><ion-icon name="log-in-outline"></ion-icon> Entrar</a>
                     @endauth
                 </div>
             </nav>
