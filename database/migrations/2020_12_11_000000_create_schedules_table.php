@@ -17,6 +17,7 @@ class CreateSchedulesTable extends Migration
             $table->id();
             $table->foreignId('user_id')->index();
             $table->string('name');
+            $table->text('notes')->default('');
             $table->integer('revision', 0)->index();
             $table->string('period')->index();
             $table->text('courses');
