@@ -11,7 +11,6 @@ class ScheduleController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:sanctum');
     }
 
     /**
@@ -21,6 +20,7 @@ class ScheduleController extends Controller
      */
     public function show($uid, $period, $schedule_id)
     {
+        $viwer = Auth::user();
         $user = User::where('uid', $uid)->first();
 
         if (!$user) return abort(404);
@@ -31,7 +31,7 @@ class ScheduleController extends Controller
 
         $rev_name = 'RASCUNHO (em construção)';
         $schedule_is_revision = $schedule->locked && $schedule->revision > 0;
-        $viwer_is_schedule_owner = Auth::user()->id == $schedule->user_id;
+        $viwer_is_schedule_owner = $viwer && $viwer->id == $schedule->user_id;
 
         if($schedule_is_revision) {
             $rev_name =  sprintf('REV%03d - %s', $schedule->revision, $schedule->updated_at);
@@ -90,8 +90,12 @@ class ScheduleController extends Controller
      */
     public function create(Request $request)
     {
-        $user = $request->user();
+        $user = Auth::user();
         
+        if(!$user) {
+            return abort(403);
+        }
+
         $schedule = Schedule::create([
             'user_id' => $user->id,
             'name' => '',
