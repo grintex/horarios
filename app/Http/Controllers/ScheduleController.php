@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Schedule;
+use Illuminate\Support\Facades\Auth;
 
 class ScheduleController extends Controller
 {
@@ -26,10 +27,11 @@ class ScheduleController extends Controller
 
         $schedule = Schedule::where('id', $schedule_id)->where('period', $period)->first();
 
-        if (!$schedule) return abort(404);
+        if (!$schedule || $schedule->user_id != $user->id) return abort(404);
 
         $rev_name = 'RASCUNHO (em construção)';
         $schedule_is_revision = $schedule->locked && $schedule->revision > 0;
+        $viwer_is_schedule_owner = Auth::user()->id == $schedule->user_id;
 
         if($schedule_is_revision) {
             $rev_name =  sprintf('REV%03d - %s', $schedule->revision, $schedule->updated_at);
@@ -42,7 +44,7 @@ class ScheduleController extends Controller
             ],
             'programId' => $schedule->user->id,
             'schedule' => $schedule,
-            'readOnly' => $schedule_is_revision || $schedule->locked,
+            'readOnly' => $schedule_is_revision || $schedule->locked || !$viwer_is_schedule_owner,
             'appBaseUrl' => url('/'),
             'apiBaseEndpointUrl' => url('/api')
         ];
