@@ -25,6 +25,9 @@ Route::get('schedules', 'App\Http\Controllers\SchedulesController@index')->name(
 Route::get('schedules/{uid}', 'App\Http\Controllers\SchedulesController@show')->name('schedules.user');
 Route::get('schedules/{uid}/{period}', 'App\Http\Controllers\SchedulesController@redir');
 
+// Forced logout
+Route::post('logout/force', 'App\Http\Controllers\ForcedLogoutController@logout')->name('logout.forced');
+
 Route::get('/', function () {
     return view('welcome');
 });

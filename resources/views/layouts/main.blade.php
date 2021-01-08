@@ -52,11 +52,11 @@
                             </a>
                             <div class="user-menu dropdown-menu">
                                 <a class="nav-link" href="https://id.uffs.edu.br" target="_blank"><i class="icon ion-md-contact"></i>Meu perfil</a>
-                                <form method="POST" action="{{ route('logout') }}">
+                                <form id="logoutForm" method="POST" action="{{ route('logout.forced') }}">
                                     @csrf
-                                    <a class="nav-link" href="{{ route('logout') }}"
+                                    <a class="nav-link" href="{{ route('logout.forced') }}"
                                                         onclick="event.preventDefault();
-                                                                    this.closest('form').submit();">
+                                                                document.getElementById('logoutForm').submit();">
                                         <i class="icon ion-md-log-out"></i>
                                         {{ __('Sair') }}
                                     </a>
