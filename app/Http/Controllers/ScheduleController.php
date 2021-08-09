@@ -100,7 +100,7 @@ class ScheduleController extends Controller
             'user_id' => $user->id,
             'name' => '',
             'revision' => 0,
-            'period' => '2021.1',
+            'period' => '2021.2',
             'courses' => '[]',
             'groups' => '[]',
             'relations' => '%.ch',
