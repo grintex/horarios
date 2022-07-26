@@ -1119,7 +1119,7 @@ Horarios.App = function() {
     
         this.data.program.courses.forEach(function(course) {
             if(course.id > highest) {
-                highest = course.id;
+                highest = parseInt(course.id);
             }
         });
     
@@ -1131,7 +1131,7 @@ Horarios.App = function() {
     
         this.data.program.groups.forEach(function(group) {
             if(group.id > highest) {
-                highest = group.id;
+                highest = parseInt(group.id);
             }
         });
     
